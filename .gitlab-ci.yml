@@ -1,0 +1,18 @@
+cache:
+  paths:
+  - node_modules
+
+stages:
+  - build
+  - deploy
+
+DEV-DEPLOY:
+  image: sleavely/node-awscli:20.x
+  stage: build
+  only:
+    - develop
+  script:
+    - yarn
+    - yarn build:dev
+    - aws s3 sync dist/ s3://nodo-ai-copy-trading-dev --delete
+    - aws cloudfront create-invalidation --distribution-id ${DEV_CLOUDFRONT_DIST} --paths "/*"
