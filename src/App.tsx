@@ -55,13 +55,13 @@ const PageFallback = () => null;
 })();
 
 const { networkConfig } = createNetworkConfig({
-  localnet: { url: getFullnodeUrl("localnet") },
+  testnet: { url: getFullnodeUrl("testnet") },
   mainnet: { url: getFullnodeUrl("mainnet") },
 });
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <SuiClientProvider networks={networkConfig} defaultNetwork="localnet">
+    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
       <WalletProvider autoConnect>
         <LanguageProvider>
           <TooltipProvider>

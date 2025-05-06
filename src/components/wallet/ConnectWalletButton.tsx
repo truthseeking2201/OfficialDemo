@@ -15,11 +15,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useCurrentAccount, useDisconnectWallet } from "@mysten/dapp-kit";
 import { motion } from "framer-motion";
 import { Copy, LogOut, RefreshCw, Sparkles, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { ConnectWalletModal } from "./ConnectWalletModal";
 import nodoAixIcon from "@/assets/images/NODOAIx.svg";
+import useMyAssets from "@/hooks/useMyAssets";
 
-export function ConnectWalletButton() {
+export const ConnectWalletButton = memo(() => {
   const balance = {
     usdc: 100,
     receiptTokens: 100,
@@ -35,6 +36,8 @@ export function ConnectWalletButton() {
   const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
   const { mutate: disconnect } = useDisconnectWallet();
+  const { assets, loading } = useMyAssets();
+  console.log("🚀 ~ ConnectWalletButton ~ assets:", assets, loading);
 
   useEffect(() => {
     // Update risk assessment time
@@ -312,4 +315,4 @@ export function ConnectWalletButton() {
       />
     </>
   );
-}
+});
