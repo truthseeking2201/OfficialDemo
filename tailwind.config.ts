@@ -1,157 +1,265 @@
-
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
+/** @type {import('tailwindcss').Config} */
 export default {
-	darkMode: ["class"],
-	content: [
-		"./pages/**/*.{ts,tsx}",
-		"./components/**/*.{ts,tsx}",
-		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
-	],
-	prefix: "",
-	theme: {
-		container: {
-			center: true,
-			padding: '2rem',
-			screens: {
-				'2xl': '1400px'
-			}
-		},
-		extend: {
-			fontFamily: {
-				sans: ['Space Grotesk', 'sans-serif'],
-				mono: ['IBM Plex Mono', 'monospace'],
-			},
-			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
-				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
-				},
-				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
-				},
-				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
-				},
-				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
-				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
-				},
-				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
-				},
-				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				},
-				// NODO AI Custom Colors - Updated for golden-orange theme
-				"nodo-dark": "#1A1718",
-				"nodo-darker": "#12100F",
-				nova: {
-					DEFAULT: "#F97316", // Orange
-					light: "#FDBA74", // Light Orange
-					dark: "#C2410C", // Dark Orange
-				},
-				orion: {
-					DEFAULT: "#F59E0B", // Amber
-					light: "#FCD34D", // Light Amber
-					dark: "#B45309", // Dark Amber
-				},
-				aero: {
-					DEFAULT: "#D97706", // Yellow
-					light: "#FBBF24", // Light Yellow
-					dark: "#92400E", // Dark Yellow
-				},
-			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
-			keyframes: {
-				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
-				},
-				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
-				},
-				'pulse-glow': {
-					'0%, 100%': { opacity: '1', filter: 'brightness(1)' },
-					'50%': { opacity: '0.8', filter: 'brightness(1.2)' }
-				},
-				'float': {
-					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-10px)' }
-				},
-				'scale-up': {
-					'0%': { transform: 'scale(0.95)', opacity: '0' },
-					'100%': { transform: 'scale(1)', opacity: '1' }
-				},
-				'shimmer': {
-					'0%': { backgroundPosition: '-200% 0' },
-					'100%': { backgroundPosition: '200% 0' }
-				},
-				'neon-pulse': {
-					'0%, 100%': { boxShadow: '0 0 5px rgba(155, 135, 245, 0.8), 0 0 10px rgba(155, 135, 245, 0.5)' },
-					'50%': { boxShadow: '0 0 10px rgba(155, 135, 245, 1), 0 0 20px rgba(155, 135, 245, 0.8)' }
-				}
-			},
-			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'pulse-glow': 'pulse-glow 2s infinite ease-in-out',
-				'float': 'float 6s infinite ease-in-out',
-				'scale-up': 'scale-up 0.3s ease-out forwards',
-				'shimmer': 'shimmer 3s infinite linear',
-				'neon-pulse': 'neon-pulse 2s infinite'
-			},
-			backgroundImage: {
-				'neo-grid': 'linear-gradient(rgba(249, 115, 22, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(249, 115, 22, 0.1) 1px, transparent 1px)',
-				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-			},
-			backgroundSize: {
-				'neo-grid': '30px 30px',
-			},
-			boxShadow: {
-				'neon-glow': '0 0 5px rgba(249, 115, 22, 0.8), 0 0 10px rgba(249, 115, 22, 0.5)',
-				'neon-nova': '0 0 5px rgba(249, 115, 22, 0.8), 0 0 10px rgba(249, 115, 22, 0.5)',
-				'neon-orion': '0 0 5px rgba(245, 158, 11, 0.8), 0 0 10px rgba(245, 158, 11, 0.5)',
-				'neon-aero': '0 0 5px rgba(217, 119, 6, 0.8), 0 0 10px rgba(217, 119, 6, 0.5)',
-			},
-		}
-	},
-	plugins: [require("tailwindcss-animate")],
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
+  prefix: "",
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      fontFamily: {
+        sans: ["DM Sans", "sans-serif"],
+        mono: ["IBM Plex Mono", "monospace"],
+      },
+      colors: {
+        // Background and UI colors
+        "background-color": "#0B0C10",
+        "card-background": "#121620",
+        "text-primary": "#E5E7EB",
+        "text-secondary": "#9CA3AF",
+
+        // Brand vault colors - standardized
+        nova: {
+          DEFAULT: "#EC6F05",
+          light: "#FF9320",
+          dark: "#B45004",
+          deep: "#5A2702",
+        },
+        orion: {
+          DEFAULT: "#F59E0B",
+          light: "#FCD34D",
+          dark: "#B45309",
+          "500": "#F59E0B",
+        },
+        emerald: {
+          DEFAULT: "#10B981",
+          light: "#6EE7B7",
+          dark: "#047857",
+        },
+        violet: {
+          DEFAULT: "#3E1672",
+          light: "#5C2E98",
+          dark: "#2A0E50",
+        },
+        cyan: {
+          DEFAULT: "#14E9F2",
+          light: "#7FF4FA",
+          dark: "#0CABB2",
+        },
+
+        // Brand color aliases
+        brand: {
+          "50": "rgba(236, 111, 5, .25)",
+          "400": "#FF9320", // nova light
+          "500": "#EC6F05", // nova default
+          "600": "#B45004", // nova dark
+          "700": "#5A2702", // nova deep
+        },
+
+        // shadcn UI colors
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      boxShadow: {
+        // Standardized shadow system
+        "neon-nova": "0 0 20px rgba(236, 111, 5, 0.18)",
+        "neon-orion": "0 0 20px rgba(245, 158, 11, 0.18)",
+        "neon-emerald": "0 0 20px rgba(16, 185, 129, 0.18)",
+        "neon-violet": "0 0 20px rgba(62, 22, 114, 0.18)",
+        brand: "0 4px 8px -2px rgba(236, 111, 5, .35)",
+        "brand-hover": "0 8px 16px -8px rgba(236, 111, 5, .25)",
+        glass: "0 8px 32px rgba(0, 0, 0, 0.12)",
+
+        // Standard elevation system
+        "elevation-1": "0 1px 3px rgba(0, 0, 0, 0.2)",
+        "elevation-2": "0 4px 6px rgba(0, 0, 0, 0.2)",
+        "elevation-3": "0 10px 15px rgba(0, 0, 0, 0.2)",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-brand":
+          "linear-gradient(90deg, #FF9320 0%, #EC6F05 50%, #B45004 100%)",
+        "gradient-brand-vertical":
+          "linear-gradient(180deg, #FF9320 0%, #EC6F05 50%, #B45004 100%)",
+        "gradient-glow":
+          "radial-gradient(circle closest-side, var(--tw-gradient-stops))",
+      },
+      borderRadius: {
+        none: "0",
+        sm: "0.25rem", // 4px
+        md: "0.5rem", // 8px
+        lg: "0.75rem", // 12px
+        xl: "1rem", // 16px
+        "2xl": "1.5rem", // 24px
+        "3xl": "2rem", // 32px
+        full: "9999px",
+      },
+      backdropBlur: {
+        glass: "20px",
+      },
+      transitionDuration: {
+        "250": "250ms",
+        "300": "300ms",
+        "400": "400ms",
+      },
+      transitionTimingFunction: {
+        standard: "cubic-bezier(0.25, 0.1, 0.25, 1)", // Standard ease-out
+        emphasis: "cubic-bezier(0.175, 0.885, 0.32, 1.275)", // Elastic
+      },
+      keyframes: {
+        "accordion-down": {
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
+        },
+        "accordion-up": {
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-500px 0" },
+          "100%": { backgroundPosition: "500px 0" },
+        },
+        "fade-in": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+        "fade-out": {
+          "0%": {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+          "100%": {
+            opacity: "0",
+            transform: "translateY(-10px)",
+          },
+        },
+        "scale-in": {
+          "0%": {
+            transform: "scale(0.95)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+        },
+        "hover-scale": {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(0.98)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": {
+            opacity: "0.6",
+            transform: "scale(0.95)",
+          },
+          "50%": {
+            opacity: "1",
+            transform: "scale(1.05)",
+          },
+        },
+        "pulse-slow": {
+          "0%, 100%": {
+            boxShadow: "0 0 15px rgba(255, 168, 34, 0.6)",
+            transform: "scale(1)",
+          },
+          "50%": {
+            boxShadow: "0 0 30px rgba(255, 168, 34, 0.8)",
+            transform: "scale(1.05)",
+          },
+        },
+        float: {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-5px)",
+          },
+        },
+      },
+      animation: {
+        "accordion-down":
+          "accordion-down 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)",
+        "accordion-up": "accordion-up 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)",
+        shimmer: "shimmer 2s linear infinite",
+        "fade-in": "fade-in 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards",
+        "fade-out": "fade-out 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards",
+        "scale-in": "scale-in 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)",
+        "hover-scale": "hover-scale 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)",
+        "slow-spin": "spin 4s linear infinite",
+        pulse: "pulse 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
+        "pulse-glow": "pulse-glow 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
+        "pulse-slow": "pulse-slow 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
+        float: "float 4s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
+      },
+      spacing: {
+        // Standard spacing scale
+        xs: "0.25rem", // 4px
+        sm: "0.5rem", // 8px
+        md: "1rem", // 16px
+        lg: "1.5rem", // 24px
+        xl: "2rem", // 32px
+        "2xl": "2.5rem", // 40px
+        "3xl": "3rem", // 48px
+      },
+    },
+    plugins: [tailwindcssAnimate],
+  },
 } satisfies Config;
