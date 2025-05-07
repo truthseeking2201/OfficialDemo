@@ -14,6 +14,7 @@ const useMyAssets = () => {
     data: ownedObjects,
     isLoading,
     isFetching,
+    refetch,
   } = useSuiClientQuery(
     "getOwnedObjects",
     {
@@ -52,6 +53,7 @@ const useMyAssets = () => {
   return {
     assets: coinBalances,
     loading: isLoading || isFetching,
+    refreshBalance: refetch,
   };
 };
 
