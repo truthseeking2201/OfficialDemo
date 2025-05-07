@@ -1,9 +1,9 @@
 import http from "@/utils/http";
 
 const URLS = {
-  GET_APY: "/api/v1/apy",
+  SAMPLE: "/api/v1/poll-user?limit=10&offset=0&order_by=-start_time",
 };
 
-export const getAPY = () => {
-  return http.get(URLS.GET_APY);
+export const getSample = () => {
+  return http.get(URLS.SAMPLE);
 };

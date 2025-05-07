@@ -59,6 +59,11 @@ export default {
           light: "#7FF4FA",
           dark: "#0CABB2",
         },
+        ai: {
+          DEFAULT: "#FDEBCF",
+          light: "#FDEBCF",
+          dark: "#0A080E",
+        },
 
         // Brand color aliases
         brand: {

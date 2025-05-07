@@ -18,7 +18,8 @@ import { Copy, LogOut, RefreshCw, Sparkles, Wallet } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { ConnectWalletModal } from "./ConnectWalletModal";
 import nodoAixIcon from "@/assets/images/NODOAIx.svg";
-import useMyAssets from "@/hooks/useMyAssets";
+import { useMyAssets } from "@/hooks";
+import { truncateStringWithSeparator } from "@/utils/helpers";
 
 export const ConnectWalletButton = memo(() => {
   const balance = {
@@ -36,7 +37,7 @@ export const ConnectWalletButton = memo(() => {
   const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
   const { mutate: disconnect } = useDisconnectWallet();
-  const { assets, loading } = useMyAssets();
+  const { refreshBalance } = useMyAssets();
 
   useEffect(() => {
     // Update risk assessment time
@@ -56,9 +57,7 @@ export const ConnectWalletButton = memo(() => {
   }, [isConnected]);
 
   const formatAddress = (address: string) => {
-    return `${address.substring(0, 6)}...${address.substring(
-      address.length - 4
-    )}`;
+    return truncateStringWithSeparator(address, 13, "...", 6);
   };
 
   const handleCopyAddress = async () => {
@@ -80,6 +79,7 @@ export const ConnectWalletButton = memo(() => {
       description: "Latest wallet data loaded",
       duration: 2000,
     });
+    refreshBalance();
   };
 
   return (
@@ -92,11 +92,13 @@ export const ConnectWalletButton = memo(() => {
         >
           <Button
             onClick={() => setOpenConnectModal(true)}
-            className="bg-gradient-to-r from-nova-600 to-nova-500 text-white hover:shadow-lg hover:shadow-nova/20 relative overflow-hidden transition-all duration-300"
+            className="relative overflow-hidden transition-all duration-300 w-[252px]"
+            variant="primary"
+            size="lg"
             data-wallet-connect="true"
           >
             <div className="absolute inset-0 bg-noise opacity-5 pointer-events-none"></div>
-            <Wallet className="mr-2 h-4 w-4" /> Connect Wallet
+            <Wallet className="mr-2 h-5 w-5" /> Connect Wallet
           </Button>
         </motion.div>
       ) : (
@@ -213,7 +215,7 @@ export const ConnectWalletButton = memo(() => {
                       className="relative w-full text-left bg-black/30 border border-white/10 rounded-lg px-3 py-2.5 hover:bg-white/5 transition-colors group"
                     >
                       <span className="font-mono text-xs text-white/80 block truncate pr-8">
-                        {address}
+                        {formatAddress(address || "")}
                       </span>
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 rounded-full p-1 group-hover:bg-white/20">
                         <Copy className="w-3 h-3 text-white/70" />
@@ -284,9 +286,9 @@ export const ConnectWalletButton = memo(() => {
 
                   {/* Disconnect Button */}
                   <Button
-                    variant="outline"
+                    variant="primary"
                     onClick={() => disconnect()}
-                    className="w-full h-10 rounded-lg border border-red-500/30 bg-red-500/10 text-red-500 flex items-center justify-center gap-2 hover:bg-red-500/20 hover:text-white transition-colors"
+                    className="w-full"
                   >
                     <LogOut className="w-4 h-4" />
                     <span className="text-sm font-medium">Disconnect</span>

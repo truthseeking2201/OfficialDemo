@@ -8,7 +8,7 @@ const NODO_AI_COIN_TYPE = "TODO";
 
 const ALLOW_COIN_TYPES = [USDC_COIN_TYPE, NODO_AI_COIN_TYPE];
 
-const useMyAssets = () => {
+export const useMyAssets = () => {
   const account = useCurrentAccount();
   const {
     data: ownedObjects,
@@ -56,5 +56,3 @@ const useMyAssets = () => {
     refreshBalance: refetch,
   };
 };
-
-export default useMyAssets;

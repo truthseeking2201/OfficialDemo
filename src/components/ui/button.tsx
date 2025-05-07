@@ -1,16 +1,16 @@
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-gradient-brand text-white shadow-brand hover:shadow-brand-hover",
+        default:
+          "bg-gradient-brand text-white shadow-brand hover:shadow-brand-hover",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -20,14 +20,20 @@ const buttonVariants = cva(
         ghost: "border border-brand-500 text-brand-500 hover:bg-brand-50/10",
         link: "text-brand-500 underline-offset-4 hover:underline",
         nova: "bg-gradient-to-r from-nova-light to-nova text-white shadow-neon-nova hover:shadow-brand-hover",
-        orion: "bg-gradient-to-r from-orion-light to-orion text-white shadow-neon-orion hover:opacity-90",
-        emerald: "bg-gradient-to-r from-emerald-light to-emerald text-white shadow-neon-emerald hover:opacity-90",
-        "neural-orange": "bg-gradient-to-r from-[#FF8A00] to-[#FF6B00] text-white shadow-[0_4px_12px_-2px_rgba(255,138,0,0.3)] hover:shadow-[0_4px_16px_-2px_rgba(255,138,0,0.4)] hover:scale-[0.98] transition-all active:scale-95",
+        orion:
+          "bg-gradient-to-r from-orion-light to-orion text-white shadow-neon-orion hover:opacity-90",
+        emerald:
+          "bg-gradient-to-r from-emerald-light to-emerald text-white shadow-neon-emerald hover:opacity-90",
+        "neural-orange":
+          "bg-gradient-to-r from-[#FF8A00] to-[#FF6B00] text-white shadow-[0_4px_12px_-2px_rgba(255,138,0,0.3)] hover:shadow-[0_4px_16px_-2px_rgba(255,138,0,0.4)] hover:scale-[0.98] transition-all active:scale-95",
+
+        primary: "bg-ai text-[#0A080E]",
       },
       size: {
         default: "h-11 px-4 py-2",
         sm: "h-9 rounded-lg px-3 text-xs",
-        lg: "h-12 rounded-xl px-8 text-base",
+        lg: "h-12 rounded-xl px-8 text-[18px] font-semibold",
+        xl: "h-14 rounded-xl px-16 text-lg",
         icon: "h-10 w-10 rounded-lg",
       },
     },
@@ -36,26 +42,26 @@ const buttonVariants = cva(
       size: "default",
     },
   }
-)
+);
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button";
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       />
-    )
+    );
   }
-)
-Button.displayName = "Button"
+);
+Button.displayName = "Button";
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

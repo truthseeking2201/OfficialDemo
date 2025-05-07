@@ -1,3 +1,5 @@
+import phantomWallet from "@/assets/images/phantom-wallet.png";
+import suiWallet from "@/assets/images/sui-wallet.png";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,11 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AlertCircle, Loader2, X } from "lucide-react";
-import { useState } from "react";
-import phantomWallet from "@/assets/images/phantom-wallet.png";
-import suiWallet from "@/assets/images/sui-wallet.png";
 import { useConnectWallet, useWallets } from "@mysten/dapp-kit";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 interface ConnectWalletModalProps {
   open: boolean;
@@ -77,10 +77,8 @@ export function ConnectWalletModal({
           { wallet: foundWallet },
           {
             onSuccess: () => {
-              setTimeout(() => {
-                onClose();
-                setConnectedWallet(null);
-              }, 1000);
+              setConnectedWallet(null);
+              onClose();
             },
             onError: (error) => {
               console.error("Failed to connect wallet:", error);
