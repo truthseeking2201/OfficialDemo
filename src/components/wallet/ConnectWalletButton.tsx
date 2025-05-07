@@ -37,7 +37,6 @@ export const ConnectWalletButton = memo(() => {
   const address = currentAccount?.address;
   const { mutate: disconnect } = useDisconnectWallet();
   const { assets, loading } = useMyAssets();
-  console.log("🚀 ~ ConnectWalletButton ~ assets:", assets, loading);
 
   useEffect(() => {
     // Update risk assessment time
