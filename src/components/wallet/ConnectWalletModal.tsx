@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import { useState } from "react";
-
+import phantomWallet from "@/assets/images/phantom-wallet.png";
+import suiWallet from "@/assets/images/sui-wallet.png";
 import { useConnectWallet, useWallets } from "@mysten/dapp-kit";
 
 interface ConnectWalletModalProps {
@@ -18,16 +19,30 @@ interface ConnectWalletModalProps {
   onConnected?: () => void;
 }
 
-type WalletType = "Slush" | "Phantom";
-
 const WALLETS = [
   {
+    displayName: "Sui Wallet",
     name: "Slush",
+    icon: suiWallet,
+    description: "Connect to your Sui Wallet",
+    extensionUrl:
+      "https://chromewebstore.google.com/detail/slush-%E2%80%94-a-sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil",
   },
   {
+    displayName: "Phantom",
     name: "Phantom",
+    icon: phantomWallet,
+    description: "Connect to your Phantom Wallet",
+    extensionUrl: "https://phantom.app/download",
   },
 ];
+
+type Wallet = {
+  name: string;
+  icon: string;
+  displayName: string;
+  extensionUrl: string;
+};
 
 export function ConnectWalletModal({
   open,
@@ -44,17 +59,20 @@ export function ConnectWalletModal({
     const foundWallet = wallets.find((w) => w.name === wallet.name);
     return {
       ...wallet,
-      icon: foundWallet?.icon || null,
+      name: foundWallet?.name || wallet.name,
     };
-  });
+  }) as Wallet[];
 
-  const handleConnect = async (walletType: WalletType) => {
+  const handleConnect = async (selectedWallet: Wallet) => {
     try {
       setIsConnecting(true);
       setError(null);
 
-      const foundWallet = wallets.find((wallet) => wallet.name === walletType);
+      const foundWallet = wallets.find(
+        (wallet) => wallet.name === selectedWallet.name
+      );
       if (foundWallet) {
+        setConnectedWallet(selectedWallet.name);
         connect(
           { wallet: foundWallet },
           {
@@ -67,16 +85,20 @@ export function ConnectWalletModal({
             onError: (error) => {
               console.error("Failed to connect wallet:", error);
               setError(
-                `Failed to connect to ${walletType} wallet. Please try again.`
+                `Failed to connect to ${selectedWallet.displayName} wallet. Please try again.`
               );
               setConnectedWallet(null);
             },
           }
         );
+      } else {
+        window.open(selectedWallet.extensionUrl, "_blank");
       }
     } catch (error) {
       console.error("Failed to connect wallet:", error);
-      setError(`Failed to connect to ${walletType} wallet. Please try again.`);
+      setError(
+        `Failed to connect to ${selectedWallet.displayName} wallet. Please try again.`
+      );
       setConnectedWallet(null);
     } finally {
       setIsConnecting(false);
@@ -87,14 +109,6 @@ export function ConnectWalletModal({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[425px] bg-[#101112] border border-white/10 p-0 rounded-2xl">
         <DialogHeader className="px-6 pt-6 pb-0 relative">
-          <button
-            className="absolute right-6 top-6 rounded-full h-8 w-8 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors"
-            onClick={onClose}
-            type="button"
-            aria-label="Close"
-          >
-            <X className="h-4 w-4" />
-          </button>
           <DialogTitle className="text-xl font-bold">
             Connect Wallet
           </DialogTitle>
@@ -122,22 +136,16 @@ export function ConnectWalletModal({
                   ? "bg-[#4DA1F9]/10 border-[#4DA1F9]/30"
                   : ""
               }`}
-              onClick={() => handleConnect(wallet.name as WalletType)}
+              onClick={() => handleConnect(wallet)}
               disabled={isConnecting}
             >
-              <div className="h-10 w-10 rounded-full bg-[#4DA1F9] flex items-center justify-center">
-                {wallet.icon && (
-                  <img
-                    src={wallet.icon}
-                    alt={wallet.name}
-                    className="w-5 h-5"
-                  />
-                )}
+              <div className="h-8 w-8 rounded-full flex items-center justify-center">
+                {wallet.icon && <img src={wallet.icon} alt={wallet.name} />}
               </div>
               <div className="text-left flex-1">
-                <div className="font-medium">{wallet.name}</div>
+                <div className="font-medium">{wallet.displayName}</div>
                 <div className="text-xs text-white/60">
-                  Connect to your {wallet.name} Wallet
+                  Connect to your {wallet.displayName} Wallet
                 </div>
               </div>
               {connectedWallet === wallet.name && isConnecting && (
