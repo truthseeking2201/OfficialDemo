@@ -1,34 +1,63 @@
-import { ArrowRight } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useCallback } from "react";
+import { useWallet } from "@/hooks/useWallet";
 import suiWallet from "@/assets/images/sui-wallet.png";
 import { Button } from "@/components/ui/button";
 import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useMyAssets } from "@/hooks/useMyAssets";
+import { COIN_TYPES_CONFIG } from "@/config/coin-config";
 
-export default function WithdrawVaultSection() {
+export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
+  const [conversionRate, setConversionRate] = useState<number | null>(1.05);
+  const [error, setError] = useState<string>("");
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
-  const address = currentAccount?.address;
 
-  /**
-   * FUNCTION
-   */
-  const handleDeposit = () => {
-    if (isConnected) {
-      // setIsDepositDrawerOpen(true);
-    } else {
-      // handleConnectWallet();
+  const { openConnectWalletDialog } = useWallet();
+  const { assets } = useMyAssets();
+
+  const usdcCoin = assets.find(
+    (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
+  );
+
+  const handleMaxAmount = useCallback(() => {
+    if (Number(usdcCoin?.balance) < 1) {
+      setError("Minimum amount is 1 USDC.");
+      return;
     }
-  };
+    setError("");
+    setDepositAmount(usdcCoin?.balance.toFixed(2));
+  }, [usdcCoin]);
 
-  const handleConnectWallet = () => {
+  const handleConnectWallet = useCallback(() => {
     // Open the connect wallet modal
-    // setIsConnectWalletModalOpen(true);
-  };
+    openConnectWalletDialog();
+  }, [openConnectWalletDialog]);
 
-  /**
-   * LIFECYCLES
-   */
+  const handleDeposit = useCallback(() => {
+    if (isConnected) {
+      // TODO: Handle deposit
+    } else {
+      handleConnectWallet();
+    }
+  }, [isConnected, handleConnectWallet]);
+
+
+  const handleDepositAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and one decimal point
+    if (!/^\d*\.?\d{0,2}$/.test(value) && value !== '') {
+      return;
+    }
+
+    setDepositAmount(value);
+    if (value && Number(value) < 1) {
+      setError("Minimum amount is 1 USDC.");
+      return;
+    }
+    setError("");
+  }, []);
 
   /**
    * RENDER
@@ -41,7 +70,7 @@ export default function WithdrawVaultSection() {
           <div className="font-body text-075">
             Balance:{" "}
             <span className="font-mono">
-              {isConnected ? "1250.45 USDC" : "--"}
+              {isConnected ? `${usdcCoin?.balance.toFixed(2)} USDC` : "--"}
             </span>
           </div>
         </div>
@@ -49,17 +78,24 @@ export default function WithdrawVaultSection() {
           <input
             type="text"
             value={depositAmount}
-            onChange={(e) => setDepositAmount(e.target.value)}
+            onChange={handleDepositAmountChange}
             placeholder="0.00"
             className="input-vault w-full font-heading-lg"
           />
-          {/* background: linear-gradient(90deg, #0090FF -29.91%, #FF6D9C 44.08%, #FB7E16 100%); */}
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex rounded-full mx-auto bg-gradient-to-tr from-[#0090FF] via-[#FF6D9C] to-[#FB7E16] p-px hover:opacity-70 transition-all duration-300">
-            <button className="bg-[#202124] border border-[#1A1A1A] text-white hover:text-white px-4 py-1 rounded-[16px] text-sm font-medium">
+            <button 
+              onClick={handleMaxAmount}
+              className="bg-[#202124] border border-[#1A1A1A] text-white hover:text-white px-4 py-1 rounded-[16px] text-sm font-medium"
+            >
               MAX
             </button>
           </div>
         </div>
+        {error && (
+          <div className="text-red-500 text-sm mt-1">
+            {error}
+          </div>
+        )}
       </div>
 
       <div className="mb-6 p-4 border border-white/15 rounded-lg">
@@ -67,14 +103,18 @@ export default function WithdrawVaultSection() {
           <div className="font-caption text-075">You will get</div>
           <div className="flex items-center">
             <img src="/coins/ndlp.png" alt="NDLP" className="w-6 h-6 mr-1" />
-            <span className="font-mono font-bold text-lg">710.00 NDLP</span>
+            <span className="font-mono font-bold text-lg">
+              {conversionRate ? `${(Number(depositAmount || 0) * conversionRate).toFixed(2)} NDLP` : "--"}
+            </span>
           </div>
         </div>
         <hr className="w-full border-t border-white/15" />
 
         <div className="flex justify-between items-center mb-3 mt-3">
           <div className="font-caption text-075">Conversion Rate</div>
-          <div className="font-mono text-white">1 USDC = 1.05 NDLP</div>
+          <div className="font-mono text-white">
+            {conversionRate ? `1 USDC = ${conversionRate.toFixed(2)} NDLP` : "Unable to fetch conversion rate. Please try again later."}
+          </div>
         </div>
 
         <div className="flex justify-between items-center">
@@ -91,6 +131,7 @@ export default function WithdrawVaultSection() {
         size="xl"
         onClick={isConnected ? handleDeposit : handleConnectWallet}
         className="w-full font-semibold text-lg"
+        disabled={error}
       >
         {isConnected ? "Deposit" : "Connect Wallet"}
       </Button>
