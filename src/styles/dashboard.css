@@ -172,3 +172,12 @@
     opacity: 0.6;
   }
 }
+
+
+.main-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='1440' height='1836' viewBox='0 0 1440 1836' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg style='mix-blend-mode:overlay' filter='url(%23filter0_f_537_89187)'%3E%3Cpath d='M-1601.99 758.786L-1601.99 1147.93L2265.12 1893.46L2265.12 38.273L-1601.99 758.786Z' fill='url(%23paint0_linear_537_89187)'/%3E%3C/g%3E%3Cdefs%3E%3Cfilter id='filter0_f_537_89187' x='-1854.8' y='-214.535' width='4372.73' height='2360.8' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeBlend mode='normal' in='SourceGraphic' in2='BackgroundImageFix' result='shape'/%3E%3CfeGaussianBlur stdDeviation='126.404' result='effect1_foregroundBlur_537_89187'/%3E%3C/filter%3E%3ClinearGradient id='paint0_linear_537_89187' x1='331.567' y1='-516.549' x2='331.567' y2='1893.46' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%230090FF'/%3E%3Cstop offset='0.569558' stop-color='%23FF6D9C'/%3E%3Cstop offset='1' stop-color='%23FB7E16'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E%0A");
+  background-size: 100% 100%;
+  background-position: left;
+
+  background-repeat: no-repeat;
+}
