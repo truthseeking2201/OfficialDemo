@@ -33,9 +33,9 @@ export default function WithdrawVaultSection() {
    * RENDER
    */
   return (
-    <div className="p-6 bg-black rounded-b-2xl">
+    <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
       {/* Balance */}
-      <div className="py-4">
+      <div className="">
         <div className="font-sans text-base text-white mb-3">Total Balance</div>
         <div className="flex">
           <img

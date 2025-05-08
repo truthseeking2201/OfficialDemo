@@ -32,7 +32,7 @@ export default function WithdrawVaultSection() {
    * RENDER
    */
   return (
-    <div className="p-6 bg-black rounded-b-2xl">
+    <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
       <div className="mb-6">
         <div className="flex justify-between">
           <div className="font-body text-075">Amount (USDC)</div>
