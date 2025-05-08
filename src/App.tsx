@@ -83,7 +83,7 @@ const App = () => (
                   element={
                     <MainLayout>
                       <Suspense fallback={<PageFallback />}>
-                        <VaultCatalog />
+                        <Dashboard />
                       </Suspense>
                     </MainLayout>
                   }

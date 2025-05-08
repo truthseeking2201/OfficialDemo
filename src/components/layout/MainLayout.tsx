@@ -21,7 +21,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         >
           <AppHeader />
           <div className="flex-1 relative">{children}</div>
-          <AppFooter />
+          {/* <AppFooter /> */}
         </motion.div>
       </AnimatePresence>
     </div>
