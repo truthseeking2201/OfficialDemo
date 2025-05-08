@@ -1,3 +1,4 @@
+import { useConnectWallet, useCurrentAccount } from "@mysten/dapp-kit";
 import { create } from "zustand";
 interface WalletState {
   isConnectWalletDialogOpen: boolean;
@@ -11,10 +12,13 @@ const useWalletStore = create<WalletState>((set) => ({
 }));
 
 export const useWallet = () => {
+  const account = useCurrentAccount();
+
   const { isConnectWalletDialogOpen, setIsConnectWalletDialogOpen } =
     useWalletStore((state) => state);
 
   return {
+    isConnected: !!account?.address,
     isConnectWalletDialogOpen,
     openConnectWalletDialog: () => setIsConnectWalletDialogOpen(true),
     closeConnectWalletDialog: () => setIsConnectWalletDialogOpen(false),
