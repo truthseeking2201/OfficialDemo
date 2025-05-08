@@ -1,4 +1,3 @@
-import { TokenIcon } from "@/components/shared/TokenIcons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,33 +10,36 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { COIN_TYPES_CONFIG } from "@/config";
+import { useMyAssets, useWallet } from "@/hooks";
 import { useToast } from "@/hooks/use-toast";
+import { truncateStringWithSeparator } from "@/utils/helpers";
 import { useCurrentAccount, useDisconnectWallet } from "@mysten/dapp-kit";
 import { motion } from "framer-motion";
-import { Copy, LogOut, RefreshCw, Sparkles, Wallet } from "lucide-react";
+import { Copy, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { ConnectWalletModal } from "./ConnectWalletModal";
-import nodoAixIcon from "@/assets/images/NODOAIx.svg";
-import { useMyAssets } from "@/hooks";
-import { truncateStringWithSeparator } from "@/utils/helpers";
-
 export const ConnectWalletButton = memo(() => {
-  const balance = {
-    usdc: 100,
-    receiptTokens: 100,
-  };
-
   const { toast } = useToast();
   const [showPulse, setShowPulse] = useState(false);
 
   const [riskAssessmentTime, setRiskAssessmentTime] = useState<string>("");
   const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
-  const [openConnectModal, setOpenConnectModal] = useState(false);
+  const {
+    isConnectWalletDialogOpen,
+    openConnectWalletDialog,
+    closeConnectWalletDialog,
+  } = useWallet();
+
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
   const { mutate: disconnect } = useDisconnectWallet();
-  const { refreshBalance } = useMyAssets();
+  const { refreshBalance, assets } = useMyAssets();
+
+  const usdcCoin = assets.find(
+    (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
+  );
 
   useEffect(() => {
     // Update risk assessment time
@@ -91,7 +93,7 @@ export const ConnectWalletButton = memo(() => {
           transition={{ duration: 0.3 }}
         >
           <Button
-            onClick={() => setOpenConnectModal(true)}
+            onClick={openConnectWalletDialog}
             className="relative overflow-hidden transition-all duration-300 w-[252px]"
             variant="primary"
             size="lg"
@@ -145,8 +147,9 @@ export const ConnectWalletButton = memo(() => {
                       }}
                       className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"
                     />
-                    <span className="font-mono">
-                      {balance.usdc !== undefined ? `${balance.usdc} USDC` : ""}
+
+                    <span className="font-mono text-sm">
+                      {usdcCoin?.balance || 0} USDC
                     </span>
                   </div>
                 </div>
@@ -227,60 +230,28 @@ export const ConnectWalletButton = memo(() => {
                   <div className="mb-4">
                     <div className="text-xs text-white/50 mb-2">Balance</div>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-2.5 bg-black/20 border border-white/5 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <TokenIcon token="USDC" size={20} />
-                          <div>
-                            <div className="text-sm text-white font-medium">
-                              USDC
-                            </div>
-                            <div className="text-xs text-white/50">
-                              Stablecoin
-                            </div>
-                          </div>
-                        </div>
-                        <div className="font-mono text-sm text-white">
-                          {balance.usdc}
-                        </div>
-                      </div>
-
-                      {balance.receiptTokens > 0 && (
-                        <div className="flex items-center justify-between p-2.5 bg-black/20 border border-white/5 rounded-lg">
+                      {assets.map((asset) => (
+                        <div
+                          className="flex items-center justify-between p-2.5 bg-black/20 border border-white/5 rounded-lg"
+                          key={asset.coin_type}
+                        >
                           <div className="flex items-center gap-2">
-                            <div className="relative">
-                              <img
-                                src={nodoAixIcon}
-                                alt="NODOAIx Token"
-                                className="w-4 h-4"
-                              />
-                              <motion.div
-                                animate={{
-                                  opacity: [0, 0.8, 0],
-                                  scale: [1, 1.5],
-                                }}
-                                transition={{
-                                  duration: 2,
-                                  repeat: Infinity,
-                                  repeatType: "loop",
-                                }}
-                                className="absolute inset-0 rounded-full border border-nova/50"
-                              />
-                            </div>
+                            <img
+                              src={asset.image_url}
+                              alt={asset.name}
+                              className="w-4 h-4"
+                            />
                             <div>
-                              <div className="text-sm text-white font-medium flex items-center gap-1">
-                                NODOAIx
-                                <Sparkles size={10} className="text-nova" />
-                              </div>
-                              <div className="text-xs text-white/50">
-                                AI Yield Token
+                              <div className="text-sm text-white font-medium">
+                                {asset.display_name}
                               </div>
                             </div>
                           </div>
-                          <div className="font-mono text-sm text-nova">
-                            {balance.receiptTokens.toFixed(2)}
+                          <div className="font-mono text-sm text-white">
+                            {asset.balance}
                           </div>
                         </div>
-                      )}
+                      ))}
                     </div>
                   </div>
 
@@ -311,8 +282,8 @@ export const ConnectWalletButton = memo(() => {
 
       {/* New Connect Wallet Modal */}
       <ConnectWalletModal
-        open={openConnectModal}
-        onClose={() => setOpenConnectModal(false)}
+        open={isConnectWalletDialogOpen}
+        onClose={closeConnectWalletDialog}
       />
     </>
   );
