@@ -1,14 +1,13 @@
-
 export interface VaultData {
   id: string;
   name: string;
-  type: 'nova' | 'orion' | 'emerald';
+  type: "nova" | "orion" | "emerald";
   tvl: number;
   apr: number;
   apy: number;
   description: string;
   lockupPeriods: LockupPeriod[];
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: "low" | "medium" | "high";
   strategy: string;
   performance: PerformanceData;
 }
@@ -39,10 +38,11 @@ export interface UserInvestment {
 
 export interface TransactionHistory {
   id: string;
-  type: 'deposit' | 'withdraw';
-  amount: number;
-  vaultId: string;
-  vaultName: string;
+  tx_type: "swap" | "add" | "remove";
   timestamp: string;
-  status: 'completed' | 'pending' | 'failed';
+  value: number;
+  address: string;
+  tokenId: string;
+  txHash: string;
+  // status: 'completed' | 'pending' | 'failed';
 }

@@ -59,6 +59,54 @@ const sampleTransactions = [
     txHash:
       "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
   },
+  {
+    id: "6",
+    tx_type: "add" as const,
+    timestamp: "2025-05-06T10:00:00Z",
+    value: 1200,
+    address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+    tokenId: "USDC",
+    txHash:
+      "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+  },
+  {
+    id: "7",
+    tx_type: "remove" as const,
+    timestamp: "2025-05-07T12:00:00Z",
+    value: 800,
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    tokenId: "USDC",
+    txHash:
+      "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  },
+  {
+    id: "8",
+    tx_type: "add" as const,
+    timestamp: "2025-05-08T14:00:00Z",
+    value: 2500,
+    address: "0x7890abcdef1234567890abcdef1234567890abcd",
+    tokenId: "USDC",
+    txHash: "0x7890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234",
+  },
+  {
+    id: "9",
+    tx_type: "remove" as const,
+    timestamp: "2025-05-09T16:00:00Z",
+    value: 400,
+    address: "0x4567890abcdef1234567890abcdef1234567890ab",
+    tokenId: "USDC",
+    txHash: "0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12",
+  },
+  {
+    id: "10",
+    tx_type: "add" as const,
+    timestamp: "2025-05-10T18:00:00Z",
+    value: 1800,
+    address: "0xabcdef1234567890abcdef1234567890abcdef1234",
+    tokenId: "USDC",
+    txHash:
+      "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+  },
 ];
 
 export default function NodoAIVaults() {
