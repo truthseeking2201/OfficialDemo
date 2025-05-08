@@ -1,10 +1,9 @@
-import React from "react";
-import { useWallet } from "@/hooks/useWallet";
-import { Zap, PlusCircle, RefreshCw, Lock } from "lucide-react";
 import { BalanceCard } from "@/components/wallet/BalanceCard";
+import { useWallet } from "@/hooks/useWallet";
+import { Lock, PlusCircle, RefreshCw, Zap } from "lucide-react";
 
 const RightContent = () => {
-  const { isConnected, balance } = useWallet();
+  const { isConnected } = useWallet();
 
   return (
     <div className="max-w-[300px] flex-shrink-0">

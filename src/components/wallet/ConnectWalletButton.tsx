@@ -29,10 +29,10 @@ export const ConnectWalletButton = memo(() => {
     isConnectWalletDialogOpen,
     openConnectWalletDialog,
     closeConnectWalletDialog,
+    isConnected,
   } = useWallet();
 
   const currentAccount = useCurrentAccount();
-  const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
   const { mutate: disconnect } = useDisconnectWallet();
   const { refreshBalance, assets } = useMyAssets();
@@ -114,7 +114,7 @@ export const ConnectWalletButton = memo(() => {
             >
               <Button
                 variant="outline"
-                className="border-white/20 bg-gradient-to-r from-white/[0.07] to-white/[0.03] backdrop-blur-sm hover:bg-white/10 transition-all h-9 px-3 relative overflow-hidden"
+                className="border-white/20 bg-gradient-to-r from-white/[0.07] to-white/[0.03] backdrop-blur-sm hover:bg-white/10 transition-all  px-3 relative overflow-hidden h-11"
               >
                 <div className="absolute inset-0 bg-noise opacity-5 pointer-events-none"></div>
                 {showPulse && (
