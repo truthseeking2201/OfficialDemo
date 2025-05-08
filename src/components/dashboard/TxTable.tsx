@@ -9,6 +9,12 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  ChevronLast,
+  ChevronFirst,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 
 interface TxTableProps {
   transactions: TransactionHistory[];
@@ -24,13 +30,26 @@ export function TxTable({
   const [filter, setFilter] = useState<"all" | "swap" | "add" | "remove">(
     "all"
   );
-  const [dateRange, setDateRange] = useState<{
-    from: Date | null;
-    to: Date | null;
-  }>({
-    from: null,
-    to: null,
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const filteredTransactions =
+    filter === "all"
+      ? transactions
+      : transactions.filter((tx) => tx.tx_type === filter);
+
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+
+  const paginatedTransactions = filteredTransactions.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -71,11 +90,6 @@ export function TxTable({
     return `${mockHash.slice(0, 6)}...${mockHash.slice(-4)}`;
   };
 
-  const filteredTransactions =
-    filter === "all"
-      ? transactions
-      : transactions.filter((tx) => tx.tx_type === filter);
-
   const handleCopyHash = (hash: string) => {
     navigator.clipboard.writeText(hash).then(() => {
       // In a real app, you'd show a toast notification
@@ -89,34 +103,30 @@ export function TxTable({
         <h2 className="font-heading-lg text-100 mb-4">Vault Activities</h2>
         <div className="flex space-x-2">
           <Button
-            variant={filter === "all" ? "default" : "outline"}
+            variant={filter === "all" ? "primary" : "pagination-default"}
             size="sm"
             onClick={() => setFilter("all")}
-            className={filter === "all" ? "bg-nova text-[#0E0F11]" : ""}
           >
             All
           </Button>
           <Button
-            variant={filter === "swap" ? "default" : "outline"}
+            variant={filter === "swap" ? "primary" : "pagination-default"}
             size="sm"
             onClick={() => setFilter("swap")}
-            className={filter === "swap" ? "bg-nova text-[#0E0F11]" : ""}
           >
             Swap
           </Button>
           <Button
-            variant={filter === "add" ? "default" : "outline"}
+            variant={filter === "add" ? "primary" : "pagination-default"}
             size="sm"
             onClick={() => setFilter("add")}
-            className={filter === "add" ? "bg-nova text-[#0E0F11]" : ""}
           >
             Add Liquidity
           </Button>
           <Button
-            variant={filter === "remove" ? "default" : "outline"}
+            variant={filter === "remove" ? "primary" : "pagination-default"}
             size="sm"
             onClick={() => setFilter("remove")}
-            className={filter === "remove" ? "bg-nova text-[#0E0F11]" : ""}
           >
             Remove Liquidity
           </Button>
@@ -150,7 +160,7 @@ export function TxTable({
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                Array(5)
+                Array(itemsPerPage)
                   .fill(0)
                   .map((_, i) => (
                     <TableRow
@@ -174,8 +184,8 @@ export function TxTable({
                       </TableCell>
                     </TableRow>
                   ))
-              ) : filteredTransactions.length > 0 ? (
-                filteredTransactions.map((tx) => (
+              ) : paginatedTransactions.length > 0 ? (
+                paginatedTransactions.map((tx) => (
                   <TableRow
                     key={tx.id}
                     className="border-b border-white/5 hover:bg-white/5 cursor-pointer even:bg-white/[0.02]"
@@ -247,7 +257,7 @@ export function TxTable({
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     className="text-center py-8 text-white/60"
                   >
                     No transactions found
@@ -256,6 +266,61 @@ export function TxTable({
               )}
             </TableBody>
           </Table>
+        </div>
+      </div>
+      <div className="flex justify-between items-end mt-4">
+        <div className=" text-white text-xs">
+          Showing {itemsPerPage * (currentPage - 1) + 1}-
+          {Math.min(itemsPerPage * currentPage, filteredTransactions.length)} of{" "}
+          {filteredTransactions.length} activities
+        </div>
+        <div className="flex justify-end items-center mt-4 gap-2">
+          <Button
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+            variant="pagination-default"
+            size="pagination"
+          >
+            <ChevronFirst size={12} />
+          </Button>
+          <Button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            variant="pagination-default"
+            size="pagination"
+          >
+            <ChevronLeft size={12} />
+          </Button>
+          <div className="flex space-x-2">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Button
+                key={i + 1}
+                onClick={() => handlePageChange(i + 1)}
+                variant={
+                  currentPage === i + 1 ? "primary" : "pagination-default"
+                }
+                size="pagination"
+              >
+                {i + 1}
+              </Button>
+            ))}
+          </div>
+          <Button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            variant="pagination-default"
+            size="pagination"
+          >
+            <ChevronRight size={12} />
+          </Button>
+          <Button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+            variant="pagination-default"
+            size="pagination"
+          >
+            <ChevronLast size={12} />
+          </Button>
         </div>
       </div>
     </div>
