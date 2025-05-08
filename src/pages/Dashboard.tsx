@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { useWallet } from "@/hooks/useWallet";
-import { SimplifiedDepositDrawer } from "@/components/dashboard/SimplifiedDepositDrawer";
-import { SimplifiedWithdrawDrawer } from "@/components/dashboard/SimplifiedWithdrawDrawer";
-import { ConnectWalletModal } from "@/components/wallet/ConnectWalletModal";
+import { useRef, useState } from "react";
 
-import {
-  TrendingUp,
-  Brain,
-  Zap,
-  ArrowUpRight,
-  PlusCircle,
-  RefreshCw,
-  ArrowRight,
-} from "lucide-react";
-import { UserInvestment } from "@/types/vault";
-import "@/styles/design-tokens.css";
 import LeftContent from "@/components/dashboard/LeftContent";
 import RightContent from "@/components/dashboard/RightContent";
+import "@/styles/design-tokens.css";
+import { UserInvestment } from "@/types/vault";
 
 import { TxTable } from "@/components/dashboard/TxTable";
 import NodoAIVaultsMainCard from "@/components/vault/NodoAIVaultsMainCard";
@@ -76,7 +63,8 @@ const sampleTransactions = [
 
 export default function NodoAIVaults() {
   // Use the wallet hook for connection status
-  const { isConnected, balance } = useWallet();
+  const { isConnectWalletDialogOpen, openConnectWalletDialog, isConnected } =
+    useWallet();
 
   const [activeTab, setActiveTab] = useState("all");
   const [depositAmount, setDepositAmount] = useState("");
@@ -89,7 +77,6 @@ export default function NodoAIVaults() {
   const [depositWithdrawTab, setDepositWithdrawTab] = useState("deposit");
 
   const containerRef = useRef<HTMLDivElement>(null);
-
   // Mock vault data for deposit drawer
   const mockVaultData = {
     id: "nodo-ai-vault",
@@ -225,7 +212,7 @@ export default function NodoAIVaults() {
               {/* Vault Activities Section */}
               <div className="mb-8">
                 <TxTable
-                  transactions={sampleTransactions}
+                  transactions={sampleTransactions as any}
                   onSelect={handleSelectTransaction}
                 />
               </div>
@@ -253,28 +240,6 @@ export default function NodoAIVaults() {
           </div>
         </div>
       </footer>
-
-      {/* Connect Wallet Modal */}
-      <ConnectWalletModal
-        open={isConnectWalletModalOpen}
-        onClose={() => setIsConnectWalletModalOpen(false)}
-      />
-
-      {/* Deposit Drawer */}
-      <SimplifiedDepositDrawer
-        open={isDepositDrawerOpen}
-        onClose={() => setIsDepositDrawerOpen(false)}
-        vault={mockVaultData}
-      />
-
-      {/* Withdraw Drawer */}
-      {selectedInvestment && (
-        <SimplifiedWithdrawDrawer
-          open={isWithdrawDrawerOpen}
-          onClose={() => setIsWithdrawDrawerOpen(false)}
-          investment={selectedInvestment}
-        />
-      )}
     </div>
   );
 }
