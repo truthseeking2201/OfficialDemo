@@ -28,7 +28,6 @@ export const useMyAssets = () => {
       enabled: !!account?.address,
     }
   );
-
   const coinBalances =
     ownedObjects?.data
       ?.filter((obj) => {

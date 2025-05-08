@@ -20,6 +20,12 @@ const VaultCatalog = lazy(() =>
     return { default: () => <PageFallback /> };
   })
 );
+const VaultTest = lazy(() =>
+  import("./pages/VaultTest").catch((e) => {
+    console.error("Error loading VaultTest:", e);
+    return { default: () => <PageFallback /> };
+  })
+);
 const VaultDetail = lazy(() =>
   import("./pages/EnhancedVaultDetail").catch((e) => {
     console.error("Error loading EnhancedVaultDetail:", e);
@@ -61,7 +67,10 @@ const { networkConfig } = createNetworkConfig({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+    <SuiClientProvider
+      networks={networkConfig}
+      defaultNetwork="testnet"
+    >
       <WalletProvider autoConnect>
         <LanguageProvider>
           <TooltipProvider>
@@ -83,15 +92,30 @@ const App = () => (
                 {/* Routes for backward compatibility with old URLs */}
                 <Route
                   path="/vaults/orion-stable"
-                  element={<Navigate to="/vaults/cetus-sui" replace />}
+                  element={
+                    <Navigate
+                      to="/vaults/cetus-sui"
+                      replace
+                    />
+                  }
                 />
                 <Route
                   path="/vaults/nova-yield"
-                  element={<Navigate to="/vaults/deep-sui" replace />}
+                  element={
+                    <Navigate
+                      to="/vaults/deep-sui"
+                      replace
+                    />
+                  }
                 />
                 <Route
                   path="/vaults/emerald-growth"
-                  element={<Navigate to="/vaults/sui-usdc" replace />}
+                  element={
+                    <Navigate
+                      to="/vaults/sui-usdc"
+                      replace
+                    />
+                  }
                 />
 
                 {/* Regular vault detail route */}
@@ -113,6 +137,17 @@ const App = () => (
                     <MainLayout>
                       <Suspense fallback={<PageFallback />}>
                         <Dashboard />
+                      </Suspense>
+                    </MainLayout>
+                  }
+                />
+
+                <Route
+                  path="/vault-test"
+                  element={
+                    <MainLayout>
+                      <Suspense fallback={<PageFallback />}>
+                        <VaultTest />
                       </Suspense>
                     </MainLayout>
                   }

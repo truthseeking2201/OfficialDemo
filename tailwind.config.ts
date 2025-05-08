@@ -132,6 +132,8 @@ export default {
           "linear-gradient(180deg, #FF9320 0%, #EC6F05 50%, #B45004 100%)",
         "gradient-glow":
           "radial-gradient(circle closest-side, var(--tw-gradient-stops))",
+        "gradient-button":
+          "linear-gradient(90deg, #0090FF -29.91%, #FF6D9C 44.08%, #FB7E16 100%)",
       },
       borderRadius: {
         none: "0",
