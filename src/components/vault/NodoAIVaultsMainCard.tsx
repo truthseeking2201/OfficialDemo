@@ -37,7 +37,7 @@ export default function NodoAIVaultsMainCard() {
                 size={24}
                 className="mr-2"
               />
-              <span>Deposit</span>
+              <span className="font-mono">Deposit</span>
             </div>
           </button>
           <button
@@ -52,7 +52,7 @@ export default function NodoAIVaultsMainCard() {
                 size={24}
                 className="mr-2"
               />
-              <span>Withdraw</span>
+              <span className="font-mono">Withdraw</span>
             </div>
           </button>
         </div>
