@@ -6,6 +6,12 @@ import DepositIcon from "@/assets/images/dashboard/deposit.png";
 import EarnWithdrawIcon from "@/assets/images/dashboard/earn_withdraw.png";
 import ExclusiveBenefits from "@/assets/images/dashboard/exclusive_benefits.png";
 import LimitedSupplyIcon from "@/assets/images/dashboard/limited_supply.png";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const RightContent = () => {
   const currentAccount = useCurrentAccount();
@@ -23,9 +29,18 @@ const RightContent = () => {
         <div className="mb-4">
           <div className="font-caption text-075 flex items-center gap-1">
             APR{" "}
-            <div className="w-8 h-8 rounded-full border border-gray-600 flex items-center justify-center text-xs ml-1">
-              ?
-            </div>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger className="cursor-pointer">
+                  <div className="w-4 h-4 rounded-full border border-gray-600 flex items-center justify-center text-xs ml-1">
+                    !
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="bg-black/80 text-white p-2 rounded-lg">
+                  <p className="text-sm">Annual Percentage Rate</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className="text-2xl font-mono font-bold">24.8%</div>
         </div>
