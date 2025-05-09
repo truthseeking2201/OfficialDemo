@@ -248,117 +248,40 @@ export function AppHeader() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <header className="sticky top-0 z-[var(--z-sticky)] w-full bg-background/80 backdrop-blur-2xl">
-      {/* Neural pulse line animation */}
-      <div className="absolute top-0 left-0 right-0 h-px w-full overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-transparent via-nova to-transparent"
-          animate={{ x: ["-100%", "100%"] }}
-          transition={{ duration: 4, ease: "linear", repeat: Infinity }}
-        />
-      </div>
-
+    <header className="sticky top-0 z-[var(--z-sticky)] w-full pt-8 pb-8">
       {/* Main header content */}
-      <div className="container flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="relative">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <img
-                  src="/lovable-uploads/5e426b4d-ccda-486b-8980-761ff3c70294.png"
-                  alt="NODO AI Logo"
-                  className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
-                />
-              </motion.div>
-              <motion.div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                animate={{
-                  scale: [1, 1.05, 1],
-                  opacity: [0, 0.2, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatType: "loop",
-                }}
-              >
-                <div className="h-full w-full rounded-full bg-nova/30 blur-md" />
-              </motion.div>
-            </div>
-
-            {/* AI Status Indicator removed */}
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <Link
-              to="/"
-              className={`px-3 py-2 rounded-lg transition-colors text-sm font-medium
-                ${
-                  location.pathname === "/"
-                    ? "bg-white/10 text-white"
-                    : "text-white/70 hover:text-white hover:bg-white/5"
-                }`}
-              onClick={(e) => {
-                if (location.pathname === "/") {
-                  e.preventDefault(); // Prevent redundant navigation if already on this page
-                } else {
-                  // Clear the vault cache when navigating to vaults page from another page
-                  import("@/services/vaultService")
-                    .then((module) => {
-                      module.vaultService.clearCache();
-                    })
-                    .catch((err) =>
-                      console.error("Failed to clear vault cache:", err)
-                    );
-                }
+      <div className="container flex items-center justify-between px-4">
+        <div className="flex items-center gap-6 cursor-pointer">
+          <div
+            className="relative"
+            onClick={() => window.open("https://nodo.xyz", "_blank")}
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <img
+                src="/nodo-logo.png"
+                alt="NODO AI Logo"
+                className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
+              />
+            </motion.div>
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100"
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0, 0.2, 0],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop",
               }}
             >
-              <div className="flex items-center gap-1.5">
-                <Zap
-                  size={14}
-                  className={location.pathname === "/" ? "text-nova" : ""}
-                />
-                <span>Vaults</span>
-              </div>
-            </Link>
-            <Link
-              to="/dashboard"
-              className={`px-3 py-2 rounded-lg transition-colors text-sm font-medium
-                ${
-                  location.pathname === "/dashboard"
-                    ? "bg-white/10 text-white"
-                    : "text-white/70 hover:text-white hover:bg-white/5"
-                }`}
-              onClick={(e) => {
-                if (location.pathname === "/dashboard") {
-                  e.preventDefault(); // Prevent redundant navigation if already on this page
-                  return;
-                }
-
-                // Preload Dashboard component on click to ensure it's ready
-                import("@/pages/Dashboard").catch((err) =>
-                  console.error("Failed to preload Dashboard:", err)
-                );
-              }}
-            >
-              <div className="flex items-center gap-1.5">
-                <BarChart3
-                  size={14}
-                  className={
-                    location.pathname === "/dashboard" ? "text-nova" : ""
-                  }
-                />
-                <span>Dashboard</span>
-              </div>
-            </Link>
-
-            {/* AI Features Dropdown removed */}
-          </nav>
+              <div className="h-full w-full rounded-full bg-nova/30 blur-md" />
+            </motion.div>
+          </div>
         </div>
 
         {/* Right side controls */}
