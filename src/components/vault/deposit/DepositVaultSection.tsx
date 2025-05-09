@@ -22,19 +22,22 @@ export default function DepositVaultSection() {
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
   );
 
-  const handleValidateDepositAmount = useCallback((value: string) => {
-    if (value && Number(value) < 1) {
-      setError("Minimum amount is 1 USDC.");
-      return;
-    }
+  const handleValidateDepositAmount = useCallback(
+    (value: string) => {
+      if (value && Number(value) < 1) {
+        setError("Minimum amount is 1 USDC.");
+        return;
+      }
 
-    if (value && Number(value) > Number(usdcCoin?.balance)) {
-      setError("Not enough balance to deposit. Please top-up your wallet.");
-      return;
-    }
+      if (value && Number(value) > Number(usdcCoin?.balance)) {
+        setError("Not enough balance to deposit. Please top-up your wallet.");
+        return;
+      }
 
-    setError("");
-  }, [usdcCoin?.balance]);
+      setError("");
+    },
+    [usdcCoin?.balance]
+  );
 
   const handleMaxAmount = useCallback(() => {
     handleValidateDepositAmount(usdcCoin?.balance.toFixed(2));
@@ -61,32 +64,21 @@ export default function DepositVaultSection() {
           <div className="font-body text-075">
             Balance:{" "}
             <span className="font-mono">
-              {isConnected ? `${formatNumber(usdcCoin?.balance || 0)} USDC` : "--"}
+              {isConnected
+                ? `${formatNumber(usdcCoin?.balance || 0)} USDC`
+                : "--"}
             </span>
           </div>
         </div>
-        <div className="relative mb-2 mt-2">
-          <FormattedNumberInput
-            value={depositAmount}
-            onChange={setDepositAmount}
-            onValidate={handleValidateDepositAmount}
-            placeholder="0.00"
-            className="input-vault w-full font-heading-lg"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex rounded-full mx-auto bg-gradient-to-tr from-[#0090FF] via-[#FF6D9C] to-[#FB7E16] p-px hover:opacity-70 transition-all duration-300">
-            <button 
-              onClick={handleMaxAmount}
-              className="bg-[#202124] border border-[#1A1A1A] text-white hover:text-white px-4 py-1 rounded-[16px] text-sm font-medium"
-            >
-              MAX
-            </button>
-          </div>
-        </div>
-        {error && (
-          <div className="text-red-500 text-sm mt-1">
-            {error}
-          </div>
-        )}
+        <FormattedNumberInput
+          value={depositAmount}
+          onChange={setDepositAmount}
+          onValidate={handleValidateDepositAmount}
+          onMaxAmount={handleMaxAmount}
+          placeholder="0.00"
+          className="input-vault w-full font-heading-lg"
+        />
+        {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
       </div>
 
       <div className="mb-6 p-4 border border-white/15 rounded-lg">
@@ -95,7 +87,11 @@ export default function DepositVaultSection() {
           <div className="flex items-center">
             <img src="/coins/ndlp.png" alt="NDLP" className="w-6 h-6 mr-1" />
             <span className="font-mono font-bold text-lg">
-              {conversionRate ? `${formatNumber(Number(depositAmount || 0) * conversionRate)} NDLP` : "--"}
+              {conversionRate
+                ? `${formatNumber(
+                    Number(depositAmount || 0) * conversionRate
+                  )} NDLP`
+                : "--"}
             </span>
           </div>
         </div>
@@ -104,7 +100,9 @@ export default function DepositVaultSection() {
         <div className="flex justify-between items-center mb-3 mt-3">
           <div className="font-caption text-075">Conversion Rate</div>
           <div className="font-mono text-white">
-            {conversionRate ? `1 USDC = ${formatNumber(conversionRate)} NDLP` : "Unable to fetch conversion rate. Please try again later."}
+            {conversionRate
+              ? `1 USDC = ${formatNumber(conversionRate)} NDLP`
+              : "Unable to fetch conversion rate. Please try again later."}
           </div>
         </div>
 
