@@ -1,12 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import debounce from "lodash/debounce";
 
 import SummaryConfirmWithraw from "./SummaryConfirmWithraw";
 import { Button } from "@/components/ui/button";
 import { RowItem } from "@/components/ui/row-item";
+import { Loader } from "@/components/ui/loader";
 import { IconErrorToast } from "@/components/ui/icon-error-toast";
-import { Info, Check } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Info, Check, Clock4 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +23,8 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import LpType from "@/types/lp-type";
 import { useToast } from "@/components/ui/use-toast";
 
+import { getConfig } from "@/apis/vault";
+
 type Props = {
   balanceLp: number;
   lpData: LpType;
@@ -31,6 +35,7 @@ interface IFormInput {
 }
 
 export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
+  const count = useRef<number>(0);
   const summary_default = {
     amount: 0,
     receive: 0,
@@ -39,10 +44,29 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   };
   const min_amount = 0.1;
   const [summary, setSummary] = useState(summary_default);
+  const [timeCoolDown, setTimeCoolDown] = useState<string>("");
   const [form, setForm] = useState<IFormInput>();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [openModalSuccess, setOpenModalSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const BadgeCoolDown = (
+    <Badge
+      variant="warning"
+      className="w-full p-4 rounded-xl block"
+    >
+      <div className="flex items-center mb-1">
+        <Clock4 size={14} />{" "}
+        <span className="text-sm text-white font-medium	ml-1.5 capitalize">
+          {timeCoolDown} Cooldown Period
+        </span>
+      </div>
+      <p className="m-0 font-normal text-xs">
+        After confirming your withdrawal, there will be a {timeCoolDown}{" "}
+        cooldown period before funds are released.
+      </p>
+    </Badge>
+  );
   /**
    * HOOKS
    */
@@ -65,9 +89,12 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     setForm(data);
     setOpenModalConfirm(true);
   };
-  const onCloseModalConfirm = () => {
+
+  const onCloseModalConfirm = useCallback(() => {
+    if (isLoading) return;
     setOpenModalConfirm(false);
-  };
+  }, [isLoading]);
+
   const onCloseModalSuccess = () => {
     setOpenModalSuccess(false);
   };
@@ -91,6 +118,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   }, []);
 
   const onWithdraw = useCallback(() => {
+    setIsLoading(true);
     try {
       // TODO
       console.log("-------onWithdraw");
@@ -108,11 +136,29 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
         icon: <IconErrorToast />,
       });
     }
+    setIsLoading(false);
   }, []);
+
+  const initConfigBE = async () => {
+    try {
+      // TODO
+      await getConfig();
+      setTimeCoolDown("24-hour");
+    } catch (error) {
+      console.log("-----error", error);
+      setTimeCoolDown("24-hour");
+    }
+  };
 
   /**
    * LIFECYCLES
    */
+  useEffect(() => {
+    if (count.current == 0) {
+      initConfigBE();
+    }
+    count.current++;
+  });
   useEffect(() => {
     const debouncedCb = debounce((formValue) => {
       handleFormChange(formValue);
@@ -213,6 +259,8 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
           </RowItem>
         </div>
 
+        {BadgeCoolDown}
+
         <Button
           type="submit"
           variant="primary"
@@ -245,6 +293,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
               lpData={lpData}
               address={address}
             />
+            <div className="mt-4">{BadgeCoolDown}</div>
           </div>
           {/* Footer */}
           <DialogFooter className="px-6 pb-6 w-full flex sm:space-x-0">
@@ -253,16 +302,19 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
               size="lg"
               className="w-full font-semibold text-base px-2 mr-2"
               onClick={onCloseModalConfirm}
+              disabled={isLoading}
             >
               Back
             </Button>
             <Button
               variant="primary"
               size="lg"
-              className="w-full font-semibold text-base px-2"
+              className="w-full font-semibold text-base px-2 flex items-center [&_svg]:size-5"
               onClick={onWithdraw}
+              disabled={isLoading}
             >
-              Confirm Withdrawal
+              {isLoading && <Loader />}{" "}
+              {isLoading ? "Waiting" : "Confirm Withdrawal"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -290,7 +342,8 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
               Your {showFormatNumber(summary.amount)} {lpData.lp_symbol}{" "}
               withdrawal request from Nodo AI Vault has been confirmed. Funds
               will be available after the{" "}
-              <span className="whitespace-nowrap">24-hour</span> cooldown.
+              <span className="whitespace-nowrap">{timeCoolDown}</span>{" "}
+              cooldown.
             </DialogDescription>
           </DialogHeader>
           <SummaryConfirmWithraw

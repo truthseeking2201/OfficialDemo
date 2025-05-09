@@ -7,3 +7,8 @@ const URLS = {
 export const getSample = () => {
   return http.get(URLS.SAMPLE);
 };
+
+export const getConfig = () => {
+  return;
+  // return http.get(URLS.SAMPLE);
+};
