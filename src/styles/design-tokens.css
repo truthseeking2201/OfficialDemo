@@ -329,7 +329,7 @@
 }
 
 .input-vault:focus {
-  border: 2px solid var(--c-brand-orange);
+  border: 1px solid var(--c-brand-orange);
   outline: none;
 }
 

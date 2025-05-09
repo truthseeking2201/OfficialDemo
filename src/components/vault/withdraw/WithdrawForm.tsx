@@ -116,7 +116,7 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
       {/* form */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex justify-between">
-          <div className="font-body text-gray-400">
+          <div className="font-body text-gray-400 !font-medium">
             Withdraw Amount ({lpData.lp_symbol})
           </div>
           <div className="font-body text-gray-400">

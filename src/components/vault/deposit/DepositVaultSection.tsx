@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useMyAssets } from "@/hooks/useMyAssets";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
-import { formatNumber } from "@/utils/format";
+import { formatNumber } from "@/lib/number";
 import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
+import { AlertCircle } from "lucide-react";
 
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
@@ -60,10 +61,10 @@ export default function DepositVaultSection() {
     <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
       <div className="mb-6">
         <div className="flex justify-between">
-          <div className="font-body text-075">Amount (USDC)</div>
+          <div className="font-body text-075 !font-medium">Amount (USDC)</div>
           <div className="font-body text-075">
             Balance:{" "}
-            <span className="font-mono">
+            <span className="font-mono text-text-primary">
               {isConnected
                 ? `${formatNumber(usdcCoin?.balance || 0)} USDC`
                 : "--"}
@@ -78,10 +79,12 @@ export default function DepositVaultSection() {
           placeholder="0.00"
           className="input-vault w-full font-heading-lg"
         />
-        {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+        {error && <div className="text-red-error text-sm mt-1 flex items-center">
+          <AlertCircle className="w-4 h-4 mr-2" />
+          {error}</div>}
       </div>
 
-      <div className="mb-6 p-4 border border-white/15 rounded-lg">
+      <div className="mb-6 p-4 border border-white/15 rounded-xl">
         <div className="flex justify-between items-center mb-3">
           <div className="font-caption text-075">You will get</div>
           <div className="flex items-center">
