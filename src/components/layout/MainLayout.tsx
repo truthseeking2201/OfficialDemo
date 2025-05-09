@@ -9,7 +9,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--bg-primary)] overflow-x-hidden">
+    <div className="flex flex-col min-h-screen overflow-x-hidden main-bg">
       {/* Main content */}
       <AnimatePresence mode="wait">
         <motion.div
