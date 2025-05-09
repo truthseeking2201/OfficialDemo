@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useMyAssets } from "@/hooks/useMyAssets";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
+import { formatNumber } from "@/utils/format";
+import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
 
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
@@ -20,17 +22,26 @@ export default function DepositVaultSection() {
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
   );
 
-  const handleMaxAmount = useCallback(() => {
-    if (Number(usdcCoin?.balance) < 1) {
+  const handleValidateDepositAmount = useCallback((value: string) => {
+    if (value && Number(value) < 1) {
       setError("Minimum amount is 1 USDC.");
       return;
     }
+
+    if (value && Number(value) > Number(usdcCoin?.balance)) {
+      setError("Not enough balance to deposit. Please top-up your wallet.");
+      return;
+    }
+
     setError("");
+  }, [usdcCoin?.balance]);
+
+  const handleMaxAmount = useCallback(() => {
+    handleValidateDepositAmount(usdcCoin?.balance.toFixed(2));
     setDepositAmount(usdcCoin?.balance.toFixed(2));
-  }, [usdcCoin]);
+  }, [usdcCoin?.balance, handleValidateDepositAmount]);
 
   const handleConnectWallet = useCallback(() => {
-    // Open the connect wallet modal
     openConnectWalletDialog();
   }, [openConnectWalletDialog]);
 
@@ -42,26 +53,6 @@ export default function DepositVaultSection() {
     }
   }, [isConnected, handleConnectWallet]);
 
-
-  const handleDepositAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    
-    // Only allow numbers and one decimal point
-    if (!/^\d*\.?\d{0,2}$/.test(value) && value !== '') {
-      return;
-    }
-
-    setDepositAmount(value);
-    if (value && Number(value) < 1) {
-      setError("Minimum amount is 1 USDC.");
-      return;
-    }
-    setError("");
-  }, []);
-
-  /**
-   * RENDER
-   */
   return (
     <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
       <div className="mb-6">
@@ -70,15 +61,15 @@ export default function DepositVaultSection() {
           <div className="font-body text-075">
             Balance:{" "}
             <span className="font-mono">
-              {isConnected ? `${usdcCoin?.balance.toFixed(2)} USDC` : "--"}
+              {isConnected ? `${formatNumber(usdcCoin?.balance || 0)} USDC` : "--"}
             </span>
           </div>
         </div>
         <div className="relative mb-2 mt-2">
-          <input
-            type="text"
+          <FormattedNumberInput
             value={depositAmount}
-            onChange={handleDepositAmountChange}
+            onChange={setDepositAmount}
+            onValidate={handleValidateDepositAmount}
             placeholder="0.00"
             className="input-vault w-full font-heading-lg"
           />
@@ -104,7 +95,7 @@ export default function DepositVaultSection() {
           <div className="flex items-center">
             <img src="/coins/ndlp.png" alt="NDLP" className="w-6 h-6 mr-1" />
             <span className="font-mono font-bold text-lg">
-              {conversionRate ? `${(Number(depositAmount || 0) * conversionRate).toFixed(2)} NDLP` : "--"}
+              {conversionRate ? `${formatNumber(Number(depositAmount || 0) * conversionRate)} NDLP` : "--"}
             </span>
           </div>
         </div>
@@ -113,7 +104,7 @@ export default function DepositVaultSection() {
         <div className="flex justify-between items-center mb-3 mt-3">
           <div className="font-caption text-075">Conversion Rate</div>
           <div className="font-mono text-white">
-            {conversionRate ? `1 USDC = ${conversionRate.toFixed(2)} NDLP` : "Unable to fetch conversion rate. Please try again later."}
+            {conversionRate ? `1 USDC = ${formatNumber(conversionRate)} NDLP` : "Unable to fetch conversion rate. Please try again later."}
           </div>
         </div>
 
@@ -131,7 +122,7 @@ export default function DepositVaultSection() {
         size="xl"
         onClick={isConnected ? handleDeposit : handleConnectWallet}
         className="w-full font-semibold text-lg"
-        disabled={error}
+        disabled={!!error}
       >
         {isConnected ? "Deposit" : "Connect Wallet"}
       </Button>
