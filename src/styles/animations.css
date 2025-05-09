@@ -1,4 +1,3 @@
-
 /* Standardized animation durations:
    - Micro interactions: 0.2s
    - UI transitions: 0.3s
@@ -122,13 +121,19 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(236, 111, 5, 0.5), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(236, 111, 5, 0.5),
+    transparent
+  );
   animation: ai-working 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
 }
 
 /* Floating animation */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -164,7 +169,7 @@
 /* 3D transform effect for cards */
 .transform-3d {
   transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
-              box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .transform-3d:hover {
@@ -205,8 +210,14 @@
 
 /* Instant success animation */
 @keyframes instant-success {
-  0% { opacity: 0; transform: scale(0.95); }
-  100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .animate-instant-success {
@@ -215,9 +226,18 @@
 
 /* Card success glow animation */
 @keyframes card-glow {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(236, 111, 5, 0); }
-  50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(236, 111, 5, 0.6); }
-  100% { transform: scale(1); box-shadow: 0 0 0 rgba(236, 111, 5, 0); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(236, 111, 5, 0);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(236, 111, 5, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(236, 111, 5, 0);
+  }
 }
 
 .glow-animation {
@@ -225,15 +245,20 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .glow-animation, .animate-spin-once {
+  .glow-animation,
+  .animate-spin-once {
     animation: none;
   }
 }
 
 /* Spin animation that runs just once */
 @keyframes spin-once {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin-once {
@@ -308,9 +333,10 @@
 
 /* AI thinking animation */
 @keyframes ai-thinking {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(0.8);
-    opacity: 0.3;
+    opacity: 0;
   }
   50% {
     transform: scale(1.1);
@@ -320,4 +346,19 @@
 
 .ai-thinking {
   animation: ai-thinking 1.5s ease-in-out infinite;
+}
+
+@keyframes ai-hiden {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+.ai-hiden {
+  animation: ai-hiden 1s ease-in-out infinite;
 }

@@ -65,9 +65,13 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
 
   const renderer = ({ hours, minutes, seconds }) => {
     return (
-      <span className="text-amber-600 text-sm font-mono font-medium">
-        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-      </span>
+      <div className="text-amber-600 text-sm font-mono font-medium">
+        {zeroPad(hours)}
+        <span className="ai-hiden">:</span>
+        {zeroPad(minutes)}
+        <span className="ai-hiden">:</span>
+        {zeroPad(seconds)}
+      </div>
     );
   };
   /**
