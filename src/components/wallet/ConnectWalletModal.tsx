@@ -21,7 +21,7 @@ interface ConnectWalletModalProps {
 
 const WALLETS = [
   {
-    displayName: "Sui Wallet",
+    displayName: "Sui",
     name: "Slush",
     icon: suiWallet,
     description: "Connect to your Sui Wallet",
