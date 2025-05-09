@@ -22,7 +22,9 @@ export function BalanceCard({ className = "" }: BalanceCardProps) {
   };
 
   return (
-    <div className={`bg-black backdrop-blur-sm rounded-2xl p-6 ${className}`}>
+    <div
+      className={`bg-black backdrop-blur-sm rounded-2xl p-6 font-sans ${className}`}
+    >
       <h2 className="text-white text-2xl font-bold mb-6">Balance</h2>
       <div className="flex items-center gap-4">
         <img src="/coins/ndlp.png" alt="NDLP" className="w-10" />

@@ -1,14 +1,15 @@
-import { useState, useCallback } from "react";
-import { useWallet } from "@/hooks/useWallet";
 import suiWallet from "@/assets/images/sui-wallet.png";
 import { Button } from "@/components/ui/button";
-import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useMyAssets } from "@/hooks/useMyAssets";
-import { COIN_TYPES_CONFIG } from "@/config/coin-config";
-import DepositModal from "@/components/vault/deposit/DepositModal";
-import { formatNumber } from "@/lib/number";
 import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
+import DepositModal from "@/components/vault/deposit/DepositModal";
+import { COIN_TYPES_CONFIG } from "@/config/coin-config";
+import { useDepositVault } from "@/hooks/useDepositVault";
+import { useMyAssets } from "@/hooks/useMyAssets";
+import { useWallet } from "@/hooks/useWallet";
+import { formatNumber } from "@/lib/number";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 import { AlertCircle } from "lucide-react";
+import { useCallback, useState } from "react";
 
 const mockData = {
   amount: 1000,
@@ -18,8 +19,7 @@ const mockData = {
   youWillReceive: 1050,
   conversionRate: 1.05,
   ndlp: 1050,
-  txHash:
-    "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
 };
 
 export default function DepositVaultSection() {
@@ -33,6 +33,7 @@ export default function DepositVaultSection() {
 
   const { openConnectWalletDialog } = useWallet();
   const { assets } = useMyAssets();
+  const { deposit } = useDepositVault();
 
   const usdcCoin = assets.find(
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
@@ -77,9 +78,13 @@ export default function DepositVaultSection() {
     setIsDepositModalOpen(false);
   }, []);
 
-  const handleSendRequestDeposit = useCallback(() => {
+  const handleSendRequestDeposit = useCallback(async () => {
     // TODO: Handle deposit request
-    console.log("Deposit request sent with amount:", depositAmount);
+    try {
+      await deposit(usdcCoin?.coin_object_id, Number(depositAmount));
+    } catch (error) {
+      console.error(error);
+    }
   }, [depositAmount]);
 
   return (
@@ -119,8 +124,8 @@ export default function DepositVaultSection() {
             <img src="/coins/ndlp.png" alt="NDLP" className="w-6 h-6 mr-1" />
             <span className="font-mono font-bold text-lg">
               {conversionRate
-                ? `${formatNumber(
-                    Number(depositAmount || 0) * conversionRate
+                ? `${(Number(depositAmount || 0) * conversionRate).toFixed(
+                    2
                   )} NDLP`
                 : "--"}
             </span>
@@ -132,7 +137,7 @@ export default function DepositVaultSection() {
           <div className="font-caption text-075">Conversion Rate</div>
           <div className="font-mono text-white">
             {conversionRate
-              ? `1 USDC = ${formatNumber(conversionRate)} NDLP`
+              ? `1 USDC = ${conversionRate.toFixed(2)} NDLP`
               : "Unable to fetch conversion rate. Please try again later."}
           </div>
         </div>

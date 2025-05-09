@@ -18,7 +18,7 @@ interface Asset {
   coin_type: string;
   balance: number;
   raw_balance: number;
-  id?: string;
+  coin_object_id: string;
   image_url: string;
   decimals: number;
   display_name: string;
@@ -89,6 +89,7 @@ export const useMyAssets = () => {
         const balance = rawBalance / Math.pow(10, decimals);
 
         return {
+          coin_object_id: coin.coinObjectId,
           coin_type: coin.coinType,
           balance: balance,
           raw_balance: rawBalance,
