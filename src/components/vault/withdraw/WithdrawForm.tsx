@@ -5,6 +5,7 @@ import debounce from "lodash/debounce";
 import SummaryConfirmWithraw from "./SummaryConfirmWithraw";
 import { Button } from "@/components/ui/button";
 import { RowItem } from "@/components/ui/row-item";
+import { IconErrorToast } from "@/components/ui/icon-error-toast";
 import { Info, Check } from "lucide-react";
 import {
   Dialog,
@@ -63,14 +64,6 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   const onSubmit = (data) => {
     setForm(data);
     setOpenModalConfirm(true);
-
-    // toast({
-    //   title: "NODOAIx Token minted",
-    //   description:
-    //     "Your AI-powered yield token has been minted to your wallet.",
-    //   variant: "default",
-    //   duration: 50000,
-    // });
   };
   const onCloseModalConfirm = () => {
     setOpenModalConfirm(false);
@@ -105,21 +98,14 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
       onCloseModalConfirm();
       onSuccess();
       reset();
-      toast({
-        title: "NODOAIx Token minted",
-        description:
-          "Your AI-powered yield token has been minted to your wallet.",
-        variant: "default",
-        duration: 5000,
-      });
     } catch (error) {
       console.log(error);
       toast({
-        title: "NODOAIx Token minted",
-        description:
-          "Your AI-powered yield token has been minted to your wallet.",
-        variant: "default",
+        title: "Withdraw failed",
+        description: error?.message || error,
+        variant: "error",
         duration: 5000,
+        icon: <IconErrorToast />,
       });
     }
   }, []);

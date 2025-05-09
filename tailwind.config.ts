@@ -67,6 +67,9 @@ export default {
         red: {
           error: "#FF8077",
         },
+        toast: {
+          default: "#242C32",
+        },
 
         // Brand color aliases
         brand: {
