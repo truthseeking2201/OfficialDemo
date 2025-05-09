@@ -7,11 +7,11 @@ type VaultConfig = {
 const VAULT_CONFIG_BY_ENV = {
   dev: {
     PACKAGE_ID:
-      "0x5b6dbcfe8819b040e1af822b56a0ec88550be9b728926c8ccded3cb1b2c3c40c",
+      "0x65b8637e9df50887c87a20feb0b60b1f7ddfe8270b48b7765375d1a7c07cfe11",
     VAULT_CONFIG_ID:
-      "0xb7ca3de74e49f1ca294470c0ca685643d742891ea1aaf89057b163508602a493",
+      "0xaa6bf5f7578acd9aef938989b6e2f332d808c29b1402a332524836b33a62a306",
     VAULT_ID:
-      "0xf85068f8ef89cc1e9e04b120af41956e26f6a93c9ca90a8c2384162c8227fbe9",
+      "0x084df083698e8a993a8a409d6ec2c668db130b006b9649530dc776d36b9e40d2",
   },
   uat: {
     PACKAGE_ID: "todo",

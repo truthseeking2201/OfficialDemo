@@ -1,3 +1,4 @@
+import { COIN_TYPES_CONFIG } from "@/config";
 import { VAULT_CONFIG } from "@/config/vault-config";
 import {
   useCurrentAccount,
@@ -27,9 +28,9 @@ export const useDepositVault = () => {
       });
 
       // need to split the coin instead of using the whole coin
-      // const [splitCoin] = tx.splitCoins(tx.object(coinId), [
-      //   tx.pure.u64(amount),
-      // ]);
+      const [splitCoin] = tx.splitCoins(tx.object(coinId), [
+        tx.pure.u64(amount),
+      ]);
 
       tx.moveCall({
         target: `${VAULT_CONFIG.PACKAGE_ID}::vault::deposit`,
@@ -38,10 +39,11 @@ export const useDepositVault = () => {
           tx.object(VAULT_CONFIG.VAULT_ID), // vault parameter
           tx.object(coinId),
         ],
+        typeArguments: [
+          COIN_TYPES_CONFIG.USDC_COIN_TYPE,
+          COIN_TYPES_CONFIG.NDLP_COIN_TYPE,
+        ],
       });
-
-      // Add gas budget
-      tx.setGasBudget(100000000);
 
       const result = await signAndExecuteTransaction(
         {
