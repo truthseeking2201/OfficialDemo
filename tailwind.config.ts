@@ -64,6 +64,9 @@ export default {
           light: "#FDEBCF",
           dark: "#0A080E",
         },
+        red: {
+          error: "#FF8077",
+        },
 
         // Brand color aliases
         brand: {

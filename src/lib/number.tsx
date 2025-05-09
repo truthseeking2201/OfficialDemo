@@ -87,3 +87,14 @@ export const getBalanceAmount = (
 ) => {
   return new BigNumber(amount).dividedBy(new BigNumber(10).pow(decimals));
 };
+export const getBalanceAmountForInput = (
+  amount: BigNumber | number | string,
+  decimals: number | undefined = 18,
+  decimals_fix: number | undefined = 2
+) => {
+  if (!amount) return 0;
+  const balance = new BigNumber(amount)
+    .dividedBy(new BigNumber(10).pow(decimals))
+    .toFixed(decimals_fix, 1);
+  return new BigNumber(balance).toNumber();
+};
