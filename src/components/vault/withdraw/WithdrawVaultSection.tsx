@@ -54,15 +54,24 @@ export default function WithdrawVaultSection() {
   const initDataClaim = () => {
     try {
       // TODO
-      // setDataClaim({
-      //   id: 1,
-      // });
+      setDataClaim({
+        id: 1,
+        timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
+        status: "NEW",
+        withdrawAmount: 200,
+        withdrawSymbol: NDLP.lp_symbol,
+        receiveAmount: 199,
+        receiveSymbol: NDLP.token_symbol,
+        feeAmount: 1,
+        feeSymbol: NDLP.token_symbol,
+      });
     } catch (error) {
       setDataClaim(null);
     }
   };
 
   const onSuccess = useCallback(() => {
+    initDataClaim();
     initBalance();
     refreshBalance();
   }, []);
@@ -80,7 +89,6 @@ export default function WithdrawVaultSection() {
 
   useEffect(() => {
     if (address) {
-      console.log("----------init");
       initBalance();
       initDataClaim();
     }
@@ -134,7 +142,10 @@ export default function WithdrawVaultSection() {
           </div>
 
           {dataClaim ? (
-            <ClaimToken data={dataClaim} />
+            <ClaimToken
+              data={dataClaim}
+              onSuccess={onSuccess}
+            />
           ) : (
             <WithdrawForm
               balanceLp={balanceLp}

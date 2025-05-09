@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { RowItem } from "@/components/ui/row-item";
 import { Loader } from "@/components/ui/loader";
 import { IconErrorToast } from "@/components/ui/icon-error-toast";
+import { IconCheckSuccess } from "@/components/ui/icon-check-success";
 import { Badge } from "@/components/ui/badge";
-import { Info, Check, Clock4 } from "lucide-react";
+import { Info, Clock4 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -230,7 +231,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
         )}
 
         {/* Summary */}
-        <div className="mb-6 p-4 border border-white/15 rounded-lg mt-6">
+        <div className="mb-5 p-4 border border-white/15 rounded-lg mt-5">
           <div className="mb-2 text-gray-200 font-medium">Withdraw Summary</div>
           <hr className="w-full border-t border-white/15" />
           <RowItem
@@ -265,7 +266,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
           type="submit"
           variant="primary"
           size="xl"
-          className="w-full font-semibold text-lg mt-6"
+          className="w-full font-semibold text-lg mt-5"
         >
           Withdraw
         </Button>
@@ -331,9 +332,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
         >
           <DialogHeader className="relative">
             <div className="flex items-center justify-center mb-5">
-              <div className="bg-emerald-500 rounded-full	flex items-center justify-center h-16 w-16">
-                <Check size={32} />
-              </div>
+              <IconCheckSuccess />
             </div>
             <DialogTitle className="text-xl font-bold m-0 text-center">
               Withdrawal Request Confirmed!
