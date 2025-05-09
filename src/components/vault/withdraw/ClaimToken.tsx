@@ -6,6 +6,8 @@ import { IconErrorToast } from "@/components/ui/icon-error-toast";
 import { IconCheckSuccess } from "@/components/ui/icon-check-success";
 import { Loader } from "@/components/ui/loader";
 import { Clock4 } from "lucide-react";
+import Countdown, { zeroPad } from "react-countdown";
+import AvgPaceIcon from "@/assets/images/avg-pace.png";
 
 import { showFormatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
@@ -48,8 +50,6 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
           />
         ),
       });
-      // size={14}
-      // className="h-6 w-6"
     } catch (error) {
       console.log(error);
       toast({
@@ -63,11 +63,18 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
     setIsLoading(false);
   }, []);
 
+  const renderer = ({ hours, minutes, seconds }) => {
+    return (
+      <span className="text-amber-600 text-sm font-mono font-medium">
+        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
+      </span>
+    );
+  };
   /**
    * LIFECYCLES
    */
   useEffect(() => {
-    setIsClaim(true);
+    setIsClaim(false);
   }, [data]);
 
   /**
@@ -85,7 +92,20 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
           <div className="font-mono font-bold text-2xl text-white">
             {showFormatNumber(data.withdrawAmount)} {data.withdrawSymbol}
           </div>
-          {!isClaim && <div className="ml-6">TODO</div>}
+          {!isClaim && (
+            <div className="ml-6 flex items-center bg-amber-600/10 p-2.5 rounded-full">
+              <img
+                src={AvgPaceIcon}
+                alt="AvgPaceIcon"
+                className="w-5 h-5 mr-2"
+              />
+              <Countdown
+                date={data.timeUnlock}
+                renderer={renderer}
+                onComplete={onSuccess}
+              />
+            </div>
+          )}
         </div>
       </div>
 
