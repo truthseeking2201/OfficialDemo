@@ -5,14 +5,29 @@ import { Button } from "@/components/ui/button";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useMyAssets } from "@/hooks/useMyAssets";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
+import DepositModal from "@/components/vault/deposit/DepositModal";
 import { formatNumber } from "@/lib/number";
 import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
 import { AlertCircle } from "lucide-react";
+
+const mockData = {
+  amount: 1000,
+  apr: 18.7,
+  estReturn: 10.76,
+  totalValue: 1010.76,
+  youWillReceive: 1050,
+  conversionRate: 1.05,
+  ndlp: 1050,
+  txHash:
+    "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+};
 
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
   const [conversionRate, setConversionRate] = useState<number | null>(1.05);
   const [error, setError] = useState<string>("");
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
@@ -52,10 +67,20 @@ export default function DepositVaultSection() {
   const handleDeposit = useCallback(() => {
     if (isConnected) {
       // TODO: Handle deposit
+      setIsDepositModalOpen(true);
     } else {
       handleConnectWallet();
     }
   }, [isConnected, handleConnectWallet]);
+
+  const handleCloseDepositDrawer = useCallback(() => {
+    setIsDepositModalOpen(false);
+  }, []);
+
+  const handleSendRequestDeposit = useCallback(() => {
+    // TODO: Handle deposit request
+    console.log("Deposit request sent with amount:", depositAmount);
+  }, [depositAmount]);
 
   return (
     <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
@@ -79,9 +104,12 @@ export default function DepositVaultSection() {
           placeholder="0.00"
           className="input-vault w-full font-heading-lg"
         />
-        {error && <div className="text-red-error text-sm mt-1 flex items-center">
-          <AlertCircle className="w-4 h-4 mr-2" />
-          {error}</div>}
+        {error && (
+          <div className="text-red-error text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-2" />
+            {error}
+          </div>
+        )}
       </div>
 
       <div className="mb-6 p-4 border border-white/15 rounded-xl">
@@ -127,6 +155,13 @@ export default function DepositVaultSection() {
       >
         {isConnected ? "Deposit" : "Connect Wallet"}
       </Button>
+
+      <DepositModal
+        isOpen={isDepositModalOpen}
+        onOpenChange={handleCloseDepositDrawer}
+        onDeposit={handleSendRequestDeposit}
+        request={mockData}
+      />
     </div>
   );
 }

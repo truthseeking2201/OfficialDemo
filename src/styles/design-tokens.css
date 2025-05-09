@@ -45,6 +45,7 @@
   --t-pulse-success: ease-in-out 600ms;
 
   /* Layout */
+  --layout-desktop-breakpoint-xl: 1400px;
   --layout-desktop-container: 1140px;
   --layout-desktop-columns: 12;
   --layout-desktop-gutter: 64px;

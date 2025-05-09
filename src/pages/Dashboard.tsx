@@ -9,6 +9,8 @@ import { UserInvestment } from "@/types/vault";
 
 import { TxTable } from "@/components/dashboard/TxTable";
 import NodoAIVaultsMainCard from "@/components/vault/NodoAIVaultsMainCard";
+import TelegramIcon from "@/assets/icons/telegram.svg";
+import XIcon from "@/assets/icons/x.svg";
 
 const sampleTransactions = [
   {
@@ -272,16 +274,40 @@ export default function NodoAIVaults() {
         </div>
       </PageContainer>
       {/* Footer */}
-      <footer className="py-6 text-center text-050 font-caption border-t border-[#1A1A1A] bg-transparent">
+      <footer className="py-6 text-center text-100 font-caption border-t border-white/10 bg-transparent">
         <div
           style={{
-            maxWidth: "var(--layout-desktop-container)",
+            maxWidth: "var(--layout-desktop-breakpoint-xl)",
             margin: "0 auto",
             padding: "0 36px",
           }}
           className="flex flex-col md:flex-row justify-between items-center"
         >
-          <div>©{currentYear} NODO. All rights reserved</div>
+          <div className="flex items-center gap-2">
+            <div>©{currentYear} NODO. All rights reserved</div>
+            <div>
+              <a
+                href="https://t.me/Official_NODO_Community"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={TelegramIcon}
+                  alt="Telegram"
+                  className="w-5 h-5 mr-2"
+                />
+              </a>
+            </div>
+            <div>
+              <a
+                href="https://x.com/Official_NODO"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={XIcon} alt="X" className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
           <div>
             NODO Global Limited 10 Anson Road #22-06 International Plaza,
             Singapore 079903
