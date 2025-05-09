@@ -67,6 +67,9 @@ export default {
         red: {
           error: "#FF8077",
         },
+        yellow: {
+          warning: "#FFA822",
+        },
         toast: {
           default: "#242C32",
         },
