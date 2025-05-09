@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import debounce from "lodash/debounce";
 
@@ -16,29 +16,27 @@ import {
 } from "@/components/ui/dialog";
 
 import { showFormatNumber } from "@/lib/number";
-
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import useExchangeRateToken from "@/hooks/useExchangeRateToken";
-import { useMyAssets, useWallet } from "@/hooks";
-import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
-
 import LpType from "@/types/lp-type";
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
   balanceLp: number;
   lpData: LpType;
+  onSuccess: () => void;
 };
 interface IFormInput {
   amount: number;
 }
 
-export default function WithdrawForm({ balanceLp, lpData }: Props) {
+export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   const summary_default = {
     amount: 0,
     receive: 0,
     fee: 0,
     rateFee: 0.5,
   };
+  const min_amount = 0.1;
   const [summary, setSummary] = useState(summary_default);
   const [form, setForm] = useState<IFormInput>();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
@@ -52,10 +50,12 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
     watch,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<IFormInput>({ mode: "all" });
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
+  const { toast } = useToast();
 
   /**
    * FUNCTION
@@ -63,6 +63,14 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
   const onSubmit = (data) => {
     setForm(data);
     setOpenModalConfirm(true);
+
+    // toast({
+    //   title: "NODOAIx Token minted",
+    //   description:
+    //     "Your AI-powered yield token has been minted to your wallet.",
+    //   variant: "default",
+    //   duration: 50000,
+    // });
   };
   const onCloseModalConfirm = () => {
     setOpenModalConfirm(false);
@@ -90,10 +98,30 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
   }, []);
 
   const onWithdraw = useCallback(() => {
-    // TODO
-    console.log("-------onWithdraw");
-    setOpenModalSuccess(true);
-    onCloseModalConfirm();
+    try {
+      // TODO
+      console.log("-------onWithdraw");
+      setOpenModalSuccess(true);
+      onCloseModalConfirm();
+      onSuccess();
+      reset();
+      toast({
+        title: "NODOAIx Token minted",
+        description:
+          "Your AI-powered yield token has been minted to your wallet.",
+        variant: "default",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "NODOAIx Token minted",
+        description:
+          "Your AI-powered yield token has been minted to your wallet.",
+        variant: "default",
+        duration: 5000,
+      });
+    }
   }, []);
 
   /**
@@ -132,7 +160,7 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
             placeholder="0.00"
             {...register("amount", {
               required: true,
-              min: 0.1,
+              min: min_amount,
               max: balanceLp,
               pattern: /^\d*\.?\d{0,2}$/,
             })}
@@ -259,7 +287,10 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
         open={openModalSuccess}
         onOpenChange={(isOpen) => !isOpen && onCloseModalSuccess()}
       >
-        <DialogContent className="sm:max-w-[480px] bg-[#141517] border border-white/10 px-7 py-8 rounded-2xl gap-5">
+        <DialogContent
+          className="sm:max-w-[480px] bg-[#141517] border border-white/10 px-7 py-8 rounded-2xl gap-5"
+          hideIconClose={true}
+        >
           <DialogHeader className="relative">
             <div className="flex items-center justify-center mb-5">
               <div className="bg-emerald-500 rounded-full	flex items-center justify-center h-16 w-16">
@@ -270,8 +301,9 @@ export default function WithdrawForm({ balanceLp, lpData }: Props) {
               Withdrawal Request Confirmed!
             </DialogTitle>
             <DialogDescription className="m-0 text-center text-base text-gray-400">
-              Your $512.50 withdrawal request from Nodo AI Vault has been
-              confirmed. Funds will be available after the{" "}
+              Your {showFormatNumber(summary.amount)} {lpData.lp_symbol}{" "}
+              withdrawal request from Nodo AI Vault has been confirmed. Funds
+              will be available after the{" "}
               <span className="whitespace-nowrap">24-hour</span> cooldown.
             </DialogDescription>
           </DialogHeader>

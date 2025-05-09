@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import WithdrawForm from "./WithdrawForm";
@@ -27,6 +27,7 @@ export default function WithdrawVaultSection() {
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
+  const { refreshBalance } = useMyAssets();
 
   /**
    * FUNCTION
@@ -61,6 +62,11 @@ export default function WithdrawVaultSection() {
     }
   };
 
+  const onSuccess = useCallback(() => {
+    initBalance();
+    refreshBalance();
+  }, []);
+
   /**
    * LIFECYCLES
    */
@@ -74,6 +80,7 @@ export default function WithdrawVaultSection() {
 
   useEffect(() => {
     if (address) {
+      console.log("----------init");
       initBalance();
       initDataClaim();
     }
@@ -132,6 +139,7 @@ export default function WithdrawVaultSection() {
             <WithdrawForm
               balanceLp={balanceLp}
               lpData={NDLP}
+              onSuccess={onSuccess}
             />
           )}
         </div>
