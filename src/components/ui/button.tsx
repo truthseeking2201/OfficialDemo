@@ -14,7 +14,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-white/10 bg-transparent hover:bg-white/5 hover:border-white/20",
+          "border border-white/10 bg-transparent hover:bg-white/5 hover:border-white/20 font-semibold",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "border border-brand-500 text-brand-500 hover:bg-brand-50/10",
@@ -26,13 +26,13 @@ const buttonVariants = cva(
           "bg-gradient-to-r from-emerald-light to-emerald text-white shadow-neon-emerald hover:opacity-90",
         "neural-orange":
           "bg-gradient-to-r from-[#FF8A00] to-[#FF6B00] text-white shadow-[0_4px_12px_-2px_rgba(255,138,0,0.3)] hover:shadow-[0_4px_16px_-2px_rgba(255,138,0,0.4)] hover:scale-[0.98] transition-all active:scale-95",
-        primary: "bg-ai text-[#0A080E]",
+        primary: "bg-ai text-[#0A080E] font-semibold",
         "pagination-default": "bg-black text-white/70 hover:bg-black/70",
       },
       size: {
         default: "h-11 px-4 py-2",
         sm: "h-9 rounded-lg px-3 text-xs",
-        lg: "h-12 rounded-xl px-8 text-[18px] font-semibold",
+        lg: "h-12 rounded-xl px-8 text-[16px]",
         xl: "h-14 rounded-xl px-16 text-lg",
         icon: "h-10 w-10 rounded-lg",
         pagination: "h-[32px] w-[32px] rounded-lg",

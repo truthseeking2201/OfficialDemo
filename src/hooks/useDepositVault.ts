@@ -13,7 +13,7 @@ export const useDepositVault = () => {
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
 
-  const deposit = async (coinId: string, amount: number) => {
+  const deposit = async (coinId: string, amount: number, onDepositSuccessCallback?: (data: any) => void) => {
     try {
       if (!account?.address) {
         throw new Error("No account connected");
@@ -29,7 +29,7 @@ export const useDepositVault = () => {
 
       // need to split the coin instead of using the whole coin
       const [splitCoin] = tx.splitCoins(tx.object(coinId), [
-        tx.pure.u64(amount),
+        tx.pure.u64(Math.floor(amount * 1_000_000_000)),
       ]);
 
       tx.moveCall({
@@ -37,7 +37,7 @@ export const useDepositVault = () => {
         arguments: [
           tx.object(VAULT_CONFIG.VAULT_CONFIG_ID), // config parameter
           tx.object(VAULT_CONFIG.VAULT_ID), // vault parameter
-          tx.object(coinId),
+          splitCoin, // use the split coin instead of the original coin
         ],
         typeArguments: [
           COIN_TYPES_CONFIG.USDC_COIN_TYPE,
@@ -52,6 +52,7 @@ export const useDepositVault = () => {
         {
           onSuccess: (data) => {
             console.log("Deposit successful:", data);
+            onDepositSuccessCallback?.(data);
           },
           onError: (error) => {
             console.error("Deposit failed:", error);

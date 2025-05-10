@@ -9,38 +9,39 @@ import { useWallet } from "@/hooks/useWallet";
 import { formatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { AlertCircle } from "lucide-react";
-import { useCallback, useState } from "react";
-
-const mockData = {
-  amount: 1000,
-  apr: 18.7,
-  estReturn: 10.76,
-  totalValue: 1010.76,
-  youWillReceive: 1050,
-  conversionRate: 1.05,
-  ndlp: 1050,
-  txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-};
+import { useCallback, useMemo, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { IconErrorToast } from "@/components/ui/icon-error-toast";
 
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
   const [conversionRate, setConversionRate] = useState<number | null>(1.05);
   const [error, setError] = useState<string>("");
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [depositStep, setDepositStep] = useState<number>(1);
+  const [depositSuccessData, setDepositSuccessData] = useState<any>(null);
+
 
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
   const { openConnectWalletDialog } = useWallet();
-  const { assets } = useMyAssets();
+  const { assets, refreshBalance } = useMyAssets();
   const { deposit } = useDepositVault();
+  const { toast } = useToast();
 
-  const usdcCoin = assets.find(
+  const usdcCoin = useMemo(() => assets.find(
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
-  );
+  ), [assets]);
 
   const handleValidateDepositAmount = useCallback(
     (value: string) => {
+      if (!value) {
+        setError("Please enter an amount.");
+        return;
+      }
+
       if (value && Number(value) < 1) {
         setError("Minimum amount is 1 USDC.");
         return;
@@ -57,8 +58,8 @@ export default function DepositVaultSection() {
   );
 
   const handleMaxAmount = useCallback(() => {
-    handleValidateDepositAmount(usdcCoin?.balance.toFixed(2));
-    setDepositAmount(usdcCoin?.balance.toFixed(2));
+    handleValidateDepositAmount(usdcCoin?.balance.toString() || "0");
+    setDepositAmount(usdcCoin?.balance.toString() || "0");
   }, [usdcCoin?.balance, handleValidateDepositAmount]);
 
   const handleConnectWallet = useCallback(() => {
@@ -74,18 +75,41 @@ export default function DepositVaultSection() {
     }
   }, [isConnected, handleConnectWallet]);
 
-  const handleCloseDepositDrawer = useCallback(() => {
+  const handleCloseDepositModal = useCallback(() => {
     setIsDepositModalOpen(false);
   }, []);
 
   const handleSendRequestDeposit = useCallback(async () => {
     // TODO: Handle deposit request
     try {
-      await deposit(usdcCoin?.coin_object_id, Number(depositAmount));
+      setLoading(true);
+      await deposit(usdcCoin?.coin_object_id, Number(depositAmount), handleDepositSuccessCallback);
     } catch (error) {
+      toast({
+        title: "Deposit failed",
+        description: error?.message || error,
+        variant: "error",
+        duration: 5000,
+        icon: <IconErrorToast />,
+      });
+      setDepositAmount("");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }, [depositAmount]);
+
+  const handleDepositSuccessCallback = useCallback((data) => {
+    setDepositSuccessData(data);
+    refreshBalance();
+    setLoading(false);
+    setDepositStep(2);
+    setDepositAmount("");
+  }, []);
+
+  const handleBlur = useCallback((value: string) => {
+    handleValidateDepositAmount(value);
+  }, []);
 
   return (
     <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
@@ -106,6 +130,7 @@ export default function DepositVaultSection() {
           onChange={setDepositAmount}
           onValidate={handleValidateDepositAmount}
           onMaxAmount={handleMaxAmount}
+          onBlur={handleBlur}
           placeholder="0.00"
           className="input-vault w-full font-heading-lg"
         />
@@ -156,16 +181,26 @@ export default function DepositVaultSection() {
         size="xl"
         onClick={isConnected ? handleDeposit : handleConnectWallet}
         className="w-full font-semibold text-lg"
-        disabled={!!error}
+        disabled={!!error || !depositAmount}
       >
         {isConnected ? "Deposit" : "Connect Wallet"}
       </Button>
 
       <DepositModal
         isOpen={isDepositModalOpen}
-        onOpenChange={handleCloseDepositDrawer}
+        depositStep={depositStep}
+        onOpenChange={handleCloseDepositModal}
         onDeposit={handleSendRequestDeposit}
-        request={mockData}
+        confirmData={{
+          amount: Number(depositAmount),
+          apr: 18.7,
+          estReturn: 10.76,
+          totalValue: 1010.76,
+          ndlp: 1050,
+          txHash: depositSuccessData?.txHash,
+        }}
+        depositSuccessData={depositSuccessData}
+        loading={loading}
       />
     </div>
   );

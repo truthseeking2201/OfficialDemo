@@ -9,6 +9,7 @@ interface FormattedNumberInputProps {
   maxDecimals?: number;
   onValidate?: (value: string) => void;
   onMaxAmount?: () => void;
+  onBlur?: (value: string) => void;
 }
 
 export function FormattedNumberInput({
@@ -16,9 +17,10 @@ export function FormattedNumberInput({
   onChange,
   placeholder = "0.00",
   className = "",
-  maxDecimals = 2,
   onValidate,
   onMaxAmount,
+  onBlur,
+  ...props
 }: FormattedNumberInputProps) {
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,14 +37,20 @@ export function FormattedNumberInput({
     [onChange, onValidate]
   );
 
+  const handleBlur = useCallback(() => {
+    onBlur?.(value);
+  }, [onBlur, value]);
+
   return (
     <div className="relative mb-2 mt-2">
       <input
         type="text"
         value={value}
         onChange={handleChange}
+        onBlur={handleBlur}
         placeholder={placeholder}
         className={cn("input-vault w-full font-heading-lg", className)}
+        {...props}
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex rounded-full mx-auto bg-gradient-to-tr from-[#0090FF] via-[#FF6D9C] to-[#FB7E16] p-px hover:opacity-70 transition-all duration-300">
         <button

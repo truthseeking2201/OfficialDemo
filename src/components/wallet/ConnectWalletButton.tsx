@@ -19,6 +19,8 @@ import { motion } from "framer-motion";
 import { Copy, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { ConnectWalletModal } from "./ConnectWalletModal";
+import { formatNumber } from "@/lib/number";
+
 export const ConnectWalletButton = memo(() => {
   const { toast } = useToast();
   const [showPulse, setShowPulse] = useState(false);
@@ -149,7 +151,7 @@ export const ConnectWalletButton = memo(() => {
                     />
 
                     <span className="font-mono text-sm">
-                      {usdcCoin?.balance || 0} USDC
+                      {formatNumber(usdcCoin?.balance || 0)} USDC
                     </span>
                   </div>
                 </div>
