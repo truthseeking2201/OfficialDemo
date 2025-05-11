@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useConnectWallet, useWallets } from "@mysten/dapp-kit";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, X } from "lucide-react";
 import { useState } from "react";
 
 interface ConnectWalletModalProps {
@@ -105,8 +105,23 @@ export function ConnectWalletModal({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-[#101112] border border-white/10 p-0 rounded-2xl">
+      <DialogContent
+        className="sm:max-w-[425px] bg-[#101112] border border-white/10 p-0 rounded-2xl"
+        hideIconClose
+        style={{
+          boxShadow:
+            "0px 10px 15px -3px rgba(255, 255, 255, 0.10), 0px 4px 6px -4px rgba(255, 255, 255, 0.10)",
+        }}
+      >
         <DialogHeader className="px-6 pt-6 pb-0 relative">
+          <button
+            className="absolute right-6 top-6 rounded-full h-8 w-8 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors"
+            onClick={onClose}
+            type="button"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
           <DialogTitle className="text-xl font-bold">
             Connect Wallet
           </DialogTitle>
@@ -114,7 +129,7 @@ export function ConnectWalletModal({
             Choose a wallet to connect to Nodo AI Yield Vault
           </DialogDescription>
         </DialogHeader>
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-4 font-sans">
           {error && (
             <Alert
               variant="destructive"
@@ -129,7 +144,7 @@ export function ConnectWalletModal({
             <Button
               key={wallet.name}
               variant="outline"
-              className={`w-full py-6 px-4 justify-start space-x-4 border-white/10 hover:bg-white/5 transition-all ${
+              className={`w-full h-[56px] py-6 px-2 justify-start space-x-4 border-white/10 hover:bg-white/5 transition-all ${
                 connectedWallet === wallet.name
                   ? "bg-[#4DA1F9]/10 border-[#4DA1F9]/30"
                   : ""
@@ -137,11 +152,11 @@ export function ConnectWalletModal({
               onClick={() => handleConnect(wallet)}
               disabled={isConnecting}
             >
-              <div className="h-8 w-8 rounded-full flex items-center justify-center">
+              <div className="h-10 w-10 rounded-full flex items-center justify-center">
                 {wallet.icon && <img src={wallet.icon} alt={wallet.name} />}
               </div>
               <div className="text-left flex-1">
-                <div className="font-medium">{wallet.displayName}</div>
+                <div className="font-medium text-md">{wallet.displayName}</div>
                 <div className="text-xs text-white/60">
                   Connect to your {wallet.displayName} Wallet
                 </div>

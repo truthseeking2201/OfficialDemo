@@ -22,7 +22,6 @@ export default function DepositVaultSection() {
   const [depositStep, setDepositStep] = useState<number>(1);
   const [depositSuccessData, setDepositSuccessData] = useState<any>(null);
 
-
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
@@ -31,9 +30,13 @@ export default function DepositVaultSection() {
   const { deposit } = useDepositVault();
   const { toast } = useToast();
 
-  const usdcCoin = useMemo(() => assets.find(
-    (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
-  ), [assets]);
+  const usdcCoin = useMemo(
+    () =>
+      assets.find(
+        (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
+      ),
+    [assets]
+  );
 
   const handleValidateDepositAmount = useCallback(
     (value: string) => {
@@ -83,7 +86,11 @@ export default function DepositVaultSection() {
     // TODO: Handle deposit request
     try {
       setLoading(true);
-      await deposit(usdcCoin?.coin_object_id, Number(depositAmount), handleDepositSuccessCallback);
+      await deposit(
+        usdcCoin,
+        Number(depositAmount),
+        handleDepositSuccessCallback
+      );
     } catch (error) {
       toast({
         title: "Deposit failed",
@@ -100,11 +107,13 @@ export default function DepositVaultSection() {
   }, [depositAmount]);
 
   const handleDepositSuccessCallback = useCallback((data) => {
-    setDepositSuccessData(data);
-    refreshBalance();
-    setLoading(false);
-    setDepositStep(2);
-    setDepositAmount("");
+    setTimeout(() => {
+      setDepositSuccessData(data);
+      refreshBalance();
+      setLoading(false);
+      setDepositStep(2);
+      setDepositAmount("");
+    }, 2000);
   }, []);
 
   const handleBlur = useCallback((value: string) => {
