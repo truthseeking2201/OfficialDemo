@@ -1,10 +1,9 @@
 import { COIN_TYPES_CONFIG } from "@/config";
-import {
-  useCurrentAccount,
-  useSuiClient,
-  useSuiClientQuery,
-} from "@mysten/dapp-kit";
-import { useQueries } from "@tanstack/react-query";
+import { UserCoinAsset } from "@/types/coin.types";
+import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
+import { CoinStruct, SuiClient } from "@mysten/sui/client";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 interface CoinMetadata {
   decimals: number;
@@ -12,18 +11,6 @@ interface CoinMetadata {
   symbol: string;
   url?: string;
   iconUrl?: string;
-}
-
-interface Asset {
-  coin_type: string;
-  balance: number;
-  raw_balance: number;
-  coin_object_id: string;
-  image_url: string;
-  decimals: number;
-  display_name: string;
-  name: string;
-  symbol: string;
 }
 
 const ALLOW_COIN_TYPES = [
@@ -42,28 +29,60 @@ const COIN_CONFIG = {
   },
 };
 
+const getCoinObjects = async (
+  suiClient: SuiClient,
+  coinType: string,
+  address: string
+) => {
+  let allCoins = [];
+  let cursor = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    // Get a page of coins with optional cursor
+    const coinsPage = await suiClient.getCoins({
+      owner: address,
+      cursor: cursor,
+      coinType: coinType,
+      limit: 50, // Number of items per page (default is 50)
+    });
+
+    // Add coins from this page to our collection
+    allCoins = [...allCoins, ...coinsPage.data];
+
+    // Update the cursor for the next page
+    cursor = coinsPage.nextCursor;
+
+    // Check if there are more pages
+    hasNextPage = coinsPage.hasNextPage;
+  }
+  return allCoins;
+};
+
 export const useMyAssets = () => {
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
 
-  const {
-    data: allCoins,
-    isLoading,
-    isFetching,
-    error,
-    refetch,
-  } = useSuiClientQuery(
-    "getAllCoins",
-    {
-      owner: account?.address || "",
-      limit: 100, // no need to fetch more than 100 coins
-    },
-    {
-      enabled: !!account?.address,
-    }
-  );
+  const fetchCoinObjects = useCallback(async () => {
+    return Promise.all(
+      ALLOW_COIN_TYPES.map((coinType) =>
+        getCoinObjects(suiClient, coinType, account?.address || "")
+      )
+    );
+  }, [account?.address, suiClient]);
 
-  const results = useQueries({
+  const {
+    data: coinObjects,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["coinObjects"],
+    queryFn: fetchCoinObjects,
+    enabled: !!account?.address,
+    refetchInterval: 60000, // 60 seconds
+  });
+
+  const coinsMetadata = useQueries({
     queries: ALLOW_COIN_TYPES.map((coinType) => ({
       queryKey: ["getCoinMetadata", coinType],
       queryFn: () => suiClient.getCoinMetadata({ coinType }),
@@ -72,23 +91,28 @@ export const useMyAssets = () => {
     })),
   });
 
-  const coinMetadata = results.reduce((acc, result, index) => {
+  const coinMetadata = coinsMetadata.reduce((acc, result, index) => {
     if (result.data) {
       acc[ALLOW_COIN_TYPES[index]] = result.data;
     }
     return acc;
   }, {} as Record<string, CoinMetadata>);
 
-  const assets: Asset[] =
-    allCoins?.data
-      ?.filter((coin) => ALLOW_COIN_TYPES.includes(coin.coinType))
-      .map((coin) => {
-        const metadata = coinMetadata[coin.coinType] as CoinMetadata;
-        const decimals = metadata?.decimals || 9;
-        const rawBalance = Number(coin.balance || "0");
-        const balance = rawBalance / Math.pow(10, decimals);
+  const assets: UserCoinAsset[] =
+    coinObjects?.flat().reduce((acc, coin) => {
+      const metadata = coinMetadata[coin.coinType] as CoinMetadata;
+      const decimals = metadata?.decimals || 9;
+      const rawBalance = Number(coin.balance || "0");
+      const balance = rawBalance / Math.pow(10, decimals);
 
-        return {
+      const existingAsset = acc.find(
+        (asset) => asset.coin_type === coin.coinType
+      );
+      if (existingAsset) {
+        existingAsset.balance += balance;
+        existingAsset.raw_balance += rawBalance;
+      } else {
+        acc.push({
           coin_object_id: coin.coinObjectId,
           coin_type: coin.coinType,
           balance: balance,
@@ -98,13 +122,14 @@ export const useMyAssets = () => {
           display_name: COIN_CONFIG[coin.coinType]?.display_name,
           name: metadata?.name,
           symbol: metadata?.symbol,
-        };
-      }) || [];
+        });
+      }
+      return acc;
+    }, [] as UserCoinAsset[]) || [];
 
   return {
     assets,
-    loading: isLoading || isFetching,
-    error,
+    isLoading,
     refreshBalance: refetch,
   };
 };
