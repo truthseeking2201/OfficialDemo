@@ -128,12 +128,17 @@ export default function DepositVaultSection() {
       refreshBalance();
       setLoading(false);
       setDepositStep(2);
-      setDepositAmount("");
     }, 2000);
   }, []);
 
   const handleBlur = useCallback((value: string) => {
     handleValidateDepositAmount(value);
+  }, []);
+
+  const handleDone = useCallback(() => {
+    setIsDepositModalOpen(false);
+    setDepositStep(1);
+    setDepositAmount("");
   }, []);
 
   return (
@@ -212,12 +217,12 @@ export default function DepositVaultSection() {
         depositStep={depositStep}
         onOpenChange={handleCloseDepositModal}
         onDeposit={handleSendRequestDeposit}
+        onDone={handleDone}
         confirmData={{
           amount: Number(depositAmount),
           apr: 18.7,
           estReturn: 10.76,
           ndlp: Number(ndlpAmountWillGet),
-          txHash: depositSuccessData?.txHash,
         }}
         depositSuccessData={depositSuccessData}
         loading={loading}

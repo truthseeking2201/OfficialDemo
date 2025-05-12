@@ -21,12 +21,12 @@ interface DepositModalProps {
   onOpenChange: () => void;
   onDeposit?: () => void;
   onDepositSuccess?: () => void;
+  onDone?: () => void;
   confirmData: {
     amount: number;
     apr: number;
     estReturn: number;
     ndlp: number;
-    txHash: string;
   };
   loading: boolean;
   depositSuccessData: any;
@@ -38,6 +38,7 @@ const DepositModal = (props: DepositModalProps) => {
     depositStep,
     onOpenChange,
     onDeposit,
+    onDone,
     confirmData,
     depositSuccessData,
     loading,
@@ -52,6 +53,7 @@ const DepositModal = (props: DepositModalProps) => {
   const suiScanUrl = `https://suiscan.xyz/${
     import.meta.env.VITE_SUI_NETWORK
   }/tx/${depositSuccessData?.digest}`;
+  
   const handleDeposit = () => {
     onDeposit();
   };
@@ -131,7 +133,7 @@ const DepositModal = (props: DepositModalProps) => {
                 <div className="flex justify-between">
                   <span className="text-base text-[#9CA3AF]">Amount</span>
                   <span className="font-mono text-lg">
-                    {formatNumber(amount || 0)} USDC
+                    {formatNumber(amount|| 0)} USDC
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -151,7 +153,7 @@ const DepositModal = (props: DepositModalProps) => {
                     NDLP Received
                   </div>
                   <span className="font-mono font-bold text-lg text-[#FFA822]">
-                    {formatNumber(ndlp || 0)} NDLP
+                    {formatNumber(ndlp)} NDLP
                   </span>
                 </div>
 
@@ -197,7 +199,7 @@ const DepositModal = (props: DepositModalProps) => {
           {depositStep === 2 && (
             <div className="w-full">
               <Button
-                onClick={onOpenChange}
+                onClick={onDone}
                 size="lg"
                 variant="primary"
                 className="w-full"

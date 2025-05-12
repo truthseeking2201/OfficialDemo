@@ -4,6 +4,7 @@ import { UserCoinAsset } from "@/types/coin.types";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
+  useSuiClient,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
 import { useMergeCoins } from "./useMergeCoins";
@@ -13,6 +14,8 @@ export const useDepositVault = () => {
   const { mutateAsync: signAndExecuteTransaction } =
     useSignAndExecuteTransaction();
   const account = useCurrentAccount();
+  const suiClient = useSuiClient();
+
 
   const { mergeCoins } = useMergeCoins();
 
@@ -57,9 +60,29 @@ export const useDepositVault = () => {
           transaction: tx,
         },
         {
-          onSuccess: (data) => {
-            console.log("Deposit successful:", data);
-            onDepositSuccessCallback?.(data);
+          onSuccess: async (data) => {
+            const { digest } = data;
+            
+            const txResponse = await suiClient.waitForTransaction({
+              digest,
+              options: {
+                showEvents: true,
+              },
+            });
+
+            const events = txResponse?.events;
+            
+            const depositEvent = events.find(event => 
+              event.type.includes('vault::DepositEvent')
+            );
+            console.log("🚀 ~ onSuccess: ~ depositEvent:", depositEvent)
+
+            // Pass the event data to your callback
+            onDepositSuccessCallback?.({
+              ...data,
+              depositAmount: (depositEvent?.parsedJson as { amount?: number })?.amount,
+              depositLpAmount: (depositEvent?.parsedJson as { lp?: number })?.lp,
+            });
           },
           onError: (error) => {
             console.error("Deposit failed:", error);
