@@ -1,17 +1,20 @@
 import suiWallet from "@/assets/images/sui-wallet.png";
 import { Button } from "@/components/ui/button";
 import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
+import { IconErrorToast } from "@/components/ui/icon-error-toast";
+import { useToast } from "@/components/ui/use-toast";
 import DepositModal from "@/components/vault/deposit/DepositModal";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
-import { useDepositVault } from "@/hooks/useDepositVault";
+import {
+  useCalculateNDLPReturn,
+  useDepositVault,
+} from "@/hooks/useDepositVault";
 import { useMyAssets } from "@/hooks/useMyAssets";
 import { useWallet } from "@/hooks/useWallet";
 import { formatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { IconErrorToast } from "@/components/ui/icon-error-toast";
 
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
@@ -38,9 +41,19 @@ export default function DepositVaultSection() {
     [assets]
   );
 
-  const ndlpAmountWillGet = useMemo(() => {
-    return (Number(depositAmount || 0) * conversionRate).toFixed(2);
-  }, [depositAmount, conversionRate]);
+  const ndlpCoin = useMemo(
+    () =>
+      assets.find(
+        (asset) => asset.coin_type === COIN_TYPES_CONFIG.NDLP_COIN_TYPE
+      ),
+    [assets]
+  );
+
+  const ndlpAmountWillGet = useCalculateNDLPReturn(
+    Number(depositAmount),
+    usdcCoin?.decimals || 9,
+    ndlpCoin?.decimals || 9
+  );
 
   const handleValidateDepositAmount = useCallback(
     (value: string) => {

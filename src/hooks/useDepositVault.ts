@@ -1,19 +1,18 @@
 import { COIN_TYPES_CONFIG } from "@/config";
-import { VAULT_CONFIG } from "@/config/vault-config";
+import { RATE_DENOMINATOR, VAULT_CONFIG } from "@/config/vault-config";
 import { UserCoinAsset } from "@/types/coin.types";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
-  useSuiClient,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
 import { useMergeCoins } from "./useMergeCoins";
+import { useGetVaultConfig } from "./useVault";
 
 export const useDepositVault = () => {
   const { mutateAsync: signAndExecuteTransaction } =
     useSignAndExecuteTransaction();
   const account = useCurrentAccount();
-  const suiClient = useSuiClient();
 
   const { mergeCoins } = useMergeCoins();
 
@@ -79,4 +78,26 @@ export const useDepositVault = () => {
   return {
     deposit,
   };
+};
+
+export const useCalculateNDLPReturn = (
+  amount: number,
+  usdcDecimals: number,
+  ndlpDecimals: number
+) => {
+  const { vaultConfig } = useGetVaultConfig();
+
+  if (!amount || !vaultConfig || !usdcDecimals || !ndlpDecimals) {
+    return 0;
+  }
+
+  const rawAmount = amount * 10 ** usdcDecimals;
+  const fee = (rawAmount * +vaultConfig.deposit.fields.fee_bps) / 10000;
+  const net_amount = rawAmount - fee;
+
+  const lp = (net_amount * RATE_DENOMINATOR) / +vaultConfig.rate;
+
+  const ndlpAmountWillGet = lp / Math.pow(10, ndlpDecimals);
+
+  return Number(ndlpAmountWillGet).toFixed(2);
 };

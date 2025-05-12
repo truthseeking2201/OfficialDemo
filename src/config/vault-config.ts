@@ -4,6 +4,8 @@ type VaultConfig = {
   VAULT_ID: string;
 };
 
+export const RATE_DENOMINATOR = 1000000;
+
 const VAULT_CONFIG_BY_ENV = {
   dev: {
     PACKAGE_ID:
