@@ -193,7 +193,7 @@ export default function NodoAIVaults() {
       <PageContainer>
         <div style={{ maxWidth: "1400px" }}>
           {/* Main Header */}
-          <header className="text-center mb-4">
+          <header className="text-center mb-16">
             <h1 className="text-[60px] font-bold">
               <span>NODO </span>
               <span
