@@ -133,7 +133,7 @@ const DepositModal = (props: DepositModalProps) => {
                 <div className="flex justify-between">
                   <span className="text-base text-[#9CA3AF]">Amount</span>
                   <span className="font-mono text-lg">
-                    {formatNumber(amount|| 0)} USDC
+                    {formatNumber(amount || 0)} USDC
                   </span>
                 </div>
                 <div className="flex justify-between">
