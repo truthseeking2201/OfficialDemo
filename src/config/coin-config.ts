@@ -10,7 +10,7 @@ type CoinConfigByEnv = {
 const CONFIG: CoinConfigByEnv = {
   dev: {
     NDLP_COIN_TYPE:
-      "0x3fa0ecba8f850714a12c988d40767086dd343ede49dc16dd11ce8bd68916a2b5::ndlp::NDLP",
+      "0x5183e6146fe032c104dce827069fe635cc3a661892c9de9cf8b9bb82dbf38ae2::ndlp::NDLP",
     USDC_COIN_TYPE:
       "0xe3ad979c39cca5b9a8d9c9ff4dfe990585538c6102ff9f0b975e40183089e601::nodo::NODO",
   },

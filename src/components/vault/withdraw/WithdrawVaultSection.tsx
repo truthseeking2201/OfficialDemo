@@ -4,9 +4,14 @@ import { Button } from "@/components/ui/button";
 import WithdrawForm from "./WithdrawForm";
 import ClaimToken from "./ClaimToken";
 
-import { formatNumber, getBalanceAmountForInput } from "@/lib/number";
+import {
+  formatNumber,
+  getDecimalAmount,
+  getBalanceAmountForInput,
+} from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import useExchangeRateToken from "@/hooks/useExchangeRateToken";
+import useWithdrawVault from "@/hooks/useWithdrawVault";
 import { useMyAssets, useWallet } from "@/hooks";
 import { NDLP } from "@/config/lp-config";
 import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
@@ -28,6 +33,7 @@ export default function WithdrawVaultSection() {
   const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
   const { refreshBalance } = useMyAssets();
+  const { getEstWithdrawAmount } = useWithdrawVault();
 
   /**
    * FUNCTION
@@ -54,17 +60,17 @@ export default function WithdrawVaultSection() {
   const initDataClaim = () => {
     try {
       // TODO
-      setDataClaim({
-        id: 1,
-        timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
-        status: "NEW",
-        withdrawAmount: 200,
-        withdrawSymbol: NDLP.lp_symbol,
-        receiveAmount: 199,
-        receiveSymbol: NDLP.token_symbol,
-        feeAmount: 1,
-        feeSymbol: NDLP.token_symbol,
-      });
+      // setDataClaim({
+      //   id: 1,
+      //   timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
+      //   status: "NEW",
+      //   withdrawAmount: 200,
+      //   withdrawSymbol: NDLP.lp_symbol,
+      //   receiveAmount: 199,
+      //   receiveSymbol: NDLP.token_symbol,
+      //   feeAmount: 1,
+      //   feeSymbol: NDLP.token_symbol,
+      // });
     } catch (error) {
       setDataClaim(null);
     }
@@ -81,6 +87,11 @@ export default function WithdrawVaultSection() {
    */
   useEffect(() => {
     // refetchExchangeRate();
+    getEstWithdrawAmount(
+      getDecimalAmount(1, 9).toFixed(),
+      NDLP.vault_id,
+      NDLP.package_id
+    );
     if (count.current == 0) {
       refetchExchangeRate();
     }

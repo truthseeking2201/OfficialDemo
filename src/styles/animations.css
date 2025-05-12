@@ -351,12 +351,12 @@
 @keyframes ai-hiden {
   0%,
   100% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  50% {
     transform: scale(1.1);
     opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0;
   }
 }
 .ai-hiden {

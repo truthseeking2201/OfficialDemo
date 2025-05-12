@@ -1,5 +1,9 @@
 export default interface LpType {
-  pid?: string;
+  vault_config_id: string;
+  vault_id: string;
+  package_id: string;
+  clock?: string;
+
   lp_coin_type: string;
   lp_symbol: string;
   lp_decimals: number | 9;
