@@ -141,7 +141,7 @@ export function TxTable({
         </div>
       </div>
 
-      <div className="glass-card overflow-hidden w-[650px]">
+      <div className="glass-card overflow-hidden w-full">
         <div className="overflow-x-auto">
           <Table className="w-full">
             <TableHeader>
@@ -173,7 +173,7 @@ export function TxTable({
                   .map((_, i) => (
                     <TableRow
                       key={i}
-                      className="border-b border-white/5 hover:bg-white/5"
+                      className="border-b border-white/5 hover:bg-white/5 w-full"
                     >
                       <TableCell>
                         <div className="h-5 w-20 bg-white/10 animate-pulse rounded"></div>
