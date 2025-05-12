@@ -62,16 +62,16 @@ export const useWithdrawVault = () => {
         amountLp,
         configLp.lp_decimals
       ).toFixed();
-      console.log("------rawAmount", rawAmount);
+
       const [splitCoin] = tx.splitCoins(tx.object(mergedCoinId), [
         tx.pure.u64(rawAmount),
       ]);
-      console.log("------splitCoin", splitCoin);
+
       const _arguments = [
         tx.object(configLp.vault_config_id),
         tx.object(configLp.vault_id),
         splitCoin,
-        tx.pure.u64(0x6),
+        tx.object(configLp.clock),
       ];
       const typeArguments = [configLp.token_coin_type, configLp.lp_coin_type];
 
@@ -86,6 +86,9 @@ export const useWithdrawVault = () => {
       const result = await signAndExecuteTransaction({
         transaction: tx,
       });
+
+      const txhash = result?.digest;
+      // const txhash = "AuCXr9nGfAqroysWPP6DMP6pBvhfJU6xNze5Par8reH"; // for test
       // const txBuild = await tx.build({
       //   client: suiClient,
       //   sender: account?.address,

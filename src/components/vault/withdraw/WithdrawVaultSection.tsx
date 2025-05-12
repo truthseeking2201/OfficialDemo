@@ -54,9 +54,7 @@ export default function WithdrawVaultSection() {
   const initDataClaim = async () => {
     try {
       // TODO
-      const res = await getLatestWithdrawal(
-        "0x16039ba417fdeab14706722045fc12b4f9667b2390338cdfd483322f3e9df5ab"
-      );
+      const res = await getLatestWithdrawal(address);
       console.log("------initDataClaim", res);
       // setDataClaim({
       //   id: 1,
@@ -70,6 +68,7 @@ export default function WithdrawVaultSection() {
       //   feeSymbol: NDLP.token_symbol,
       // });
     } catch (error) {
+      console.log("------------error", error);
       setDataClaim(null);
     }
   };
@@ -84,7 +83,6 @@ export default function WithdrawVaultSection() {
    * LIFECYCLES
    */
   useEffect(() => {
-    initDataClaim();
     if (count.current !== address) {
       initBalance();
       initDataClaim();
