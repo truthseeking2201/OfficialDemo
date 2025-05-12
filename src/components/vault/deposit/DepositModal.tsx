@@ -46,6 +46,9 @@ const DepositModal = (props: DepositModalProps) => {
 
   const { amount, apr, estReturn, totalValue, ndlp } = confirmData;
 
+  const suiScanUrl = `https://suiscan.xyz/${
+    import.meta.env.VITE_SUI_NETWORK
+  }/tx/${depositSuccessData?.digest}`;
   const handleDeposit = () => {
     onDeposit();
   };
@@ -152,9 +155,7 @@ const DepositModal = (props: DepositModalProps) => {
                 <div className="flex justify-center gap-2 mt-2">
                   <ExternalLink size={16} className="text-[#9CA3AF]" />
                   <a
-                    href={`https://explorer.sui.io/tx/${
-                      import.meta.env.VITE_SUI_NETWORK
-                    }/${depositSuccessData?.digest}`}
+                    href={suiScanUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#9CA3AF] hover:text-white transition duration-300"
