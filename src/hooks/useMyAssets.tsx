@@ -115,7 +115,7 @@ export const useMyAssets = () => {
         acc.push({
           coin_object_id: coin.coinObjectId,
           coin_type: coin.coinType,
-          balance: balance,
+          balance: Math.floor(balance * 100) / 100, // round round and keep 2 decimal places
           raw_balance: rawBalance,
           image_url: COIN_CONFIG[coin.coinType]?.image_url,
           decimals: decimals,

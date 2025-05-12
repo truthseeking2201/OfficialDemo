@@ -5,11 +5,13 @@ import { IconErrorToast } from "@/components/ui/icon-error-toast";
 import { useToast } from "@/components/ui/use-toast";
 import DepositModal from "@/components/vault/deposit/DepositModal";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
+import { RATE_DENOMINATOR } from "@/config/vault-config";
 import {
   useCalculateNDLPReturn,
   useDepositVault,
 } from "@/hooks/useDepositVault";
 import { useMyAssets } from "@/hooks/useMyAssets";
+import { useGetVaultConfig } from "@/hooks/useVault";
 import { useWallet } from "@/hooks/useWallet";
 import { formatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
@@ -18,13 +20,12 @@ import { useCallback, useMemo, useState } from "react";
 
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
-  const [conversionRate, setConversionRate] = useState<number | null>(1.05);
   const [error, setError] = useState<string>("");
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [depositStep, setDepositStep] = useState<number>(1);
   const [depositSuccessData, setDepositSuccessData] = useState<any>(null);
-
+  const { vaultConfig } = useGetVaultConfig();
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
@@ -54,6 +55,8 @@ export default function DepositVaultSection() {
     usdcCoin?.decimals || 9,
     ndlpCoin?.decimals || 9
   );
+
+  const conversionRate = +vaultConfig?.rate / RATE_DENOMINATOR;
 
   const handleValidateDepositAmount = useCallback(
     (value: string) => {
@@ -188,7 +191,7 @@ export default function DepositVaultSection() {
           <div className="font-caption text-075">Conversion Rate</div>
           <div className="font-mono text-white">
             {conversionRate
-              ? `1 USDC = ${conversionRate.toFixed(2)} NDLP`
+              ? `1 USDC = ${formatNumber(conversionRate, 2, 6)} NDLP`
               : "Unable to fetch conversion rate. Please try again later."}
           </div>
         </div>
