@@ -1,10 +1,8 @@
 import { VAULT_CONFIG } from "@/config/vault-config";
 import { VaultConfig } from "@/types/vault-config.types";
-import { useCurrentAccount, useSuiClientQuery } from "@mysten/dapp-kit";
+import { useSuiClientQuery } from "@mysten/dapp-kit";
 
 export const useGetVaultConfig = (vaultId?: string) => {
-  const account = useCurrentAccount();
-
   const { data, isLoading } = useSuiClientQuery(
     "getObject",
     {
@@ -16,7 +14,6 @@ export const useGetVaultConfig = (vaultId?: string) => {
       },
     },
     {
-      enabled: !!account?.address,
       refetchInterval: 30000,
     }
   );

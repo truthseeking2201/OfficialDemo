@@ -134,15 +134,17 @@ export default function DepositVaultSection() {
     }, 2000);
   }, []);
 
-  const handleBlur = useCallback((value: string) => {
-    handleValidateDepositAmount(value);
-  }, []);
-
   const handleDone = useCallback(() => {
     setIsDepositModalOpen(false);
     setDepositStep(1);
     setDepositAmount("");
   }, []);
+
+  const disabledDeposit = useMemo(() => {
+    if (!isConnected) return false;
+
+    return !!error || !depositAmount;
+  }, [isConnected, error, depositAmount]);
 
   return (
     <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
@@ -163,7 +165,7 @@ export default function DepositVaultSection() {
           onChange={setDepositAmount}
           onValidate={handleValidateDepositAmount}
           onMaxAmount={handleMaxAmount}
-          onBlur={handleBlur}
+          onBlur={handleValidateDepositAmount}
           placeholder="0.00"
           className="input-vault w-full font-heading-lg"
         />
@@ -210,7 +212,7 @@ export default function DepositVaultSection() {
         size="xl"
         onClick={isConnected ? handleDeposit : handleConnectWallet}
         className="w-full font-semibold text-lg"
-        disabled={!!error || !depositAmount}
+        disabled={disabledDeposit}
       >
         {isConnected ? "Deposit" : "Connect Wallet"}
       </Button>

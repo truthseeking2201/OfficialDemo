@@ -29,6 +29,10 @@ const COIN_CONFIG = {
   },
 };
 
+const roundDownBalance = (balance: number) => {
+  return Math.floor(balance * 100) / 100;
+};
+
 const getCoinObjects = async (
   suiClient: SuiClient,
   coinType: string,
@@ -109,13 +113,13 @@ export const useMyAssets = () => {
         (asset) => asset.coin_type === coin.coinType
       );
       if (existingAsset) {
-        existingAsset.balance += balance;
+        existingAsset.balance += roundDownBalance(balance);
         existingAsset.raw_balance += rawBalance;
       } else {
         acc.push({
           coin_object_id: coin.coinObjectId,
           coin_type: coin.coinType,
-          balance: Math.floor(balance * 100) / 100, // round round and keep 2 decimal places
+          balance: roundDownBalance(balance),
           raw_balance: rawBalance,
           image_url: COIN_CONFIG[coin.coinType]?.image_url,
           decimals: decimals,
