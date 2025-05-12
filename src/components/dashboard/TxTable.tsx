@@ -14,7 +14,11 @@ import {
   ChevronFirst,
   ChevronRight,
   ChevronLeft,
+  ExternalLink,
+  Plus,
+  ArrowUpRight,
 } from "lucide-react";
+import SwapIcon from "@/assets/icons/swap.svg";
 
 interface TxTableProps {
   transactions: TransactionHistory[];
@@ -61,12 +65,16 @@ export function TxTable({
   };
 
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
+    let hour = date.getHours();
+    const minute = String(date.getMinutes()).padStart(2, "0");
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    hour = hour === 0 ? 12 : hour;
+    return `${month}/${day}/${year} ${hour}:${minute} ${ampm}`;
   };
 
   const formatTokenName = (vaultId: string) => {
@@ -193,18 +201,40 @@ export function TxTable({
                   >
                     <TableCell>
                       <span
-                        className={`inline-block text-xs font-medium px-2 py-1 rounded-full ${
-                          tx.tx_type === "remove" && "bg-orion/20 text-orion"
+                        className={`inline-block text-xs font-medium px-2 py-1 rounded-md ${
+                          tx.tx_type === "remove" &&
+                          "bg-[#F97316]/30 text-[#F97316]"
                         } ${
-                          tx.tx_type === "add" && "bg-emerald/20 text-emerald"
-                        } ${tx.tx_type === "swap" && "bg-nova/20 text-nova"}
+                          tx.tx_type === "add" &&
+                          "bg-[#22C55E]/20 text-[#22C55E]"
+                        } ${
+                          tx.tx_type === "swap" &&
+                          "bg-[#3B82F6]/30 text-[#3B82F6]"
+                        }
                         `}
                       >
+                        {tx.tx_type === "add" && (
+                          <Plus size={16} className="inline-block mr-1" />
+                        )}
+                        {tx.tx_type === "remove" && (
+                          <ArrowUpRight
+                            size={16}
+                            className="inline-block mr-1"
+                          />
+                        )}
+                        {tx.tx_type === "swap" && (
+                          <img
+                            src={SwapIcon}
+                            alt="Swap"
+                            className="inline-block mr-1"
+                          />
+                        )}
+
                         {tx.tx_type.charAt(0).toUpperCase() +
                           tx.tx_type.slice(1)}
                       </span>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">
+                    <TableCell className="font-mono text-xs text-white/70">
                       {formatDate(tx.timestamp)}
                     </TableCell>
                     <TableCell
@@ -219,12 +249,12 @@ export function TxTable({
                       </span>
                     </TableCell>
                     <TableCell>{formatTokenName(tx.tokenId)}</TableCell>
-                    <TableCell className="text-right font-mono font-medium">
+                    <TableCell className="text-right font-mono font-medium text-white">
                       {formatCurrency(tx.value)}
                     </TableCell>
                     <TableCell className="text-right font-mono font-medium">
                       <Button
-                        variant="ghost"
+                        variant="link"
                         size="sm"
                         className="h-6 w-6 p-0"
                         onClick={(e) => {
@@ -235,21 +265,7 @@ export function TxTable({
                           );
                         }}
                       >
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M10 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V14M14 4H20M20 4V10M20 4L10 14"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                        <ExternalLink size={16} className="text-white/60" />
                       </Button>
                     </TableCell>
                   </TableRow>
