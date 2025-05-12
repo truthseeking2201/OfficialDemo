@@ -25,7 +25,7 @@ const sampleTransactions = [
   },
   {
     id: "2",
-    tx_type: "remove" as const,
+    tx_type: "swap" as const,
     timestamp: "2025-05-02T12:00:00Z",
     value: 500,
     address: "0xabcdef1234567890abcdef1234567890abcdef1234",

@@ -4,7 +4,7 @@ const LeftContent = () => {
   return (
     <div>
       <div
-        className="bg-black/30 backdrop-blur-sm rounded-xl p-4 mb-4 flex items-center hover:bg-black transition duration-300 ease-in-out cursor-pointer"
+        className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-4 flex items-center hover:bg-white/20 transition duration-300 ease-in-out cursor-pointer"
         onClick={() => {
           window.open(`${import.meta.env.VITE_NODO_APP_URL}`, "_blank");
         }}
@@ -16,7 +16,7 @@ const LeftContent = () => {
       </div>
 
       <div
-        className="bg-black/30 backdrop-blur-sm rounded-xl p-4 flex items-center hover:bg-black transition duration-300 ease-in-out cursor-pointer"
+        className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-center hover:bg-white/20 transition duration-300 ease-in-out cursor-pointer"
         onClick={() => {
           window.open("https://docs.nodo.xyz", "_blank");
         }}

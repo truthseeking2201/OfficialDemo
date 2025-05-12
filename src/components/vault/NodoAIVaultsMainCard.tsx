@@ -5,6 +5,7 @@ import { useWallet } from "@/hooks/useWallet";
 import WithdrawVaultSection from "@/components/vault/withdraw/WithdrawVaultSection";
 import DepositVaultSection from "@/components/vault/deposit/DepositVaultSection";
 
+
 export default function NodoAIVaultsMainCard() {
   const [depositWithdrawTab, setDepositWithdrawTab] = useState("deposit");
 
