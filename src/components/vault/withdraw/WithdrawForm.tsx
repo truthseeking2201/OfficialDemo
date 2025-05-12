@@ -21,10 +21,9 @@ import {
 
 import { showFormatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import LpType from "@/types/lp-type";
+import LpType from "@/types/lp.type";
 import { useToast } from "@/components/ui/use-toast";
-
-import { getConfig } from "@/apis/vault";
+import { useEstWithdrawVault } from "@/hooks/useWithdrawVault";
 
 type Props = {
   balanceLp: number;
@@ -82,6 +81,10 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
   const { toast } = useToast();
+  const { amountEst, configVault } = useEstWithdrawVault(
+    form?.amount || 0,
+    lpData
+  );
 
   /**
    * FUNCTION
@@ -105,17 +108,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   }, [balanceLp]);
 
   const handleFormChange = useCallback((data: IFormInput) => {
-    if (!Number(data.amount)) {
-      setSummary(summary_default);
-      return;
-    }
-    setSummary({
-      ...summary_default,
-      amount: data.amount,
-      receive: data.amount * 1, //TODO
-      fee: data.amount * 0.05, //TODO,
-      rateFee: 0.5,
-    });
+    setForm(data);
   }, []);
 
   const onWithdraw = useCallback(() => {
@@ -140,26 +133,26 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     setIsLoading(false);
   }, []);
 
-  const initConfigBE = async () => {
-    try {
-      // TODO
-      await getConfig();
-      setTimeCoolDown("24-hour");
-    } catch (error) {
-      console.log("-----error", error);
-      setTimeCoolDown("24-hour");
-    }
-  };
-
   /**
    * LIFECYCLES
    */
   useEffect(() => {
-    if (count.current == 0) {
-      initConfigBE();
+    setSummary(amountEst);
+  }, [amountEst]);
+
+  useEffect(() => {
+    const duration = Math.floor(configVault.lock_duration_ms / 1000);
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration - hours * 3600) / 60);
+    if (hours > 0) {
+      setTimeCoolDown(`${hours}-hour`);
+    } else if (minutes > 0) {
+      setTimeCoolDown(`${minutes}-minute`);
+    } else {
+      setTimeCoolDown(`${duration}-seconds`);
     }
-    count.current++;
-  });
+  }, [configVault.lock_duration_ms]);
+
   useEffect(() => {
     const debouncedCb = debounce((formValue) => {
       handleFormChange(formValue);
@@ -254,7 +247,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             label="Withdraw Fee"
             className="mt-3"
           >
-            {summary.fee
+            {summary.amount
               ? `${showFormatNumber(summary.fee)} ${lpData.token_symbol}`
               : "--"}
           </RowItem>

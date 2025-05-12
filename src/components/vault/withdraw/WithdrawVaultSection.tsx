@@ -4,14 +4,9 @@ import { Button } from "@/components/ui/button";
 import WithdrawForm from "./WithdrawForm";
 import ClaimToken from "./ClaimToken";
 
-import {
-  formatNumber,
-  getDecimalAmount,
-  getBalanceAmountForInput,
-} from "@/lib/number";
+import { showFormatNumber, getBalanceAmountForInput } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import useExchangeRateToken from "@/hooks/useExchangeRateToken";
-import useWithdrawVault from "@/hooks/useWithdrawVault";
+import { useEstWithdrawVault } from "@/hooks/useWithdrawVault";
 import { useMyAssets, useWallet } from "@/hooks";
 import { NDLP } from "@/config/lp-config";
 import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
@@ -27,13 +22,11 @@ export default function WithdrawVaultSection() {
    * HOOKS
    */
   const { openConnectWalletDialog } = useWallet();
-  const { ndlpUsdc: rateNdlpUsdc, refetchExchangeRate } =
-    useExchangeRateToken();
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
   const address = currentAccount?.address;
   const { refreshBalance } = useMyAssets();
-  const { getEstWithdrawAmount } = useWithdrawVault();
+  const { amountEst } = useEstWithdrawVault(1, NDLP);
 
   /**
    * FUNCTION
@@ -86,19 +79,6 @@ export default function WithdrawVaultSection() {
    * LIFECYCLES
    */
   useEffect(() => {
-    // refetchExchangeRate();
-    getEstWithdrawAmount(
-      getDecimalAmount(1, 9).toFixed(),
-      NDLP.vault_id,
-      NDLP.package_id
-    );
-    if (count.current == 0) {
-      refetchExchangeRate();
-    }
-    count.current++;
-  });
-
-  useEffect(() => {
     if (address) {
       initBalance();
       initDataClaim();
@@ -144,11 +124,12 @@ export default function WithdrawVaultSection() {
                 className="w-[36px] h-[36px]"
               />
               <div className="text-white font-sans font-medium text-[40px] leading-[40px] ml-2">
-                {formatNumber(balanceLp)}
+                {showFormatNumber(balanceLp)}
               </div>
             </div>
             <div className="font-sans text-sm text-white/60 mt-3">
-              1 {NDLP.lp_symbol} ≈ {rateNdlpUsdc} {NDLP.token_symbol}
+              1 {NDLP.lp_symbol} ≈ {showFormatNumber(amountEst.receive)}{" "}
+              {NDLP.token_symbol}
             </div>
           </div>
 
