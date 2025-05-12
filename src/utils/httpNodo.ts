@@ -8,8 +8,10 @@ const apiSecret =
   import.meta.env.VITE_NODO_APP_URL_API_KEY_API_SECRET ||
   "35416546187b8f78409490e260a1dddc778712c1c46882f787e65a7ab13da9ec";
 
+const baseURL = import.meta.env.VITE_NODO_APP_URL || "https://api-dev.nodo.xyz";
+
 const http = axios.create({
-  baseURL: "https://api-dev.nodo.xyz",
+  baseURL: baseURL,
 });
 // Thêm interceptor để ký mỗi request
 http.interceptors.request.use(
