@@ -12,9 +12,10 @@ import { NDLP } from "@/config/lp-config";
 import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
 
 import DataClaimType from "@/types/data-claim-type";
+import { getLatestWithdrawal } from "@/apis/vault";
 
 export default function WithdrawVaultSection() {
-  const count = useRef<number>(0);
+  const count = useRef<string>("0");
   const [balanceLp, setBalanceLp] = useState<number>(0);
   const [dataClaim, setDataClaim] = useState<DataClaimType>();
 
@@ -50,9 +51,13 @@ export default function WithdrawVaultSection() {
     }
   };
 
-  const initDataClaim = () => {
+  const initDataClaim = async () => {
     try {
       // TODO
+      const res = await getLatestWithdrawal(
+        "0x16039ba417fdeab14706722045fc12b4f9667b2390338cdfd483322f3e9df5ab"
+      );
+      console.log("------initDataClaim", res);
       // setDataClaim({
       //   id: 1,
       //   timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
@@ -79,7 +84,8 @@ export default function WithdrawVaultSection() {
    * LIFECYCLES
    */
   useEffect(() => {
-    if (address) {
+    initDataClaim();
+    if (count.current !== address) {
       initBalance();
       initDataClaim();
     }

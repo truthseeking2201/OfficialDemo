@@ -23,7 +23,10 @@ import { showFormatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import LpType from "@/types/lp.type";
 import { useToast } from "@/components/ui/use-toast";
-import { useEstWithdrawVault } from "@/hooks/useWithdrawVault";
+import {
+  useEstWithdrawVault,
+  useWithdrawVault,
+} from "@/hooks/useWithdrawVault";
 
 type Props = {
   balanceLp: number;
@@ -81,6 +84,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
   const { toast } = useToast();
+  const { withdraw } = useWithdrawVault();
   const { amountEst, configVault } = useEstWithdrawVault(
     form?.amount || 0,
     lpData
@@ -111,11 +115,13 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     setForm(data);
   }, []);
 
-  const onWithdraw = useCallback(() => {
+  const onWithdraw = useCallback(async () => {
     setIsLoading(true);
     try {
       // TODO
-      console.log("-------onWithdraw");
+      console.log("-------onWithdraw form", form);
+      const res = await withdraw(form.amount, lpData);
+      console.log("-------onWithdraw", res);
       setOpenModalSuccess(true);
       onCloseModalConfirm();
       onSuccess();
@@ -131,7 +137,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
       });
     }
     setIsLoading(false);
-  }, []);
+  }, [form]);
 
   /**
    * LIFECYCLES

@@ -7,7 +7,7 @@ import DepositVaultSection from "@/components/vault/deposit/DepositVaultSection"
 
 
 export default function NodoAIVaultsMainCard() {
-  const [depositWithdrawTab, setDepositWithdrawTab] = useState("deposit");
+  const [depositWithdrawTab, setDepositWithdrawTab] = useState("withdraw");
 
   /**
    * FUNCTION
