@@ -152,12 +152,15 @@ const DepositModal = (props: DepositModalProps) => {
                 <div className="flex justify-center gap-2 mt-2">
                   <ExternalLink size={16} className="text-[#9CA3AF]" />
                   <a
-                    href={`https://explorer.sui.io/tx/${depositSuccessData?.digest}`}
+                    href={`https://explorer.sui.io/tx/${
+                      import.meta.env.VITE_SUI_NETWORK
+                    }/${depositSuccessData?.digest}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#9CA3AF] hover:text-white transition duration-300"
                   >
-                    Tx Hash: {truncateBetween(depositSuccessData?.digest || "", 6, 6)}
+                    Tx Hash:{" "}
+                    {truncateBetween(depositSuccessData?.digest || "", 6, 6)}
                   </a>
                 </div>
               </div>

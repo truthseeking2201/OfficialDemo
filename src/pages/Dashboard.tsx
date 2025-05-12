@@ -127,49 +127,6 @@ export default function NodoAIVaults() {
   const [depositWithdrawTab, setDepositWithdrawTab] = useState("deposit");
 
   const containerRef = useRef<HTMLDivElement>(null);
-  // Mock vault data for deposit drawer
-  const mockVaultData = {
-    id: "nodo-ai-vault",
-    name: "NODO AI Vault",
-    type: "nova" as const,
-    tvl: 1293,
-    apr: 24.8,
-    apy: 27.6,
-    description: "Maximizing DeFi Yields With Autonomous Risk Management",
-    lockupPeriods: [
-      { days: 7, aprBoost: 0 },
-      { days: 30, aprBoost: 2.5 },
-      { days: 90, aprBoost: 5.0 },
-    ],
-    riskLevel: "medium" as const,
-    strategy: "Multi-protocol AI optimizer",
-    performance: {
-      daily: Array(14)
-        .fill(0)
-        .map((_, i) => ({
-          date: new Date(Date.now() - (13 - i) * 86400000)
-            .toISOString()
-            .split("T")[0],
-          value: 1000 * (1 + 0.001 * (i + 1)),
-        })),
-      weekly: Array(8)
-        .fill(0)
-        .map((_, i) => ({
-          date: new Date(Date.now() - (7 - i) * 7 * 86400000)
-            .toISOString()
-            .split("T")[0],
-          value: 1000 * (1 + 0.007 * (i + 1)),
-        })),
-      monthly: Array(6)
-        .fill(0)
-        .map((_, i) => ({
-          date: new Date(Date.now() - (5 - i) * 30 * 86400000)
-            .toISOString()
-            .split("T")[0],
-          value: 1000 * (1 + 0.02 * (i + 1)),
-        })),
-    },
-  };
 
   const handleConnectWallet = () => {
     // Open the connect wallet modal
@@ -236,13 +193,23 @@ export default function NodoAIVaults() {
       <PageContainer>
         <div style={{ maxWidth: "1400px" }}>
           {/* Main Header */}
-          <header className="text-center mb-8">
-            <h1 className="font-heading-xl text-100 mb-2">
+          <header className="text-center mb-4">
+            <h1 className="text-[60px] font-bold">
               <span>NODO </span>
-              <span style={{ color: "var(--c-brand-magenta)" }}>AI</span>
-              <span style={{ color: "var(--c-brand-orange)" }}> Vaults</span>
+              <span
+                style={{
+                  background:
+                    "linear-gradient(90deg, #0090FF -29.91%, #FF6D9C 44.08%, #FB7E16 100%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  fontFamily: "DM Sans",
+                }}
+              >
+                AI Vaults
+              </span>
             </h1>
-            <p className="font-body text-075">
+            <p className="font-body text-">
               Maximizing DeFi Yields With Autonomous Risk Management
             </p>
           </header>

@@ -101,7 +101,6 @@ export default function DepositVaultSection() {
       });
       setDepositAmount("");
       console.error(error);
-    } finally {
       setLoading(false);
     }
   }, [depositAmount]);

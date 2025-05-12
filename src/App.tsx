@@ -10,28 +10,9 @@ import {
 import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
-// Lazy load pages for better performance with improved loading reliability
-const VaultCatalog = lazy(() =>
-  import("./pages/VaultCatalog").catch((e) => {
-    console.error("Error loading VaultCatalog:", e);
-    return { default: () => <PageFallback /> };
-  })
-);
-const VaultTest = lazy(() =>
-  import("./pages/VaultTest").catch((e) => {
-    console.error("Error loading VaultTest:", e);
-    return { default: () => <PageFallback /> };
-  })
-);
-const VaultDetail = lazy(() =>
-  import("./pages/EnhancedVaultDetail").catch((e) => {
-    console.error("Error loading EnhancedVaultDetail:", e);
-    return { default: () => <PageFallback /> };
-  })
-);
 const Dashboard = lazy(() =>
   // Load Dashboard component immediately without delay
   import("./pages/Dashboard").catch((e) => {
@@ -67,10 +48,7 @@ const { networkConfig } = createNetworkConfig({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <SuiClientProvider
-      networks={networkConfig}
-      defaultNetwork="testnet"
-    >
+    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
       <WalletProvider autoConnect>
         <LanguageProvider>
           <TooltipProvider>
@@ -88,71 +66,6 @@ const App = () => (
                     </MainLayout>
                   }
                 />
-
-                {/* Routes for backward compatibility with old URLs */}
-                <Route
-                  path="/vaults/orion-stable"
-                  element={
-                    <Navigate
-                      to="/vaults/cetus-sui"
-                      replace
-                    />
-                  }
-                />
-                <Route
-                  path="/vaults/nova-yield"
-                  element={
-                    <Navigate
-                      to="/vaults/deep-sui"
-                      replace
-                    />
-                  }
-                />
-                <Route
-                  path="/vaults/emerald-growth"
-                  element={
-                    <Navigate
-                      to="/vaults/sui-usdc"
-                      replace
-                    />
-                  }
-                />
-
-                {/* Regular vault detail route */}
-                <Route
-                  path="/vaults/:vaultId"
-                  element={
-                    <MainLayout>
-                      <Suspense fallback={<PageFallback />}>
-                        <VaultDetail />
-                      </Suspense>
-                    </MainLayout>
-                  }
-                />
-
-                {/* Dashboard route with dedicated Suspense */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <MainLayout>
-                      <Suspense fallback={<PageFallback />}>
-                        <Dashboard />
-                      </Suspense>
-                    </MainLayout>
-                  }
-                />
-
-                <Route
-                  path="/vault-test"
-                  element={
-                    <MainLayout>
-                      <Suspense fallback={<PageFallback />}>
-                        <VaultTest />
-                      </Suspense>
-                    </MainLayout>
-                  }
-                />
-
                 <Route
                   path="*"
                   element={

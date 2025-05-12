@@ -7,6 +7,7 @@ import {
   useSuiClient,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
+import { useMergeCoins } from "./useMergeCoins";
 
 export const useDepositVault = () => {
   const { mutateAsync: signAndExecuteTransaction } =
@@ -14,43 +15,7 @@ export const useDepositVault = () => {
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
 
-  const mergeCoins = async (coinType: string) => {
-    if (!account?.address) {
-      throw new Error("No account connected");
-    }
-
-    const coins = await suiClient.getCoins({
-      owner: account.address,
-      coinType,
-    });
-
-    // If there's only one coin, no need to merge
-    if (coins.data.length <= 1) {
-      return coins.data[0]?.coinObjectId;
-    }
-
-    const tx = new Transaction();
-    const primaryCoin = tx.object(coins.data[0].coinObjectId);
-    const coinsToMerge = coins.data
-      .slice(1)
-      .map((coin) => tx.object(coin.coinObjectId));
-
-    if (coinsToMerge.length > 0) {
-      tx.mergeCoins(primaryCoin, coinsToMerge);
-    }
-
-    const result = await signAndExecuteTransaction({
-      transaction: tx,
-    });
-
-    // Wait for transaction to be confirmed
-    await suiClient.waitForTransaction({
-      digest: result.digest,
-    });
-
-    // Return the merged coin object ID
-    return coins.data[0].coinObjectId;
-  };
+  const { mergeCoins } = useMergeCoins();
 
   const deposit = async (
     coin: UserCoinAsset,
