@@ -38,6 +38,10 @@ export default function DepositVaultSection() {
     [assets]
   );
 
+  const ndlpAmountWillGet = useMemo(() => {
+    return (Number(depositAmount || 0) * conversionRate).toFixed(2);
+  }, [depositAmount, conversionRate]);
+
   const handleValidateDepositAmount = useCallback(
     (value: string) => {
       if (!value) {
@@ -156,11 +160,7 @@ export default function DepositVaultSection() {
           <div className="flex items-center">
             <img src="/coins/ndlp.png" alt="NDLP" className="w-6 h-6 mr-1" />
             <span className="font-mono font-bold text-lg">
-              {conversionRate
-                ? `${(Number(depositAmount || 0) * conversionRate).toFixed(
-                    2
-                  )} NDLP`
-                : "--"}
+              {ndlpAmountWillGet} NDLP
             </span>
           </div>
         </div>
@@ -203,8 +203,7 @@ export default function DepositVaultSection() {
           amount: Number(depositAmount),
           apr: 18.7,
           estReturn: 10.76,
-          totalValue: 1010.76,
-          ndlp: 1050,
+          ndlp: Number(ndlpAmountWillGet),
           txHash: depositSuccessData?.txHash,
         }}
         depositSuccessData={depositSuccessData}

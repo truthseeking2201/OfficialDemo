@@ -7,7 +7,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useMemo } from "react";
 import SuccessIcon from "@/assets/images/deposit/success.png";
 import { ExternalLink, X } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
@@ -25,7 +25,6 @@ interface DepositModalProps {
     amount: number;
     apr: number;
     estReturn: number;
-    totalValue: number;
     ndlp: number;
     txHash: string;
   };
@@ -44,7 +43,11 @@ const DepositModal = (props: DepositModalProps) => {
     loading,
   } = props;
 
-  const { amount, apr, estReturn, totalValue, ndlp } = confirmData;
+  const { amount, apr, estReturn, ndlp } = confirmData;
+
+  const totalValue = useMemo(() => {
+    return amount + estReturn;
+  }, [amount, estReturn]);
 
   const handleDeposit = () => {
     onDeposit();
