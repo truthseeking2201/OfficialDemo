@@ -189,7 +189,10 @@ export default function NodoAIVaults() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen main-bg" ref={containerRef}>
+    <div
+      className="min-h-screen main-bg"
+      ref={containerRef}
+    >
       <PageContainer>
         <div style={{ maxWidth: "1400px" }}>
           {/* Main Header */}
@@ -220,9 +223,9 @@ export default function NodoAIVaults() {
             <LeftContent />
 
             {/* Main Content (Center) */}
-            <div className="flex-shrink-0">
+            <div className="w-main-content-center">
               {/* Main Vault Card */}
-              <div className="mb-8">
+              <div className="w-full mb-8">
                 <NodoAIVaultsMainCard />
               </div>
 
@@ -271,7 +274,11 @@ export default function NodoAIVaults() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={XIcon} alt="X" className="w-5 h-5" />
+                <img
+                  src={XIcon}
+                  alt="X"
+                  className="w-5 h-5"
+                />
               </a>
             </div>
           </div>

@@ -366,3 +366,7 @@
   border-radius: 24px 24px 0px 0px;
   background: #000;
 }
+
+.w-main-content-center {
+  width: calc(100% - 632px);
+}

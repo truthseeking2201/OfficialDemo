@@ -18,7 +18,7 @@ const RightContent = () => {
   const isConnected = !!currentAccount?.address;
 
   return (
-    <div className="max-w-[300px] flex-shrink-0">
+    <div className="w-[252px] flex-shrink-0">
       {/* Balance Card - Only visible when wallet is connected */}
       {isConnected && <BalanceCard className="mb-6" />}
 
@@ -139,7 +139,11 @@ const RightContent = () => {
         <div className="space-y-6">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-surface-075 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-              <img src={DepositIcon} alt="deposit" className="w-8 h-8" />
+              <img
+                src={DepositIcon}
+                alt="deposit"
+                className="w-8 h-8"
+              />
             </div>
             <div>
               <div className="font-body font-medium mb-1 text-100">Deposit</div>
@@ -152,7 +156,11 @@ const RightContent = () => {
 
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-surface-075 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-              <img src={AIInvestIcon} alt="AI invest" className="w-8 h-8" />
+              <img
+                src={AIInvestIcon}
+                alt="AI invest"
+                className="w-8 h-8"
+              />
             </div>
             <div>
               <div className="font-body font-medium mb-1 text-100">
