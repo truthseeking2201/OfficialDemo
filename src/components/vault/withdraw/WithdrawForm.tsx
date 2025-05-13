@@ -105,6 +105,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
 
   const onCloseModalSuccess = () => {
     setOpenModalSuccess(false);
+    reset();
   };
 
   const handleMaxAmount = useCallback(() => {
@@ -120,12 +121,11 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     try {
       // TODO
       console.log("-------onWithdraw form", form);
-      const res = await withdraw(form.amount, lpData);
+      const res = await withdraw(form.amount, summary.fee, lpData);
       console.log("-------onWithdraw", res);
       setOpenModalSuccess(true);
       onCloseModalConfirm();
       onSuccess();
-      reset();
     } catch (error) {
       console.log(error);
       toast({
@@ -137,7 +137,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
       });
     }
     setIsLoading(false);
-  }, [form]);
+  }, [form, summary]);
 
   /**
    * LIFECYCLES

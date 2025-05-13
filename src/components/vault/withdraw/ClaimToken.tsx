@@ -11,9 +11,9 @@ import AvgPaceIcon from "@/assets/images/avg-pace.png";
 
 import { showFormatNumber } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
 import { useToast } from "@/components/ui/use-toast";
-import DataClaimType from "@/types/data-claim-type";
+import DataClaimType from "@/types/data-claim.types.d";
+import { useWithdrawVault } from "@/hooks/useWithdrawVault";
 
 type Props = {
   data?: DataClaimType;
@@ -29,15 +29,15 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
   const { toast } = useToast();
+  const { redeem } = useWithdrawVault();
 
   /**
    * FUNCTION
    */
-  const onClaim = useCallback(() => {
+  const onClaim = useCallback(async () => {
     setIsLoading(true);
     try {
-      // TODO
-      console.log("-------onClaim");
+      await redeem(data.configLp);
       onSuccess();
       toast({
         title: "Claim successful",
@@ -78,7 +78,7 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
    * LIFECYCLES
    */
   useEffect(() => {
-    setIsClaim(false);
+    setIsClaim(true);
   }, [data]);
 
   /**

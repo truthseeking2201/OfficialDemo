@@ -7,11 +7,12 @@ import {
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
 import { useMergeCoins } from "./useMergeCoins";
-import { COIN_TYPES_CONFIG } from "@/config";
-import { RATE_DENOMINATOR, VAULT_CONFIG } from "@/config/vault-config";
-import BigNumber from "bignumber.js";
+import { RATE_DENOMINATOR } from "@/config/vault-config";
 import { getDecimalAmount, getBalanceAmount } from "@/lib/number";
+import { getLatestWithdrawal, executionWithdrawal } from "@/apis/vault";
+import { NDLP } from "@/config/lp-config";
 import LpType from "@/types/lp.type";
+import DataClaimType from "@/types/data-claim.types.d";
 
 const network = import.meta.env.VITE_SUI_NETWORK;
 
@@ -23,26 +24,29 @@ export const useWithdrawVault = () => {
 
   const { mergeCoins } = useMergeCoins();
 
-  const getDataClaim = () => {
+  const getRequestClaim = async (sender_address): Promise<DataClaimType> => {
     try {
-      // TODO
-      // setDataClaim({
-      //   id: 1,
-      //   timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
-      //   status: "NEW",
-      //   withdrawAmount: 200,
-      //   withdrawSymbol: NDLP.lp_symbol,
-      //   receiveAmount: 199,
-      //   receiveSymbol: NDLP.token_symbol,
-      //   feeAmount: 1,
-      //   feeSymbol: NDLP.token_symbol,
-      // });
+      const res = await getLatestWithdrawal(sender_address);
+      console.log("------initDataClaim", res);
+      // TODO format
+      return {
+        id: 1,
+        timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
+        status: "NEW",
+        withdrawAmount: 200,
+        withdrawSymbol: NDLP.lp_symbol,
+        receiveAmount: 199,
+        receiveSymbol: NDLP.token_symbol,
+        feeAmount: 1,
+        feeSymbol: NDLP.token_symbol,
+        configLp: NDLP,
+      };
     } catch (error) {
       return null;
     }
   };
 
-  const withdraw = async (amountLp: number, configLp: LpType) => {
+  const withdraw = async (amountLp: number, fee: number, configLp: LpType) => {
     try {
       if (!account?.address) {
         throw new Error("No account connected");
@@ -50,7 +54,6 @@ export const useWithdrawVault = () => {
 
       // Merge coins first
       const mergedCoinId = await mergeCoins(configLp.lp_coin_type);
-      console.log("-------mergedCoinId", mergedCoinId);
       if (!mergedCoinId) {
         throw new Error("No coins available to deposit");
       }
@@ -86,26 +89,64 @@ export const useWithdrawVault = () => {
       const result = await signAndExecuteTransaction({
         transaction: tx,
       });
-
       const txhash = result?.digest;
       // const txhash = "AuCXr9nGfAqroysWPP6DMP6pBvhfJU6xNze5Par8reH"; // for test
-      // const txBuild = await tx.build({
-      //   client: suiClient,
-      //   sender: account?.address,
-      // });
-      // console.log("--------txBuild", txBuild);
-      // const result = await suiClient.dryRunTransactionBlock({
-      //   transactionBlock: tx.serialize(),
-      // });
-      console.log("--------result", result);
-      return result;
+
+      // save
+      const rawFee = getDecimalAmount(fee, configLp.token_decimals).toFixed();
+      const payload = {
+        "txhash": txhash,
+        "vault": configLp.vault_id,
+        "coin": configLp.lp_coin_type,
+        "withdraw_amount": rawAmount,
+        "withdraw_fee": rawFee,
+        "sender": account?.address,
+      };
+      console.log("------payload", payload);
+      await executionWithdrawal(payload);
+
+      // console.log("--------result", result);
+      // return result;
     } catch (error) {
-      console.error("Error in deposit:", error);
+      console.error("Error in withdraw:", error);
       throw error;
     }
   };
 
-  return { getDataClaim, withdraw };
+  const redeem = async (configLp: LpType) => {
+    try {
+      if (!account?.address) {
+        throw new Error("No account connected");
+      }
+      const tx = new Transaction();
+      const _arguments = [
+        tx.object(configLp.vault_config_id),
+        tx.object(configLp.vault_id),
+        tx.object(configLp.clock),
+      ];
+      const typeArguments = [configLp.token_coin_type, configLp.lp_coin_type];
+
+      console.log("------_arguments", { _arguments, typeArguments });
+
+      tx.moveCall({
+        target: `${configLp.package_id}::vault::redeem`,
+        arguments: _arguments,
+        typeArguments: typeArguments,
+      });
+
+      const result = await signAndExecuteTransaction({
+        transaction: tx,
+      });
+
+      console.log("--------result", result);
+      return result;
+    } catch (error) {
+      console.error("Error in redeem:", error);
+      throw error;
+    }
+  };
+
+  return { getRequestClaim, withdraw, redeem };
 };
 
 export const useEstWithdrawVault = (amountLp: number, configLp: LpType) => {

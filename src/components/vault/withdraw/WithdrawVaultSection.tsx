@@ -6,13 +6,15 @@ import ClaimToken from "./ClaimToken";
 
 import { showFormatNumber, getBalanceAmountForInput } from "@/lib/number";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useEstWithdrawVault } from "@/hooks/useWithdrawVault";
+import {
+  useEstWithdrawVault,
+  useWithdrawVault,
+} from "@/hooks/useWithdrawVault";
 import { useMyAssets, useWallet } from "@/hooks";
 import { NDLP } from "@/config/lp-config";
 import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
 
-import DataClaimType from "@/types/data-claim-type";
-import { getLatestWithdrawal } from "@/apis/vault";
+import DataClaimType from "@/types/data-claim.types.d";
 
 export default function WithdrawVaultSection() {
   const count = useRef<string>("0");
@@ -28,6 +30,7 @@ export default function WithdrawVaultSection() {
   const address = currentAccount?.address;
   const { refreshBalance } = useMyAssets();
   const { amountEst } = useEstWithdrawVault(1, NDLP);
+  const { getRequestClaim } = useWithdrawVault();
 
   /**
    * FUNCTION
@@ -53,22 +56,9 @@ export default function WithdrawVaultSection() {
 
   const initDataClaim = async () => {
     try {
-      // TODO
-      const res = await getLatestWithdrawal(address);
-      console.log("------initDataClaim", res);
-      // setDataClaim({
-      //   id: 1,
-      //   timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
-      //   status: "NEW",
-      //   withdrawAmount: 200,
-      //   withdrawSymbol: NDLP.lp_symbol,
-      //   receiveAmount: 199,
-      //   receiveSymbol: NDLP.token_symbol,
-      //   feeAmount: 1,
-      //   feeSymbol: NDLP.token_symbol,
-      // });
+      const res = await getRequestClaim(address);
+      setDataClaim(res);
     } catch (error) {
-      console.log("------------error", error);
       setDataClaim(null);
     }
   };

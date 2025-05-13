@@ -34,6 +34,7 @@ http.interceptors.request.use(
       fullPath,
       timestamp,
       bodyString,
+      body: config.data,
       apiKey,
       apiSecret,
       signature,

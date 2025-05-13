@@ -16,5 +16,5 @@ export const getLatestWithdrawal = (sender_address) => {
 };
 
 export const executionWithdrawal = (payload) => {
-  return httpNodo.post(`/execution/execution/withdrawals`, payload);
+  return httpNodo.post(`/execution/withdrawals`, payload);
 };
