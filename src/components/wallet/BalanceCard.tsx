@@ -2,6 +2,8 @@ import { COIN_TYPES_CONFIG } from "@/config";
 import { useMyAssets } from "@/hooks";
 
 import arrowDown from "@/assets/icons/arrow-down.svg";
+import { useUSDCLPRate } from "@/hooks/useDepositVault";
+import { formatAmount } from "@/lib/utils";
 
 interface BalanceCardProps {
   className?: string;
@@ -13,13 +15,9 @@ export function BalanceCard({ className = "" }: BalanceCardProps) {
     assets.find((asset) => asset.coin_type === COIN_TYPES_CONFIG.NDLP_COIN_TYPE)
       ?.balance || 0;
 
-  // Calculate equivalent USDC value (1:1 rate as per the example)
-  const usdcEquivalent = ndlpAmount;
-
-  // Format as dollar amount
-  const formatDollar = (amount: number) => {
-    return `$${amount.toFixed(2)}`;
-  };
+  const conversionRate = useUSDCLPRate(true);
+  const usdcEquivalent = ndlpAmount * conversionRate;
+  const usdcDollarRate = usdcEquivalent * 1;
 
   return (
     <div
@@ -32,10 +30,12 @@ export function BalanceCard({ className = "" }: BalanceCardProps) {
           <div>
             <div className="text-white/70 text-sm">You have</div>
             <div className="text-white text-3xl font-bold">
-              {ndlpAmount} NDLP
+              {formatAmount({ amount: ndlpAmount })} NDLP
             </div>
           </div>
-          <div className="text-white/70 text-xs">1 NDLP = 1 USDC</div>
+          <div className="text-white/70 text-xs">
+            1 NDLP = {conversionRate} USDC
+          </div>
         </div>
       </div>
 
@@ -48,9 +48,11 @@ export function BalanceCard({ className = "" }: BalanceCardProps) {
         <div>
           <div className="text-white/70 text-sm">You will get</div>
           <div className="text-white text-3xl font-bold">
-            {usdcEquivalent} USDC
+            {formatAmount({ amount: usdcEquivalent })} USDC
           </div>
-          <div className="text-white/70 text-xs">${usdcEquivalent}</div>
+          <div className="text-white/70 text-xs">
+            ${formatAmount({ amount: usdcDollarRate })}
+          </div>
         </div>
       </div>
     </div>

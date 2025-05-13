@@ -16,7 +16,6 @@ export const useDepositVault = () => {
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
 
-
   const { mergeCoins } = useMergeCoins();
 
   const deposit = async (
@@ -62,7 +61,7 @@ export const useDepositVault = () => {
         {
           onSuccess: async (data) => {
             const { digest } = data;
-            
+
             const txResponse = await suiClient.waitForTransaction({
               digest,
               options: {
@@ -71,17 +70,17 @@ export const useDepositVault = () => {
             });
 
             const events = txResponse?.events;
-            
-            const depositEvent = events.find(event => 
-              event.type.includes('vault::DepositEvent')
-            );
-            console.log("🚀 ~ onSuccess: ~ depositEvent:", depositEvent)
 
+            const depositEvent = events.find((event) =>
+              event.type.includes("vault::DepositEvent")
+            );
             // Pass the event data to your callback
             onDepositSuccessCallback?.({
               ...data,
-              depositAmount: (depositEvent?.parsedJson as { amount?: number })?.amount,
-              depositLpAmount: (depositEvent?.parsedJson as { lp?: number })?.lp,
+              depositAmount: (depositEvent?.parsedJson as { amount?: number })
+                ?.amount,
+              depositLpAmount: (depositEvent?.parsedJson as { lp?: number })
+                ?.lp,
             });
           },
           onError: (error) => {
@@ -109,6 +108,7 @@ export const useCalculateNDLPReturn = (
   ndlpDecimals: number
 ) => {
   const { vaultConfig } = useGetVaultConfig();
+  const vaultRate = +vaultConfig?.rate || 1000000;
 
   if (!amount || !vaultConfig || !usdcDecimals || !ndlpDecimals) {
     return 0;
@@ -118,9 +118,26 @@ export const useCalculateNDLPReturn = (
   const fee = (rawAmount * +vaultConfig.deposit.fields.fee_bps) / 10000;
   const net_amount = rawAmount - fee;
 
-  const lp = (net_amount * RATE_DENOMINATOR) / +vaultConfig.rate;
+  const lp = (net_amount * RATE_DENOMINATOR) / vaultRate;
 
   const ndlpAmountWillGet = lp / Math.pow(10, ndlpDecimals);
 
   return Number(ndlpAmountWillGet).toFixed(2);
+};
+
+// calculate the rate of 1 USDC = ? NDLP
+export const useUSDCLPRate = (isReverse = false) => {
+  const { vaultConfig } = useGetVaultConfig();
+
+  if (!vaultConfig) {
+    return 1;
+  }
+
+  const vaultRate = +vaultConfig?.rate;
+
+  const rate = vaultRate / RATE_DENOMINATOR;
+
+  const usdcRate = isReverse ? rate : 1 / rate;
+
+  return usdcRate;
 };

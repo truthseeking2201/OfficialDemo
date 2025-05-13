@@ -18,3 +18,7 @@ export const getLatestWithdrawal = (sender_address) => {
 export const executionWithdrawal = (payload) => {
   return httpNodo.post(`/execution/withdrawals`, payload);
 };
+
+export const getVaultConfig = (vault_address) => {
+  return httpNodo.get(`${NODO_URL}/data-management/vaults/${vault_address}`);
+};

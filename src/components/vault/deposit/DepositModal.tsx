@@ -1,18 +1,18 @@
+import SuccessIcon from "@/assets/images/deposit/success.png";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
-import SuccessIcon from "@/assets/images/deposit/success.png";
-import { ExternalLink, X } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
+import { ExternalLink, X } from "lucide-react";
 
 import { formatNumber } from "@/lib/number";
+import { formatAmount } from "@/lib/utils";
 import { truncateBetween } from "@/utils/truncate";
 
 interface DepositModalProps {
@@ -27,6 +27,7 @@ interface DepositModalProps {
     apr: number;
     estReturn: number;
     ndlp: number;
+    conversionRate: number;
   };
   loading: boolean;
   depositSuccessData: any;
@@ -44,16 +45,12 @@ const DepositModal = (props: DepositModalProps) => {
     loading,
   } = props;
 
-  const { amount, apr, estReturn, ndlp } = confirmData;
-
-  const totalValue = useMemo(() => {
-    return amount + estReturn;
-  }, [amount, estReturn]);
+  const { amount, apr, ndlp, conversionRate, estReturn } = confirmData;
 
   const suiScanUrl = `https://suiscan.xyz/${
     import.meta.env.VITE_SUI_NETWORK
   }/tx/${depositSuccessData?.digest}`;
-  
+
   const handleDeposit = () => {
     onDeposit();
   };
@@ -79,26 +76,22 @@ const DepositModal = (props: DepositModalProps) => {
             <div className="flex flex-col gap-2 p-4 border border-white/15 rounded-xl bg-white/5">
               <div className="flex justify-between">
                 <span className="text-base text-[#9CA3AF]">Amount</span>
-                <span className="font-mono text-lg">
+                <span className="font-mono text-lg text-white">
                   {formatNumber(amount || 0)} USDC
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-base text-[#9CA3AF]">APR</span>
-                <span className="font-mono text-lg">
+                <span className="font-mono text-lg text-white">
                   {formatNumber(apr || 0)}%
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-base text-[#9CA3AF]">Est. Return</span>
-                <span className="font-mono text-lg">
-                  {formatNumber(estReturn || 0)} USDC
+                <span className="text-base text-[#9CA3AF]">
+                  Conversation Rate
                 </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-base text-[#9CA3AF]">Total Value</span>
-                <span className="font-mono text-lg">
-                  ${formatNumber(totalValue || 0)} USDC
+                <span className="font-mono text-lg text-white">
+                  1 USDC = {formatAmount({ amount: conversionRate })} NDLP
                 </span>
               </div>
               <div className="border-t border-white/15 my-2" />
@@ -110,7 +103,7 @@ const DepositModal = (props: DepositModalProps) => {
                     alt="NDLP"
                     className="w-6 h-6 mr-1"
                   />
-                  {formatNumber(ndlp || 0)} NDLP
+                  {formatNumber(estReturn || 0)} NDLP
                 </div>
               </div>
             </div>

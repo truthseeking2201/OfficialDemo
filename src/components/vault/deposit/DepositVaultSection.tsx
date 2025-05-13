@@ -5,15 +5,16 @@ import { IconErrorToast } from "@/components/ui/icon-error-toast";
 import { useToast } from "@/components/ui/use-toast";
 import DepositModal from "@/components/vault/deposit/DepositModal";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
-import { RATE_DENOMINATOR } from "@/config/vault-config";
 import {
   useCalculateNDLPReturn,
   useDepositVault,
+  useUSDCLPRate,
 } from "@/hooks/useDepositVault";
 import { useMyAssets } from "@/hooks/useMyAssets";
-import { useGetVaultConfig } from "@/hooks/useVault";
 import { useWallet } from "@/hooks/useWallet";
 import { formatNumber } from "@/lib/number";
+import { formatAmount } from "@/lib/utils";
+import { calculateInterest } from "@/utils/helpers";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
@@ -25,7 +26,7 @@ export default function DepositVaultSection() {
   const [loading, setLoading] = useState<boolean>(false);
   const [depositStep, setDepositStep] = useState<number>(1);
   const [depositSuccessData, setDepositSuccessData] = useState<any>(null);
-  const { vaultConfig } = useGetVaultConfig();
+  const apr = 18.7;
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
@@ -56,7 +57,13 @@ export default function DepositVaultSection() {
     ndlpCoin?.decimals || 9
   );
 
-  const conversionRate = +vaultConfig?.rate / RATE_DENOMINATOR;
+  const conversionRate = useUSDCLPRate();
+
+  const estimatedReturn = useMemo(() => {
+    return (
+      Number(depositAmount) + calculateInterest(Number(depositAmount), apr)
+    );
+  }, [depositAmount]);
 
   const handleValidateDepositAmount = useCallback(
     (value: string) => {
@@ -193,7 +200,7 @@ export default function DepositVaultSection() {
           <div className="font-caption text-075">Conversion Rate</div>
           <div className="font-mono text-white">
             {conversionRate
-              ? `1 USDC = ${formatNumber(conversionRate, 2, 6)} NDLP`
+              ? `1 USDC = ${formatAmount({ amount: conversionRate })} NDLP`
               : "Unable to fetch conversion rate. Please try again later."}
           </div>
         </div>
@@ -225,9 +232,10 @@ export default function DepositVaultSection() {
         onDone={handleDone}
         confirmData={{
           amount: Number(depositAmount),
-          apr: 18.7,
-          estReturn: 10.76,
+          apr,
+          estReturn: estimatedReturn,
           ndlp: Number(ndlpAmountWillGet),
+          conversionRate: conversionRate,
         }}
         depositSuccessData={depositSuccessData}
         loading={loading}
