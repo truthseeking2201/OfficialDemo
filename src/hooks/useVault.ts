@@ -21,7 +21,7 @@ export const useGetVaultConfig = (vaultId?: string) => {
     }
   );
 
-  const content = data?.data.content as unknown as {
+  const content = data?.data?.content as unknown as {
     fields: VaultConfig;
   };
   return {

@@ -48,7 +48,10 @@ const { networkConfig } = createNetworkConfig({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+    <SuiClientProvider
+      networks={networkConfig}
+      defaultNetwork={import.meta.env.VITE_SUI_NETWORK || "testnet"}
+    >
       <WalletProvider autoConnect>
         <LanguageProvider>
           <TooltipProvider>

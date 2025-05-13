@@ -16,9 +16,12 @@ const VAULT_CONFIG_BY_ENV = {
       "0xacd4204485b5855ec38e700126f94124115e793ff34743f128eac28622ae869d",
   },
   uat: {
-    PACKAGE_ID: "todo",
-    VAULT_CONFIG_ID: "todo",
-    VAULT_ID: "todo",
+    PACKAGE_ID:
+      "0x8404e665609111801ec4231c748faf586da4e740d809c0c43ba80a5bd61f6d0a",
+    VAULT_CONFIG_ID:
+      "0x67cfe4a6623bd60a0908b17125cbc967975fdbfde64d81b4391bcd58680cc093",
+    VAULT_ID:
+      "0x64296a09c8babdfc9e82bbc5223211334b67ac82119393c34345ba5c336a9b05",
   },
 };
 
