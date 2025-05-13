@@ -140,3 +140,23 @@ export const useMyAssets = () => {
     refreshBalance: refetch,
   };
 };
+
+export const useGetCoinsMetadata = () => {
+  const suiClient = useSuiClient();
+  const coinsMetadata = useQueries({
+    queries: ALLOW_COIN_TYPES.map((coinType) => ({
+      queryKey: ["getCoinMetadata", coinType],
+      queryFn: () => suiClient.getCoinMetadata({ coinType }),
+      staleTime: 1000 * 60 * 60 * 1, // 1 hour
+    })),
+  });
+
+  const coinMetadata = coinsMetadata.reduce((acc, result, index) => {
+    if (result.data) {
+      acc[ALLOW_COIN_TYPES[index]] = result.data;
+    }
+    return acc;
+  }, {} as Record<string, CoinMetadata>);
+
+  return coinMetadata;
+};
