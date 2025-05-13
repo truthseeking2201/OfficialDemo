@@ -223,7 +223,7 @@ export default function NodoAIVaults() {
             <LeftContent />
 
             {/* Main Content (Center) */}
-            <div className="w-main-content-center">
+            <div className="w-full">
               {/* Main Vault Card */}
               <div className="w-full mb-8">
                 <NodoAIVaultsMainCard />
