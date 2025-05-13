@@ -29,5 +29,9 @@ export const formatAmount = ({
     res = res.replace(/\.?0+$/, "");
   }
 
-  return res;
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: precision,
+  }).format(amount);
 };

@@ -1,5 +1,3 @@
-import { BalanceCard } from "@/components/wallet/BalanceCard";
-import { useCurrentAccount } from "@mysten/dapp-kit";
 import AIInvestIcon from "@/assets/images/dashboard/ai_invest.png";
 import AutoCompoundingIcon from "@/assets/images/dashboard/auto_compounding.png";
 import DepositIcon from "@/assets/images/dashboard/deposit.png";
@@ -12,10 +10,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { BalanceCard } from "@/components/wallet/BalanceCard";
+import { useGetVaultConfig, useGetVaultManagement } from "@/hooks";
+import { getBalanceAmount } from "@/lib/number";
+import { formatAmount } from "@/lib/utils";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 const RightContent = () => {
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
+  const { data: vaultManagement } = useGetVaultManagement();
+  const { vaultConfig } = useGetVaultConfig();
+
+  const apr = vaultManagement?.apr;
+  const totalUsers = vaultManagement?.total_users;
+  const tvl = getBalanceAmount(vaultConfig?.total_liquidity || 0, 9).toNumber();
 
   return (
     <div className="w-[252px] flex-shrink-0">
@@ -42,17 +51,19 @@ const RightContent = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="text-2xl font-mono font-bold">24.8%</div>
+          <div className="text-2xl font-mono font-bold">{apr}%</div>
         </div>
 
         <div className="mb-4">
           <div className="font-caption text-075 ">TVL</div>
-          <div className="text-2xl font-mono font-bold">$1,293</div>
+          <div className="text-2xl font-mono font-bold">
+            {formatAmount({ amount: tvl })}
+          </div>
         </div>
 
         <div>
           <div className="font-caption text-075">User</div>
-          <div className="text-2xl font-mono font-bold">123</div>
+          <div className="text-2xl font-mono font-bold">{totalUsers}</div>
         </div>
       </div>
 
@@ -139,11 +150,7 @@ const RightContent = () => {
         <div className="space-y-6">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-surface-075 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-              <img
-                src={DepositIcon}
-                alt="deposit"
-                className="w-8 h-8"
-              />
+              <img src={DepositIcon} alt="deposit" className="w-8 h-8" />
             </div>
             <div>
               <div className="font-body font-medium mb-1 text-100">Deposit</div>
@@ -156,11 +163,7 @@ const RightContent = () => {
 
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-surface-075 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-              <img
-                src={AIInvestIcon}
-                alt="AI invest"
-                className="w-8 h-8"
-              />
+              <img src={AIInvestIcon} alt="AI invest" className="w-8 h-8" />
             </div>
             <div>
               <div className="font-body font-medium mb-1 text-100">

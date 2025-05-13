@@ -29,7 +29,7 @@ export function BalanceCard({ className = "" }: BalanceCardProps) {
         <div>
           <div>
             <div className="text-white/70 text-sm">You have</div>
-            <div className="text-white text-3xl font-bold">
+            <div className="text-white text-xl font-bold">
               {formatAmount({ amount: ndlpAmount })} NDLP
             </div>
           </div>
@@ -47,7 +47,7 @@ export function BalanceCard({ className = "" }: BalanceCardProps) {
         <img src="/coins/usdc.png" alt="USDC" className="w-10" />
         <div>
           <div className="text-white/70 text-sm">You will get</div>
-          <div className="text-white text-3xl font-bold">
+          <div className="text-white text-xl font-bold">
             {formatAmount({ amount: usdcEquivalent })} USDC
           </div>
           <div className="text-white/70 text-xs">

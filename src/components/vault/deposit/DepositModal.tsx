@@ -25,7 +25,6 @@ interface DepositModalProps {
   confirmData: {
     amount: number;
     apr: number;
-    estReturn: number;
     ndlp: number;
     conversionRate: number;
   };
@@ -45,7 +44,7 @@ const DepositModal = (props: DepositModalProps) => {
     loading,
   } = props;
 
-  const { amount, apr, ndlp, conversionRate, estReturn } = confirmData;
+  const { amount, apr, ndlp, conversionRate } = confirmData;
 
   const suiScanUrl = `https://suiscan.xyz/${
     import.meta.env.VITE_SUI_NETWORK
@@ -96,14 +95,14 @@ const DepositModal = (props: DepositModalProps) => {
               </div>
               <div className="border-t border-white/15 my-2" />
               <div className="flex justify-between">
-                <span className="text-base text-[#9CA3AF]">You’ll Receive</span>
+                <span className="text-base text-[#9CA3AF]">You'll Receive</span>
                 <div className="font-mono font-bold text-lg flex items-center gap-1">
                   <img
                     src="/coins/ndlp.png"
                     alt="NDLP"
                     className="w-6 h-6 mr-1"
                   />
-                  {formatNumber(estReturn || 0)} NDLP
+                  {formatNumber(ndlp || 0)} NDLP
                 </div>
               </div>
             </div>
@@ -125,14 +124,23 @@ const DepositModal = (props: DepositModalProps) => {
               <div className="flex flex-col gap-2 p-4 border border-white/15 rounded-lg bg-white/5">
                 <div className="flex justify-between">
                   <span className="text-base text-[#9CA3AF]">Amount</span>
-                  <span className="font-mono text-lg">
+                  <span className="font-mono text-lg text-white">
                     {formatNumber(amount || 0)} USDC
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-base text-[#9CA3AF]">APR</span>
-                  <span className="font-mono text-lg">
+                  <span className="font-mono text-lg text-white">
                     {formatNumber(apr || 0)}%
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-base text-[#9CA3AF]">
+                    Conversation Rate
+                  </span>
+                  <span className="font-mono text-lg text-white">
+                    1 USDC = {formatAmount({ amount: conversionRate })} NDLP
                   </span>
                 </div>
 
@@ -146,7 +154,10 @@ const DepositModal = (props: DepositModalProps) => {
                     NDLP Received
                   </div>
                   <span className="font-mono font-bold text-lg text-[#FFA822]">
-                    {formatNumber(ndlp)} NDLP
+                    {formatAmount({
+                      amount: ndlp,
+                    })}{" "}
+                    NDLP
                   </span>
                 </div>
 

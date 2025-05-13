@@ -5,6 +5,7 @@ import { IconErrorToast } from "@/components/ui/icon-error-toast";
 import { useToast } from "@/components/ui/use-toast";
 import DepositModal from "@/components/vault/deposit/DepositModal";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
+import { useGetVaultManagement } from "@/hooks";
 import {
   useCalculateNDLPReturn,
   useDepositVault,
@@ -14,19 +15,28 @@ import { useMyAssets } from "@/hooks/useMyAssets";
 import { useWallet } from "@/hooks/useWallet";
 import { formatNumber } from "@/lib/number";
 import { formatAmount } from "@/lib/utils";
-import { calculateInterest } from "@/utils/helpers";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
+type DepositSuccessData = {
+  amount: number;
+  apr: number;
+  ndlp: number;
+  conversionRate: number;
+};
+const MIN_DEPOSIT_AMOUNT = 0.1;
 export default function DepositVaultSection() {
   const [depositAmount, setDepositAmount] = useState("");
   const [error, setError] = useState<string>("");
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [depositStep, setDepositStep] = useState<number>(1);
-  const [depositSuccessData, setDepositSuccessData] = useState<any>(null);
-  const apr = 18.7;
+  const [depositSuccessData, setDepositSuccessData] =
+    useState<DepositSuccessData>(null);
+
+  const { data: vaultManagement } = useGetVaultManagement();
+  const apr = vaultManagement?.apr;
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
@@ -59,12 +69,6 @@ export default function DepositVaultSection() {
 
   const conversionRate = useUSDCLPRate();
 
-  const estimatedReturn = useMemo(() => {
-    return (
-      Number(depositAmount) + calculateInterest(Number(depositAmount), apr)
-    );
-  }, [depositAmount]);
-
   const handleValidateDepositAmount = useCallback(
     (value: string) => {
       if (!value) {
@@ -72,8 +76,8 @@ export default function DepositVaultSection() {
         return;
       }
 
-      if (value && Number(value) < 1) {
-        setError("Minimum amount is 1 USDC.");
+      if (value && Number(value) < MIN_DEPOSIT_AMOUNT) {
+        setError(`Minimum amount is ${MIN_DEPOSIT_AMOUNT} USDC.`);
         return;
       }
 
@@ -233,7 +237,6 @@ export default function DepositVaultSection() {
         confirmData={{
           amount: Number(depositAmount),
           apr,
-          estReturn: estimatedReturn,
           ndlp: Number(ndlpAmountWillGet),
           conversionRate: conversionRate,
         }}
