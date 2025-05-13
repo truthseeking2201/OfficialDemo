@@ -194,7 +194,7 @@ export default function DepositVaultSection() {
           <div className="flex items-center">
             <img src="/coins/ndlp.png" alt="NDLP" className="w-6 h-6 mr-1" />
             <span className="font-mono font-bold text-lg">
-              {ndlpAmountWillGet} NDLP
+              {formatAmount({ amount: +ndlpAmountWillGet || 0 })} NDLP
             </span>
           </div>
         </div>
