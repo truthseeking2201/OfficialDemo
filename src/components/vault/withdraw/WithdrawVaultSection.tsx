@@ -83,10 +83,11 @@ export default function WithdrawVaultSection() {
    * LIFECYCLES
    */
   useEffect(() => {
-    if (count.current !== address) {
+    if (count.current !== address && address) {
       initBalance();
       initDataClaim();
     }
+    count.current = address;
   }, [address]);
 
   /**
