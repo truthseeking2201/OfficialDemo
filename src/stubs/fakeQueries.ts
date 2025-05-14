@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { random } from 'lodash';
 import useFakeStore from './fakeStore';
 import { COIN_TYPES_CONFIG } from "../config";
+import React from 'react';
 
 // Helper to simulate network delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -75,39 +76,62 @@ export const useDepositMutation = () => {
   });
 };
 
-// Withdraw mutation
+// Withdraw mutation - modified for more reliability
 export const useWithdrawMutation = () => {
   const queryClient = useQueryClient();
-  const withdraw = useFakeStore(state => state.withdraw);
   
   return useMutation({
     mutationFn: async (params: { vaultId: string, amount: number }) => {
-      console.log("Starting withdrawal mutation", params);
+      console.log('[WITHDRAW] Starting withdrawal mutation:', params);
       
-      // Check for VITE_OFFLINE env var or demo mode
-      const isOfflineMode = import.meta.env.VITE_OFFLINE === '1' || window.location.search.includes('demo=true');
+      // Explicit check for offline/demo mode
+      const isOfflineMode = 
+        import.meta.env.VITE_OFFLINE === '1' || 
+        window.location.search.includes('demo=true');
       
       if (isOfflineMode) {
-        // Bypass actual call and just simulate success with a delay
-        console.log("Running in offline/demo mode - simulating successful withdrawal");
+        console.log('[WITHDRAW] Running in offline/demo mode');
+        // Simulate processing delay
         await delay(random(800, 1200));
-        return { success: true, withdrawalId: `offline-demo-withdrawal-${Date.now()}` };
+        
+        // Return success response
+        return { 
+          success: true, 
+          withdrawalId: `offline-withdrawal-${Date.now()}`,
+          message: 'Withdrawal processed in offline mode'
+        };
       }
       
-      // Normal flow for online mode
-      const withdrawalId = await withdraw(params.vaultId, params.amount);
-      console.log("Withdrawal completed with ID:", withdrawalId);
-      return { success: true, withdrawalId };
+      try {
+        // Get the withdraw function from the store
+        const withdraw = useFakeStore.getState().withdraw;
+        
+        // Simulate network delay
+        await delay(random(600, 1000));
+        
+        // Call the withdraw function
+        const withdrawalId = await withdraw(params.vaultId, params.amount);
+        console.log('[WITHDRAW] Withdrawal successful:', withdrawalId);
+        
+        return { 
+          success: true, 
+          withdrawalId,
+          message: 'Withdrawal processed successfully'
+        };
+      } catch (error) {
+        console.error('[WITHDRAW] Error during withdrawal:', error);
+        throw error;
+      }
     },
     onSuccess: (data) => {
-      console.log("Withdrawal mutation successful", data);
+      console.log('[WITHDRAW] Withdrawal mutation completed successfully:', data);
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ['vaultBalance'] });
       queryClient.invalidateQueries({ queryKey: ['vaultActivity'] });
       queryClient.invalidateQueries({ queryKey: ['pendingWithdrawal'] });
     },
     onError: (error) => {
-      console.error('Withdrawal failed:', error);
+      console.error('[WITHDRAW] Withdrawal mutation failed:', error);
     },
   });
 };
@@ -115,10 +139,19 @@ export const useWithdrawMutation = () => {
 // Claim mutation
 export const useClaimMutation = () => {
   const queryClient = useQueryClient();
-  const claim = useFakeStore(state => state.claim);
   
   return useMutation({
     mutationFn: async (withdrawalId: string) => {
+      // For demo mode
+      if (import.meta.env.VITE_OFFLINE === '1' || window.location.search.includes('demo=true')) {
+        await delay(random(800, 1200));
+        return { success: true };
+      }
+      
+      // Get claim function from store
+      const claim = useFakeStore.getState().claim;
+      
+      // Process claim
       await claim(withdrawalId);
       return { success: true };
     },
@@ -146,28 +179,17 @@ export const useWallet = () => {
   // Use the wallet modal from FakeWalletBridge
   const { open } = useWalletModal();
   
-  // Create a custom open function for debugging
-  const openDialogFunction = React.useCallback(() => {
-    console.log("Opening wallet dialog");
-    if (typeof open === 'function') {
-      open();
-    } else {
-      console.error("Wallet open function is not available", open);
-    }
-  }, [open]);
-  
   return {
     isConnected: !!account?.address,
     address: account?.address || null,
     balance: usdcAsset?.balance || 0,
     isConnectWalletDialogOpen: false,
-    openConnectWalletDialog: openDialogFunction,
+    openConnectWalletDialog: open,
     closeConnectWalletDialog: () => {},
   };
 };
 
 // Import these at the top of the file
-import React from 'react';
 import { useCurrentAccount, useWalletModal } from './FakeWalletBridge';
 
 // Sign transaction hook (fake)

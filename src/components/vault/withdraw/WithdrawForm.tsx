@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import debounce from "lodash/debounce";
+import { random } from "lodash";
 
 import SummaryConfirmWithraw from "./SummaryConfirmWithraw";
 import { Button } from "../../../components/ui/button";
@@ -23,23 +24,21 @@ import { showFormatNumber } from "../../../lib/number";
 import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
 import LpType from "../../../types/lp.type";
 import { useToast } from "../../../hooks/use-toast";
-import {
-  useEstWithdrawVault,
-  useWithdrawVault,
-} from "../../../hooks/useWithdrawVault";
+import { useEstWithdrawVault } from "../../../hooks/useWithdrawVault";
 import { useWithdrawMutation } from "../../../stubs/fakeQueries";
-import { random } from "lodash";
 
 type Props = {
   balanceLp: number;
   lpData: LpType;
   onSuccess: () => void;
 };
+
 interface IFormInput {
   amount: number;
 }
 
 export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
+  // State
   const summary_default = {
     amount: 0,
     receive: 0,
@@ -54,6 +53,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   const [openModalSuccess, setOpenModalSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Prepare badge UI element for reuse
   const BadgeCoolDown = (
     <Badge
       variant="warning"
@@ -71,9 +71,8 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
       </p>
     </Badge>
   );
-  /**
-   * HOOKS
-   */
+
+  // Hooks
   const {
     register,
     watch,
@@ -85,19 +84,17 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
   const { toast } = useToast();
-  const { withdraw } = useWithdrawVault();
   const { amountEst, configVault } = useEstWithdrawVault(
     form?.amount || 0,
     lpData
   );
-  
-  // Use the withdrawal mutation from our fake implementation
+
+  // Get withdraw mutation from fakeQueries
   const withdrawMutation = useWithdrawMutation();
 
-  /**
-   * FUNCTION
-   */
+  // Form handlers
   const onSubmit = (data) => {
+    console.log("Form submitted with data:", data);
     setForm(data);
     setOpenModalConfirm(true);
   };
@@ -120,45 +117,59 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     setForm(data);
   }, []);
 
-  const onWithdraw = useCallback(async () => {
-    if (!form) return;
+  // This is the critical function that handles withdrawal
+  const handleWithdraw = useCallback(async () => {
+    if (!form) {
+      console.error("No form data available");
+      return;
+    }
     
+    console.log("Starting withdrawal process", { amount: form.amount, vaultId: lpData.vault_id });
     setIsLoading(true);
     
     try {
-      console.log("Withdrawing", form.amount, "from vault", lpData.vault_id);
+      // Force mock delay in demo mode
+      if (window.location.search.includes('demo=true')) {
+        console.log("Demo mode detected, using mock delay");
+        await new Promise(resolve => setTimeout(resolve, random(800, 1200)));
+        setOpenModalSuccess(true);
+        onCloseModalConfirm();
+        onSuccess();
+        return;
+      }
       
-      // Use our fake mutation with explicit try/catch for better debugging
-      await withdrawMutation.mutateAsync({
+      // Call mutation explicitly with await to catch any errors
+      const result = await withdrawMutation.mutateAsync({
         vaultId: lpData.vault_id,
         amount: form.amount
       });
       
-      console.log("Withdrawal successful");
+      console.log("Withdrawal successful", result);
+      
+      // Show success UI
       setOpenModalSuccess(true);
       onCloseModalConfirm();
       onSuccess();
     } catch (error) {
       console.error("Withdrawal failed:", error);
       toast({
-        title: "Withdraw failed",
+        title: "Withdrawal failed",
         description: error.message || "An error occurred during withdrawal",
         variant: "destructive",
         duration: 5000,
-        icon: <IconErrorToast />
+        icon: <IconErrorToast />,
       });
     } finally {
       setIsLoading(false);
     }
   }, [form, lpData.vault_id, withdrawMutation, onCloseModalConfirm, onSuccess, toast]);
 
-  /**
-   * LIFECYCLES
-   */
+  // Update summary when estimate changes
   useEffect(() => {
     setSummary(amountEst);
   }, [amountEst]);
 
+  // Watch form changes
   useEffect(() => {
     const debouncedCb = debounce((formValue) => {
       handleFormChange(formValue);
@@ -168,12 +179,10 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     return () => subscription.unsubscribe();
   }, [watch, handleFormChange]);
 
-  /**
-   * RENDER
-   */
+  // Render
   return (
     <div>
-      {/* form */}
+      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex justify-between">
           <div className="font-body text-gray-400 !font-medium">
@@ -186,6 +195,8 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             </span>
           </div>
         </div>
+        
+        {/* Amount input */}
         <div className="relative mb-2 mt-2">
           <input
             type="text"
@@ -199,6 +210,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             className="input-vault w-full font-heading-lg text-3xl font-bold"
           />
 
+          {/* MAX button */}
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex rounded-full mx-auto bg-gradient-to-tr from-[#0090FF] via-[#FF6D9C] to-[#FB7E16] p-px hover:opacity-70 transition-all duration-300">
             <button
               type="button"
@@ -209,6 +221,8 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             </button>
           </div>
         </div>
+        
+        {/* Error messages */}
         {errors.amount?.type && (
           <div className="text-red-500 text-sm mt-1 flex items-center">
             <Info
@@ -259,8 +273,10 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
           </RowItem>
         </div>
 
+        {/* Cooldown notice */}
         {BadgeCoolDown}
 
+        {/* Submit button */}
         <Button
           type="submit"
           variant="primary"
@@ -271,13 +287,12 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
         </Button>
       </form>
 
-      {/* modal confirm */}
+      {/* Confirmation Modal */}
       <Dialog
         open={openModalConfirm}
         onOpenChange={(isOpen) => !isOpen && onCloseModalConfirm()}
       >
         <DialogContent className="sm:max-w-[480px] bg-[#141517] border border-white/10 p-0 rounded-2xl gap-8">
-          {/* Header */}
           <DialogHeader className="px-6 pt-6 pb-0 relative">
             <DialogTitle className="text-xl font-bold m-0">
               Confirm Your Withdrawal
@@ -286,6 +301,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
               Confirm Your Withdrawal
             </DialogDescription>
           </DialogHeader>
+          
           {/* Content */}
           <div className="px-6">
             <SummaryConfirmWithraw
@@ -295,6 +311,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             />
             <div className="mt-4">{BadgeCoolDown}</div>
           </div>
+          
           {/* Footer */}
           <DialogFooter className="px-6 pb-6 w-full flex sm:space-x-0">
             <Button
@@ -309,21 +326,21 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             <Button
               variant="primary"
               size="lg"
-              className="w-full font-semibold text-base px-2 flex items-center [&_svg]:size-5"
-              onClick={() => {
-                console.log("Confirm Withdrawal button clicked");
-                onWithdraw();
-              }}
+              className="w-full font-semibold text-base px-2 flex items-center justify-center [&_svg]:size-5"
+              onClick={handleWithdraw}
               disabled={isLoading}
+              id="confirm-withdrawal-button"
+              data-testid="confirm-withdrawal-button"
+              aria-label="Confirm Withdrawal"
             >
-              {isLoading && <Loader />}{" "}
+              {isLoading && <Loader className="mr-2" />}
               {isLoading ? "Processing..." : "Confirm Withdrawal"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* modal success */}
+      {/* Success Modal */}
       <Dialog
         open={openModalSuccess}
         onOpenChange={(isOpen) => !isOpen && onCloseModalSuccess()}
