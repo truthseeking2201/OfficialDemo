@@ -46,16 +46,6 @@ export interface ActivityItem {
   txHash: string;
 }
 
-export type ActRow = {
-  id: string;
-  timestamp: number;           // epoch ms
-  type: 'Add' | 'Remove' | 'Swap';
-  vault: string;               // 0x7d83…6d75
-  token: 'USDC' | 'SUI' | 'NDLP';
-  value: number;               // USD worth
-  tx: string;                  // 0x hash
-};
-
 export interface PendingWithdrawal {
   id: string;
   amount: number;
@@ -68,7 +58,6 @@ export interface PendingWithdrawal {
 interface FakeStoreState {
   assets: UserCoinAsset[];
   activity: ActivityItem[];
-  act: ActRow[];
   pendingWithdrawals: PendingWithdrawal[];
   vaultBalances: Record<string, number>;
 }
@@ -79,7 +68,6 @@ interface FakeStoreActions {
   claim: (withdrawalId: string) => Promise<void>;
   reset: () => void;
   refreshBalance: () => void;
-  pushRandomActivity: () => void;
 }
 
 // Helper functions
@@ -98,43 +86,6 @@ const generateId = () => {
 };
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Helper functions for Activity Feed
-const generateAddress = () => {
-  return '0x' + Math.random().toString(36).substring(2, 6) + '…' +
-         Math.random().toString(36).substring(2, 6);
-};
-
-const txHash = () => generateTxHash();
-
-// Function to create a random activity row
-const createRandomActivityRow = (timestamp?: number): ActRow => {
-  const types = ['Add', 'Remove', 'Swap'] as const;
-  const tokens = ['USDC', 'SUI', 'NDLP'] as const;
-  
-  return {
-    id: generateId(),
-    timestamp: timestamp || Date.now(),
-    type: types[Math.floor(Math.random() * types.length)],
-    vault: generateAddress(),
-    token: tokens[Math.floor(Math.random() * tokens.length)],
-    value: Number((Math.random() * 4000 + 50).toFixed(2)),   // 50 – 4050
-    tx: txHash(),
-  };
-};
-
-// Function to create seed data with older timestamps
-const createSeedActivityRows = (count: number): ActRow[] => {
-  const now = Date.now();
-  return Array.from({ length: count }, (_, i) => {
-    // Spread out timestamps: older ones 5-90 min apart, newer ones 1-5 min apart
-    const ageInMinutes = i < count/2 
-      ? i * 5 + Math.floor(Math.random() * 5) // newer items (1-5 min apart)
-      : i * 15 + Math.floor(Math.random() * 15); // older items (15-30 min apart)
-      
-    return createRandomActivityRow(now - ageInMinutes * 60 * 1000);
-  });
-};
 
 // Create the store
 const useFakeStore = create<FakeStoreState & FakeStoreActions>((set, get) => ({
@@ -164,8 +115,6 @@ const useFakeStore = create<FakeStoreState & FakeStoreActions>((set, get) => ({
     },
   ],
   activity: [],
-  // Initialize with seed activity data (35 rows)
-  act: createSeedActivityRows(35),
   pendingWithdrawals: [],
   vaultBalances: {},
 
@@ -380,18 +329,6 @@ const useFakeStore = create<FakeStoreState & FakeStoreActions>((set, get) => ({
   refreshBalance: () => {
     // This is a no-op function that just triggers reactivity
     set(state => ({ ...state }));
-  },
-  
-  pushRandomActivity: () => {
-    set(state => {
-      // Create a new random activity row
-      const newRow = createRandomActivityRow();
-      
-      // Add to the beginning of the array and limit to the latest 200 items
-      const updatedAct = [newRow, ...state.act].slice(0, 200);
-      
-      return { act: updatedAct };
-    });
   },
 }));
 

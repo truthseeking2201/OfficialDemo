@@ -14,13 +14,6 @@ const NotFound = lazy(() =>
   })
 );
 
-const LiveActivityDemo = lazy(() =>
-  import("./pages/LiveActivityDemo").catch((e) => {
-    console.error("Error loading LiveActivityDemo:", e);
-    return { default: () => <PageFallback /> };
-  })
-);
-
 // Create query client that still loads data but doesn't show loading states
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,16 +49,6 @@ const App = () => (
                 <MainLayout>
                   <Suspense fallback={<PageFallback />}>
                     <Dashboard />
-                  </Suspense>
-                </MainLayout>
-              }
-            />
-            <Route
-              path="/activity-demo"
-              element={
-                <MainLayout>
-                  <Suspense fallback={<PageFallback />}>
-                    <LiveActivityDemo />
                   </Suspense>
                 </MainLayout>
               }
