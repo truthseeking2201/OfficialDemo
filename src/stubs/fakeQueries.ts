@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { random } from 'lodash';
 import useFakeStore from './fakeStore';
-import { COIN_TYPES_CONFIG } from '@/config';
+import { COIN_TYPES_CONFIG } from "../config";
 
 // Helper to simulate network delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -128,13 +128,16 @@ export const useWallet = () => {
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
   );
   
+  // Use the wallet modal from FakeWalletBridge
+  const walletModal = useWalletModal();
+  
   return {
     isConnected: !!account?.address,
     address: account?.address || null,
     balance: usdcAsset?.balance || 0,
     isConnectWalletDialogOpen: false,
-    openConnectWalletDialog: () => { /* Implemented through FakeWalletBridge */ },
-    closeConnectWalletDialog: () => { /* Implemented through FakeWalletBridge */ },
+    openConnectWalletDialog: walletModal.open,
+    closeConnectWalletDialog: () => {},
   };
 };
 
