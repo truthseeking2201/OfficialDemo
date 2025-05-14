@@ -129,14 +129,14 @@ export const useWallet = () => {
   );
   
   // Use the wallet modal from FakeWalletBridge
-  const walletModal = useWalletModal();
+  const { open } = useWalletModal();
   
   return {
     isConnected: !!account?.address,
     address: account?.address || null,
     balance: usdcAsset?.balance || 0,
     isConnectWalletDialogOpen: false,
-    openConnectWalletDialog: walletModal.open,
+    openConnectWalletDialog: open,
     closeConnectWalletDialog: () => {},
   };
 };
