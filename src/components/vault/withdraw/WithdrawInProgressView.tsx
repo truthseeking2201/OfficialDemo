@@ -131,7 +131,7 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
           onClaimSuccess();
         }}
       >
-        Skip waiting
+        Skip Waiting (For Demo Only)
       </button>
 
       {/* Claim button */}
