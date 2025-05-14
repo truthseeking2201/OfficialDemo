@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import debounce from "lodash/debounce";
 
 import SummaryConfirmWithraw from "./SummaryConfirmWithraw";
-import { Button } from "@/components/ui/button";
-import { RowItem } from "@/components/ui/row-item";
-import { Loader } from "@/components/ui/loader";
-import { IconErrorToast } from "@/components/ui/icon-error-toast";
-import { IconCheckSuccess } from "@/components/ui/icon-check-success";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "../../../components/ui/button";
+import { RowItem } from "../../../components/ui/row-item";
+import { Loader } from "../../../components/ui/loader";
+import { IconErrorToast } from "../../../components/ui/icon-error-toast";
+import { IconCheckSuccess } from "../../../components/ui/icon-check-success";
+import { Badge } from "../../../components/ui/badge";
 import { Info, Clock4 } from "lucide-react";
 import {
   Dialog,
@@ -17,17 +17,17 @@ import {
   DialogDescription,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../../../components/ui/dialog";
 
-import { showFormatNumber } from "@/lib/number";
-import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
-import LpType from "@/types/lp.type";
-import { useToast } from "@/hooks/use-toast";
+import { showFormatNumber } from "../../../lib/number";
+import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
+import LpType from "../../../types/lp.type";
+import { useToast } from "../../../hooks/use-toast";
 import {
   useEstWithdrawVault,
   useWithdrawVault,
-} from "@/hooks/useWithdrawVault";
-import { useWithdrawMutation } from "@/stubs/fakeQueries";
+} from "../../../hooks/useWithdrawVault";
+import { useWithdrawMutation } from "../../../stubs/fakeQueries";
 import { random } from "lodash";
 
 type Props = {
@@ -125,30 +125,31 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     
     setIsLoading(true);
     
-    // Use our fake mutation
-    withdrawMutation.mutate(
-      {
+    try {
+      console.log("Withdrawing", form.amount, "from vault", lpData.vault_id);
+      
+      // Use our fake mutation with explicit try/catch for better debugging
+      await withdrawMutation.mutateAsync({
         vaultId: lpData.vault_id,
         amount: form.amount
-      },
-      {
-        onSuccess: () => {
-          setOpenModalSuccess(true);
-          onCloseModalConfirm();
-          onSuccess();
-          setIsLoading(false);
-        },
-        onError: (error) => {
-          toast({
-            title: "Withdraw failed",
-            description: error.message || "An error occurred during withdrawal",
-            variant: "destructive",
-            duration: 5000,
-          });
-          setIsLoading(false);
-        }
-      }
-    );
+      });
+      
+      console.log("Withdrawal successful");
+      setOpenModalSuccess(true);
+      onCloseModalConfirm();
+      onSuccess();
+    } catch (error) {
+      console.error("Withdrawal failed:", error);
+      toast({
+        title: "Withdraw failed",
+        description: error.message || "An error occurred during withdrawal",
+        variant: "destructive",
+        duration: 5000,
+        icon: <IconErrorToast />
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }, [form, lpData.vault_id, withdrawMutation, onCloseModalConfirm, onSuccess, toast]);
 
   /**
@@ -309,11 +310,14 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
               variant="primary"
               size="lg"
               className="w-full font-semibold text-base px-2 flex items-center [&_svg]:size-5"
-              onClick={onWithdraw}
+              onClick={() => {
+                console.log("Confirm Withdrawal button clicked");
+                onWithdraw();
+              }}
               disabled={isLoading}
             >
               {isLoading && <Loader />}{" "}
-              {isLoading ? "Waiting" : "Confirm Withdrawal"}
+              {isLoading ? "Processing..." : "Confirm Withdrawal"}
             </Button>
           </DialogFooter>
         </DialogContent>

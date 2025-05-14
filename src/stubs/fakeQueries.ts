@@ -82,10 +82,25 @@ export const useWithdrawMutation = () => {
   
   return useMutation({
     mutationFn: async (params: { vaultId: string, amount: number }) => {
+      console.log("Starting withdrawal mutation", params);
+      
+      // Check for VITE_OFFLINE env var or demo mode
+      const isOfflineMode = import.meta.env.VITE_OFFLINE === '1' || window.location.search.includes('demo=true');
+      
+      if (isOfflineMode) {
+        // Bypass actual call and just simulate success with a delay
+        console.log("Running in offline/demo mode - simulating successful withdrawal");
+        await delay(random(800, 1200));
+        return { success: true, withdrawalId: `offline-demo-withdrawal-${Date.now()}` };
+      }
+      
+      // Normal flow for online mode
       const withdrawalId = await withdraw(params.vaultId, params.amount);
+      console.log("Withdrawal completed with ID:", withdrawalId);
       return { success: true, withdrawalId };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Withdrawal mutation successful", data);
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ['vaultBalance'] });
       queryClient.invalidateQueries({ queryKey: ['vaultActivity'] });
