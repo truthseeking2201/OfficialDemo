@@ -27,19 +27,15 @@ export function RedeemNODOAIxDrawer({ open, onClose }: RedeemNODOAIxDrawerProps)
   const redeemMutation = useMutation({
     mutationFn: async (amount: number) => {
       setIsProcessing(true);
-      try {
-        // First use the vaultService to create a transaction record
-        await vaultService.redeemNODOAIxTokens(amount);
+      // First use the vaultService to create a transaction record
+      await vaultService.redeemNODOAIxTokens(amount);
 
-        // Then use the wallet's withdraw method to process the token burning
-        const result = await withdraw('nodoaix-tokens', amount);
-        if (!result.success) {
-          throw new Error("Redemption failed");
-        }
-        return result;
-      } catch (error) {
-        throw error;
+      // Then use the wallet's withdraw method to process the token burning
+      const result = await withdraw('nodoaix-tokens', amount);
+      if (!result.success) {
+        throw new Error("Redemption failed");
       }
+      return result;
     },
     onSuccess: () => {
       setStep('success');
