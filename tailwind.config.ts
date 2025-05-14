@@ -255,6 +255,10 @@ export default {
             transform: "translateY(-5px)",
           },
         },
+        fill: { 
+          '0%': { width: '100%' }, 
+          '100%': { width: '0%' } 
+        },
       },
       animation: {
         "accordion-down":
@@ -270,6 +274,7 @@ export default {
         "pulse-glow": "pulse-glow 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
         float: "float 4s cubic-bezier(0.25, 0.1, 0.25, 1) infinite",
+        fill: "fill linear forwards",
       },
       spacing: {
         // Standard spacing scale

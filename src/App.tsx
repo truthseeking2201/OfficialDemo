@@ -1,5 +1,5 @@
 import { MainLayout } from "./components/layout/MainLayout";
-import { Toaster } from "./components/ui/sonner";
+import { Toaster, toast } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
