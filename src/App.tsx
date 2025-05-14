@@ -1,6 +1,6 @@
-import { MainLayout } from "@/components/layout/MainLayout";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { MainLayout } from "./components/layout/MainLayout";
+import { Toaster } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -10,6 +10,13 @@ import Dashboard from "./pages/Dashboard";
 const NotFound = lazy(() =>
   import("./pages/NotFound").catch((e) => {
     console.error("Error loading NotFound:", e);
+    return { default: () => <PageFallback /> };
+  })
+);
+
+const LiveActivityDemo = lazy(() =>
+  import("./pages/LiveActivityDemo").catch((e) => {
+    console.error("Error loading LiveActivityDemo:", e);
     return { default: () => <PageFallback /> };
   })
 );
@@ -49,6 +56,16 @@ const App = () => (
                 <MainLayout>
                   <Suspense fallback={<PageFallback />}>
                     <Dashboard />
+                  </Suspense>
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/activity-demo"
+              element={
+                <MainLayout>
+                  <Suspense fallback={<PageFallback />}>
+                    <LiveActivityDemo />
                   </Suspense>
                 </MainLayout>
               }
