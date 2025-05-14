@@ -118,6 +118,9 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      textColor: {
+        'gradient-ndlp': 'transparent',
+      },
       boxShadow: {
         // Standardized shadow system
         "neon-nova": "0 0 20px rgba(236, 111, 5, 0.18)",
@@ -143,6 +146,8 @@ export default {
           "radial-gradient(circle closest-side, var(--tw-gradient-stops))",
         "gradient-button":
           "linear-gradient(90deg, #0090FF -29.91%, #FF6D9C 44.08%, #FB7E16 100%)",
+        'gradient-ndlp':
+          'linear-gradient(90deg,#f90 0%,#ff543e 33%,#b44cff 66%,#3f8bff 100%)',
       },
       borderRadius: {
         none: "0",
@@ -276,6 +281,15 @@ export default {
         "3xl": "3rem", // 48px
       },
     },
-    plugins: [tailwindcssAnimate],
   },
+  plugins: [
+    tailwindcssAnimate,
+    ({ addUtilities }) => {
+      addUtilities({
+        '.text-gradient-ndlp': {
+          '@apply bg-clip-text text-transparent bg-gradient-ndlp': {},
+        },
+      });
+    },
+  ],
 } satisfies Config;

@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import WithdrawForm from "./WithdrawForm";
 import { WithdrawTimerCard } from "./WithdrawTimerCard";
+import { WithdrawInProgressView } from "./WithdrawInProgressView";
 
 import { showFormatNumber } from "../../../lib/number";
 import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
@@ -11,6 +12,7 @@ import { useMyAssets } from "../../../stubs/fakeQueries";
 import { useWallet } from "../../../stubs/fakeQueries";
 import { NDLP } from "../../../config/lp-config";
 import { usePendingWithdrawal } from "../../../stubs/fakeQueries";
+import { useWithdrawStore } from "../../../store/withdrawStore";
 
 export default function WithdrawVaultSection() {
   const [balanceLp, setBalanceLp] = useState<number>(100000); // Default balance for offline mode
@@ -20,6 +22,7 @@ export default function WithdrawVaultSection() {
    * HOOKS
    */
   const { openConnectWalletDialog } = useWallet();
+  const { pending } = useWithdrawStore();
   
   // Add console log for debugging
   useEffect(() => {
@@ -87,28 +90,33 @@ export default function WithdrawVaultSection() {
 
       {isConnected && (
         <div>
-          {/* Balance */}
-          <div className="mb-9">
-            <div className="font-sans text-base text-zinc-400 mb-3">
-              Total Balance
-            </div>
-            <div className="flex items-center">
-              <img
-                src={NDLP.lp_image}
-                alt="NODOAIx Token"
-                className="w-[36px] h-[36px]"
-              />
-              <div className="text-white font-sans font-medium text-[40px] leading-[40px] ml-2">
-                {showFormatNumber(balanceLp)}
+          {/* Balance (only show when not in pending state) */}
+          {!pending && (
+            <div className="mb-9">
+              <div className="font-sans text-base text-zinc-400 mb-3">
+                Total Balance
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={NDLP.lp_image}
+                  alt="NODOAIx Token"
+                  className="w-[36px] h-[36px]"
+                />
+                <div className="text-white font-sans font-medium text-[40px] leading-[40px] ml-2">
+                  {showFormatNumber(balanceLp)}
+                </div>
+              </div>
+              <div className="font-sans text-sm text-white/60 mt-3">
+                1 {NDLP.lp_symbol} ≈ {showFormatNumber(amountEst.receive)}{" "}
+                {NDLP.token_symbol}
               </div>
             </div>
-            <div className="font-sans text-sm text-white/60 mt-3">
-              1 {NDLP.lp_symbol} ≈ {showFormatNumber(amountEst.receive)}{" "}
-              {NDLP.token_symbol}
-            </div>
-          </div>
+          )}
 
-          {pendingWithdrawal ? (
+          {/* Render the correct view based on state */}
+          {pending && pending.vaultId === NDLP.vault_id ? (
+            <WithdrawInProgressView onClaimSuccess={onSuccess} />
+          ) : pendingWithdrawal ? (
             <WithdrawTimerCard pendingWithdrawal={pendingWithdrawal} />
           ) : (
             <WithdrawForm

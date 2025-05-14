@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import debounce from "lodash/debounce";
 import { random } from "lodash";
+import { v4 as uuid } from "uuid";
 
 import SummaryConfirmWithraw from "./SummaryConfirmWithraw";
 import { Button } from "../../../components/ui/button";
@@ -19,13 +20,14 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../../../components/ui/dialog";
+import { toast } from "../../../components/ui/use-toast";
 
 import { showFormatNumber } from "../../../lib/number";
 import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
 import LpType from "../../../types/lp.type";
-import { useToast } from "../../../hooks/use-toast";
 import { useEstWithdrawVault } from "../../../hooks/useWithdrawVault";
 import { useWithdrawMutation } from "../../../stubs/fakeQueries";
+import { useWithdrawStore } from "../../../store/withdrawStore";
 
 type Props = {
   balanceLp: number;
@@ -83,7 +85,6 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   } = useForm<IFormInput>({ mode: "all" });
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
-  const { toast } = useToast();
   const { amountEst, configVault } = useEstWithdrawVault(
     form?.amount || 0,
     lpData
@@ -117,8 +118,8 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     setForm(data);
   }, []);
 
-  // This is the critical function that handles withdrawal
-  const handleWithdraw = useCallback(async () => {
+  // FIXED FUNCTION: This handles the withdraw button click
+  const handleWithdraw = useCallback(() => {
     if (!form) {
       console.error("No form data available");
       return;
@@ -127,42 +128,48 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     console.log("Starting withdrawal process", { amount: form.amount, vaultId: lpData.vault_id });
     setIsLoading(true);
     
-    try {
-      // Force mock delay in demo mode
-      if (window.location.search.includes('demo=true')) {
-        console.log("Demo mode detected, using mock delay");
-        await new Promise(resolve => setTimeout(resolve, random(800, 1200)));
-        setOpenModalSuccess(true);
-        onCloseModalConfirm();
-        onSuccess();
-        return;
+    // Force mock using simple setTimeout, avoiding any async issues
+    setTimeout(() => {
+      try {
+        console.log("Withdrawal successful");
+        
+        // Create pending withdrawal data to save
+        const pending = {
+          id: uuid(),
+          vaultId: lpData.vault_id,
+          amountNdlp: Number(form.amount),
+          feeUsd: Number(summary.fee || 0),
+          conversionRate: Number(summary.receive / form.amount) || 0.995,
+          createdAt: Date.now(),
+          cooldownEnd: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+          recipient: address || "unknown",
+        };
+        
+        // Save to withdraw store
+        useWithdrawStore.getState().setPending(pending);
+        
+        // First close confirm modal
+        setOpenModalConfirm(false);
+        
+        // Then open the success dialog with a small delay
+        setTimeout(() => {
+          setOpenModalSuccess(true);
+          onSuccess();
+          setIsLoading(false);
+        }, 200);
+        
+      } catch (error) {
+        console.error("Withdrawal failed:", error);
+        toast({
+          title: "Withdrawal failed",
+          description: error.message || "An error occurred during withdrawal",
+          variant: "destructive",
+          duration: 5000,
+        });
+        setIsLoading(false);
       }
-      
-      // Call mutation explicitly with await to catch any errors
-      const result = await withdrawMutation.mutateAsync({
-        vaultId: lpData.vault_id,
-        amount: form.amount
-      });
-      
-      console.log("Withdrawal successful", result);
-      
-      // Show success UI
-      setOpenModalSuccess(true);
-      onCloseModalConfirm();
-      onSuccess();
-    } catch (error) {
-      console.error("Withdrawal failed:", error);
-      toast({
-        title: "Withdrawal failed",
-        description: error.message || "An error occurred during withdrawal",
-        variant: "destructive",
-        duration: 5000,
-        icon: <IconErrorToast />,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [form, lpData.vault_id, withdrawMutation, onCloseModalConfirm, onSuccess, toast]);
+    }, 1000);  // Simulate network delay
+  }, [form, lpData.vault_id, onSuccess, summary, address]);
 
   // Update summary when estimate changes
   useEffect(() => {
