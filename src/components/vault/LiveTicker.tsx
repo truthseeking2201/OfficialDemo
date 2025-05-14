@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Brain, ArrowUpRight } from "lucide-react";
-import { vaultService } from "@/services/vaultService";
+import { vaultService } from "../../services/vaultService";
 
 interface LiveTickerProps {
   lines?: string[];

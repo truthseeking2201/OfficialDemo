@@ -19,14 +19,14 @@ import {
   AlertTriangle,
   Wallet
 } from "lucide-react";
-import { AICard, AICardInsightBadge } from "@/components/ui/ai-card";
-import { AIEnhancedChart } from "@/components/charts/AIEnhancedChart";
-import { AIProcessingVisualizer } from "@/components/ai/AIProcessingVisualizer";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
-import { useProcessorProgress } from "@/hooks/useProcessorProgress";
+import { AICard, AICardInsightBadge } from "../../components/ui/ai-card";
+import { AIEnhancedChart } from "../../components/charts/AIEnhancedChart";
+import { AIProcessingVisualizer } from "../../components/ai/AIProcessingVisualizer";
+import { Button } from "../../components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { Progress } from "../../components/ui/progress";
+import { useToast } from "../../hooks/use-toast";
+import { useProcessorProgress } from "../../hooks/useProcessorProgress";
 
 // Simple error boundary component for handling rendering errors
 class ErrorBoundary extends React.Component<

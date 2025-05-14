@@ -1,9 +1,9 @@
-import { COIN_TYPES_CONFIG } from "@/config";
-import { UserCoinAsset } from "@/types/coin.types";
-import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { COIN_TYPES_CONFIG } from "../config";
+import { UserCoinAsset } from "../types/coin.types";
+import { useCurrentAccount } from "../stubs/FakeWalletBridge";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
-import useFakeStore from "@/stubs/fakeStore";
+import useFakeStore from "../stubs/fakeStore";
 
 interface CoinMetadata {
   decimals: number;

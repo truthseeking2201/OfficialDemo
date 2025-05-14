@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { VaultData } from "@/types/vault";
+import { Input } from "../../components/ui/input";
+import { Slider } from "../../components/ui/slider";
+import { VaultData } from "../../types/vault";
 
 interface VaultROICalculatorProps {
   vault: VaultData;

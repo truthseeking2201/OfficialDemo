@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TransactionHistory } from "@/types/vault";
+import { TransactionHistory } from "../../types/vault";
 import {
   Table,
   TableHeader,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableBody,
   TableCell,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/table";
+import { Button } from "../../components/ui/button";
 import {
   ChevronLast,
   ChevronFirst,
@@ -18,7 +18,7 @@ import {
   Plus,
   ArrowUpRight,
 } from "lucide-react";
-import SwapIcon from "@/assets/icons/swap.svg";
+import SwapIcon from "../../assets/icons/swap.svg";
 
 interface TxTableProps {
   transactions: TransactionHistory[];

@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import { AIConfidenceScore } from "./AIConfidenceScore";
 import { NeuroProcessingVisualizer } from "./NeuroProcessingVisualizer";
-import { TranslatedSection } from "@/components/shared/TranslatedSection";
-import { TranslatedText } from "@/components/shared/TranslatedText";
+import { TranslatedSection } from "../../components/shared/TranslatedSection";
+import { TranslatedText } from "../../components/shared/TranslatedText";
 
 interface AIControlPanelProps {
   vaultType: 'nova' | 'orion' | 'emerald';

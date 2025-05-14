@@ -27,8 +27,8 @@ import {
   ArrowUp,
   ArrowDown
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "../../components/ui/button";
+import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
 
 // Types
 type ChartType = "line" | "area" | "combo";

@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { vaultService } from "@/services/vaultService";
+import { vaultService } from "../../services/vaultService";
 import { StatChip } from "./StatChip";
 import { TrendingUp, DollarSign, Users, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";

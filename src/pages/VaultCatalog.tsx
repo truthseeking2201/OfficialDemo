@@ -1,17 +1,17 @@
-import { PageContainer } from "@/components/layout/PageContainer";
-import { vaultService } from "@/services/vaultService";
+import { PageContainer } from "../components/layout/PageContainer";
+import { vaultService } from "../services/vaultService";
 import { useQuery } from "@tanstack/react-query";
-import { HeroSection } from "@/components/vault/HeroSection";
-import { VaultGrid } from "@/components/vault/VaultGrid";
-import { useWallet } from "@/hooks/useWallet";
+import { HeroSection } from "../components/vault/HeroSection";
+import { VaultGrid } from "../components/vault/VaultGrid";
+import { useWallet } from "../hooks/useWallet";
 import { useState, useEffect, useRef, useMemo, lazy, Suspense } from "react";
-import { Card } from "@/components/ui/card";
-import useBreakpoint from "@/hooks/useBreakpoint";
-import { ErrorState } from "@/components/shared/ErrorState";
+import { Card } from "../components/ui/card";
+import useBreakpoint from "../hooks/useBreakpoint";
+import { ErrorState } from "../components/shared/ErrorState";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Vault } from "@/types";
-import { VaultData } from "@/types/vault";
-import { adaptVaultsToVaultData } from "@/utils/vaultAdapter";
+import { Vault } from "../types";
+import { VaultData } from "../types/vault";
+import { adaptVaultsToVaultData } from "../utils/vaultAdapter";
 
 // Lazy load non-critical components
 const NeuralActivityTicker = lazy(() => import('@/components/vault/NeuralActivityTicker').then(mod => ({ default: mod.NeuralActivityTicker })));

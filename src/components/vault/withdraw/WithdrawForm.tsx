@@ -20,7 +20,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../../../components/ui/dialog";
-import { toast } from "../../../components/ui/use-toast";
+import { toast as uiToast } from "../../../components/ui/use-toast";
+import { toast } from "../../../components/ui/sonner";
 
 import { showFormatNumber } from "../../../lib/number";
 import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
@@ -106,6 +107,11 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   }, [isLoading]);
 
   const onCloseModalSuccess = () => {
+    // Show toast notification when the user closes the success modal
+    toast("Withdrawal request confirmed", {
+      description: `Your ${showFormatNumber(summary.amount || 0)} ${lpData.lp_symbol} withdrawal is now cooling down.`,
+      data: { variant: "success" }
+    });
     setOpenModalSuccess(false);
     reset();
   };
@@ -160,11 +166,16 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
         
       } catch (error) {
         console.error("Withdrawal failed:", error);
-        toast({
+        uiToast({
           title: "Withdrawal failed",
           description: error.message || "An error occurred during withdrawal",
           variant: "destructive",
           duration: 5000,
+        });
+        // Also show in the custom toast
+        toast("Withdrawal failed", {
+          description: error.message || "An error occurred during withdrawal",
+          data: { variant: "error" }
         });
         setIsLoading(false);
       }

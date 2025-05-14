@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from "../../components/ui/card";
 import { AlertCircle, AlertTriangle, Info, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Button } from "../../components/ui/button";
+import { cn } from "../../lib/utils";
 
 type ErrorType = 'error' | 'warning' | 'info';
 

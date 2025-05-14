@@ -10,9 +10,9 @@ import {
   YAxis,
   ReferenceDot,
 } from 'recharts';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { TransactionHistory } from '@/types/vault';
+import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { TransactionHistory } from "../../types/vault";
 
 interface ChartData {
   date: string;

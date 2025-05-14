@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import ReactConfetti from "react-confetti";
 import { CheckCircle, Info, ExternalLink } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "../../components/ui/use-toast";
 
 interface DepositDrawerSuccessProps {
   vault: { name: string };

@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { TokenIcon, PairIcon } from "@/components/shared/TokenIcons";
+import { TokenIcon, PairIcon } from "../../components/shared/TokenIcons";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ActivityItem {

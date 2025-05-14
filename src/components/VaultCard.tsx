@@ -4,12 +4,12 @@ import {
   CardContent, 
   CardFooter, 
   CardHeader 
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
 import { ArrowUpRight, TrendingUp, Shield, Coins } from "lucide-react";
-import { Vault } from '@/types';
-import { formatCurrency } from '@/lib/utils';
+import { Vault } from "../types";
+import { formatCurrency } from "../lib/utils";
 
 interface VaultCardProps {
   vault: Vault;

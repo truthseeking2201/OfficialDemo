@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import {
   ArrowRight,
   Wallet,
@@ -13,15 +13,15 @@ import {
   AlertTriangle,
   Gauge
 } from "lucide-react";
-import { Slider } from "@/components/ui/slider";
+import { Slider } from "../../components/ui/slider";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { VaultData } from "@/types/vault";
-import { Badge } from "@/components/ui/badge";
+} from "../../components/ui/tooltip";
+import { VaultData } from "../../types/vault";
+import { Badge } from "../../components/ui/badge";
 
 interface VaultMetricsCardProps {
   vault: VaultData;

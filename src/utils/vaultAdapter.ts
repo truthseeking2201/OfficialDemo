@@ -1,5 +1,5 @@
-import { Vault } from '@/types';
-import { VaultData } from '@/types/vault';
+import { Vault } from "../types";
+import { VaultData } from "../types/vault";
 
 /**
  * Adapts the Vault type to VaultData type for compatibility with existing components

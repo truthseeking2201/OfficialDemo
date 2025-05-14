@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { useWalletModal } from '@/stubs/FakeWalletBridge';
-import { useClaimMutation } from '@/stubs/fakeQueries';
+import { Button } from "../../../components/ui/button";
+import { Card, CardContent } from "../../../components/ui/card";
+import { useToast } from "../../../hooks/use-toast";
+import { toast } from "../../../components/ui/sonner";
+import { useWalletModal } from "../../../stubs/FakeWalletBridge";
+import { useClaimMutation } from "../../../stubs/fakeQueries";
 
 interface WithdrawTimerCardProps {
   pendingWithdrawal: {
@@ -63,6 +64,12 @@ export const WithdrawTimerCard: React.FC<WithdrawTimerCardProps> = ({ pendingWit
             title: "Claim successful",
             description: `You have successfully claimed ${pendingWithdrawal.amount} USDC from your withdrawal.`,
             variant: "default",
+          });
+          
+          // Show custom toast notification
+          toast("Claim successful", {
+            description: `Your ${pendingWithdrawal.amount} USDC withdrawal has been claimed.`,
+            data: { variant: "success" }
           });
         } catch (error) {
           toast({

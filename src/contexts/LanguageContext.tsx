@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from "../hooks/useTranslation";
 
 type LanguageContextType = ReturnType<typeof useTranslation>;
 

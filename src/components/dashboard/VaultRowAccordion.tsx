@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { UserInvestment, VaultData } from "@/types/vault";
+import { UserInvestment, VaultData } from "../../types/vault";
 import { 
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger 
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/accordion";
+import { Button } from "../../components/ui/button";
 import { Lock } from "lucide-react";
 import { LockupProgress } from "./LockupProgress";
-import { useDepositDrawer } from "@/hooks/useDepositDrawer";
-import { DepositDrawer } from "@/components/vault/DepositDrawer";
-import { PairIcon } from "@/components/shared/TokenIcons";
+import { useDepositDrawer } from "../../hooks/useDepositDrawer";
+import { DepositDrawer } from "../../components/vault/DepositDrawer";
+import { PairIcon } from "../../components/shared/TokenIcons";
 
 interface VaultRowAccordionProps {
   investment: UserInvestment;

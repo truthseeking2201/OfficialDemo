@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../components/ui/tabs";
 import { Brain, ArrowUpRight, ArrowDownRight, Clock, RefreshCw, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { TransactionHistory } from "@/types/vault";
-import { Badge } from "@/components/ui/badge";
-import { NovaAIReasoningDrawer } from "@/components/ai/NovaAIReasoningDrawer";
-import { TransactionDetailDrawer } from "@/components/dashboard/TransactionDetailDrawer";
+import { TransactionHistory } from "../../types/vault";
+import { Badge } from "../../components/ui/badge";
+import { NovaAIReasoningDrawer } from "../../components/ai/NovaAIReasoningDrawer";
+import { TransactionDetailDrawer } from "../../components/dashboard/TransactionDetailDrawer";
 
 // AI Activity interfaces
 interface AIAction {

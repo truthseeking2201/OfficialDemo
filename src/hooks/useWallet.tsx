@@ -1,4 +1,4 @@
-import { useConnectWallet, useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { useConnectWallet, useCurrentAccount } from "../stubs/FakeWalletBridge";
 import { create } from "zustand";
 interface WalletState {
   isConnectWalletDialogOpen: boolean;

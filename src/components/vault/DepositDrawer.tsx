@@ -9,14 +9,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
   DrawerFooter,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { VaultData } from "@/types/vault";
-import { useDepositDrawer } from "@/hooks/useDepositDrawer";
+} from "../../components/ui/drawer";
+import { Button } from "../../components/ui/button";
+import { VaultData } from "../../types/vault";
+import { useDepositDrawer } from "../../hooks/useDepositDrawer";
 import { DepositDrawerDetails } from "./DepositDrawerDetails";
 import { DepositDrawerReview } from "./DepositDrawerReview";
 import { DepositDrawerSuccess } from "./DepositDrawerSuccess";
-import { useWallet } from "@/hooks/useWallet";
+import { useWallet } from "../../hooks/useWallet";
 import { X } from "lucide-react";
 
 interface DepositDrawerProps {

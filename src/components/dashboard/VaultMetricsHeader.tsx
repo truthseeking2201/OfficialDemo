@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
 import {
   Wallet,
   TrendingUp,
@@ -8,8 +8,8 @@ import {
   Shield,
   Info
 } from "lucide-react";
-import { UserInvestment } from "@/types/vault";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { UserInvestment } from "../../types/vault";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
 
 interface VaultMetricsHeaderProps {
   investments: UserInvestment[];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "../../components/ui/progress";
 import {
   Brain,
   Cpu,

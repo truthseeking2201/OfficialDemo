@@ -5,8 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
+} from "../../components/ui/dialog";
+import { Progress } from "../../components/ui/progress";
 import { Loader2 } from "lucide-react";
 
 interface WalletSignatureDialogProps {

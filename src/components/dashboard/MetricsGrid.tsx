@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
 import {
   Landmark,
   LineChart,
@@ -17,9 +17,9 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { UserInvestment } from "@/types/vault";
-import { Progress } from "@/components/ui/progress";
+} from "../../components/ui/tooltip";
+import { UserInvestment } from "../../types/vault";
+import { Progress } from "../../components/ui/progress";
 import { motion } from "framer-motion";
 
 interface MetricsGridProps {

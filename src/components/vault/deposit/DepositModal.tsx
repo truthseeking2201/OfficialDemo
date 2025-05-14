@@ -1,5 +1,5 @@
-import SuccessIcon from "@/assets/images/deposit/success.png";
-import { Button } from "@/components/ui/button";
+import SuccessIcon from "../../../assets/images/deposit/success.png";
+import { Button } from "../../../components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,13 +7,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Loader } from "@/components/ui/loader";
+} from "../../../components/ui/dialog";
+import { Loader } from "../../../components/ui/loader";
 import { ExternalLink } from "lucide-react";
+import { toast } from "../../../components/ui/sonner";
 
-import { formatNumber } from "@/lib/number";
-import { formatAmount } from "@/lib/utils";
-import { truncateBetween } from "@/utils/truncate";
+import { formatNumber } from "../../../lib/number";
+import { formatAmount } from "../../../lib/utils";
+import { truncateBetween } from "../../../utils/truncate";
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -197,7 +198,14 @@ const DepositModal = (props: DepositModalProps) => {
           {depositStep === 2 && (
             <div className="w-full">
               <Button
-                onClick={onDone}
+                onClick={() => {
+                  // Show toast notification when deposit is completed
+                  toast("Deposit successful", {
+                    description: `Your ${formatNumber(amount || 0)} USDC deposit has been confirmed.`,
+                    data: { variant: "success" }
+                  });
+                  onDone();
+                }}
                 size="lg"
                 variant="primary"
                 className="w-full"

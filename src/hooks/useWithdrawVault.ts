@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useWithdrawMutation, useClaimMutation } from "@/stubs/fakeQueries";
-import LpType from "@/types/lp.type";
-import DataClaimType from "@/types/data-claim.types.d";
+import { useWithdrawMutation, useClaimMutation } from "../stubs/fakeQueries";
+import LpType from "../types/lp.type";
+import DataClaimType from "../types/data-claim.types.d";
 import { random } from "lodash";
-import { NDLP } from "@/config/lp-config";
-import { RATE_DENOMINATOR } from "@/config/vault-config";
-import { getDecimalAmount, getBalanceAmount } from "@/lib/number";
+import { NDLP } from "../config/lp-config";
+import { RATE_DENOMINATOR } from "../config/vault-config";
+import { getDecimalAmount, getBalanceAmount } from "../lib/number";
 
 export const useWithdrawVault = () => {
   const withdrawMutation = useWithdrawMutation();

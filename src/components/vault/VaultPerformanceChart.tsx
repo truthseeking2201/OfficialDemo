@@ -1,8 +1,8 @@
 
 import React from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
 
 interface VaultPerformanceChartProps {
   data: { date: string; value: number }[];

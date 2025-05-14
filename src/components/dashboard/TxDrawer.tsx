@@ -1,7 +1,7 @@
 
 import { Fragment, useState } from "react";
-import { TransactionHistory } from "@/types/vault";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { TransactionHistory } from "../../types/vault";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../components/ui/collapsible";
 import { 
   Drawer, 
   DrawerContent, 
@@ -10,10 +10,10 @@ import {
   DrawerTitle,
   DrawerFooter,
   DrawerClose
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/drawer";
+import { Button } from "../../components/ui/button";
 import { ChevronDown, ExternalLink } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 
 interface TxDrawerProps {
   tx: TransactionHistory | null;

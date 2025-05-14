@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "../../components/ui/drawer";
+import { Button } from "../../components/ui/button";
 import { X, ChevronLeft, Play, LineChart, GitBranch, ThumbsUp, ThumbsDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "../../components/ui/progress";
 
 interface AIAction {
   id: string;

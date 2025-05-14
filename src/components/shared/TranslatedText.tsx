@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { getEnglishText, translateViToEn } from "@/utils/translations";
+import { getEnglishText, translateViToEn } from "../../utils/translations";
 
 interface TranslatedTextProps {
   id?: string;       // Translation ID from our translations dictionary

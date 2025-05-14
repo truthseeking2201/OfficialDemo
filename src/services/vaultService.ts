@@ -1,5 +1,5 @@
-import { VaultData, UserInvestment, TransactionHistory } from "@/types/vault";
-import { Vault } from "@/types";
+import { VaultData, UserInvestment, TransactionHistory } from "../types/vault";
+import { Vault } from "../types";
 
 // Memoized mock data - only create these once
 const createMockVaults = (): Vault[] => {

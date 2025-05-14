@@ -1,20 +1,20 @@
-import AIInvestIcon from "@/assets/images/dashboard/ai_invest.png";
-import AutoCompoundingIcon from "@/assets/images/dashboard/auto_compounding.png";
-import DepositIcon from "@/assets/images/dashboard/deposit.png";
-import EarnWithdrawIcon from "@/assets/images/dashboard/earn_withdraw.png";
-import ExclusiveBenefits from "@/assets/images/dashboard/exclusive_benefits.png";
-import LimitedSupplyIcon from "@/assets/images/dashboard/limited_supply.png";
+import AIInvestIcon from "../../assets/images/dashboard/ai_invest.png";
+import AutoCompoundingIcon from "../../assets/images/dashboard/auto_compounding.png";
+import DepositIcon from "../../assets/images/dashboard/deposit.png";
+import EarnWithdrawIcon from "../../assets/images/dashboard/earn_withdraw.png";
+import ExclusiveBenefits from "../../assets/images/dashboard/exclusive_benefits.png";
+import LimitedSupplyIcon from "../../assets/images/dashboard/limited_supply.png";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { BalanceCard } from "@/components/wallet/BalanceCard";
-import { useGetVaultConfig, useGetVaultManagement } from "@/hooks";
-import { getBalanceAmount } from "@/lib/number";
-import { formatAmount } from "@/lib/utils";
-import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+} from "../../components/ui/tooltip";
+import { BalanceCard } from "../../components/wallet/BalanceCard";
+import { useGetVaultConfig, useGetVaultManagement } from "../../hooks";
+import { getBalanceAmount } from "../../lib/number";
+import { formatAmount } from "../../lib/utils";
+import { useCurrentAccount } from "../../stubs/FakeWalletBridge";
 
 const RightContent = () => {
   const currentAccount = useCurrentAccount();

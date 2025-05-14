@@ -1,20 +1,18 @@
 import { X } from 'lucide-react';
-import { Toast as SonnerToast, toast } from 'sonner';
+import { toast } from './sonner';
 import { cn } from "../../lib/utils";
 
 type Variant = 'success' | 'error';
 
 interface Props {
-  id: number;
+  id: number | string;
   title: string;
   description?: string;
   variant?: Variant;
 }
 
 export const CustomToast = ({ id, title, description, variant = 'success' }: Props) => (
-  <SonnerToast.Root
-    id={id}
-    duration={3_000}
+  <div
     className={cn(
       'relative flex w-[480px] items-start gap-4 rounded-xl p-6',
       'shadow-[0_8px_32px_rgba(0,0,0,0.55)]',
@@ -62,5 +60,5 @@ export const CustomToast = ({ id, title, description, variant = 'success' }: Pro
       )}
       style={{ animationDuration: '3000ms' }}
     />
-  </SonnerToast.Root>
+  </div>
 );

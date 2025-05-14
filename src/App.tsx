@@ -1,10 +1,11 @@
 import { MainLayout } from "./components/layout/MainLayout";
-import { Toaster, toast } from "./components/ui/sonner";
+import { Toaster } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { ThemeProvider } from "next-themes";
 import Dashboard from "./pages/Dashboard";
 
 const NotFound = lazy(() =>
@@ -38,33 +39,35 @@ const PageFallback = () => null;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <MainLayout>
+    <ThemeProvider attribute="class" defaultTheme="dark">
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <MainLayout>
+                    <Suspense fallback={<PageFallback />}>
+                      <Dashboard />
+                    </Suspense>
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="*"
+                element={
                   <Suspense fallback={<PageFallback />}>
-                    <Dashboard />
+                    <NotFound />
                   </Suspense>
-                </MainLayout>
-              }
-            />
-            <Route
-              path="*"
-              element={
-                <Suspense fallback={<PageFallback />}>
-                  <NotFound />
-                </Suspense>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </LanguageProvider>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

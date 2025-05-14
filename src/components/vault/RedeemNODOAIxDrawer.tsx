@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription } from "../../components/ui/drawer";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@/components/ui/use-toast";
-import { useWallet } from "@/hooks/useWallet";
-import { vaultService } from "@/services/vaultService";
+import { toast } from "../../components/ui/use-toast";
+import { useWallet } from "../../hooks/useWallet";
+import { vaultService } from "../../services/vaultService";
 import { Ticket, AlertCircle, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "../../components/ui/alert";
 
 interface RedeemNODOAIxDrawerProps {
   open: boolean;

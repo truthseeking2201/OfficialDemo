@@ -1,8 +1,8 @@
 import React from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import { LineChart } from "lucide-react";
-import { VaultData } from "@/types/vault";
+import { VaultData } from "../../types/vault";
 import { AIRebalancingTicker } from "./AIRebalancingTicker";
 import { EnhancedPerformanceChart } from "./EnhancedPerformanceChart";
 

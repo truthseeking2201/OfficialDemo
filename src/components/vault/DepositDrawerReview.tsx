@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { VaultData } from "@/types/vault";
-import { WalletSignatureDialog } from "@/components/wallet/WalletSignatureDialog";
+import { Button } from "../../components/ui/button";
+import { VaultData } from "../../types/vault";
+import { WalletSignatureDialog } from "../../components/wallet/WalletSignatureDialog";
 
 interface DepositDrawerReviewProps {
   vault: VaultData;

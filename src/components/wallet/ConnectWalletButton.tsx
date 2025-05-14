@@ -1,24 +1,24 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "../../components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { COIN_TYPES_CONFIG } from "@/config";
-import { useMyAssets } from "@/stubs/fakeQueries";
-import { useToast } from "@/hooks/use-toast";
-import { truncateStringWithSeparator } from "@/utils/helpers";
-import { useCurrentAccount, useDisconnectWallet, useWalletModal } from "@/stubs/FakeWalletBridge";
+} from "../../components/ui/tooltip";
+import { COIN_TYPES_CONFIG } from "../../config";
+import { useMyAssets } from "../../stubs/fakeQueries";
+import { useToast } from "../../hooks/use-toast";
+import { truncateStringWithSeparator } from "../../utils/helpers";
+import { useCurrentAccount, useDisconnectWallet, useWalletModal } from "../../stubs/FakeWalletBridge";
 import { motion } from "framer-motion";
 import { Copy, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { memo, useEffect, useState } from "react";
-import { formatNumber } from "@/lib/number";
+import { formatNumber } from "../../lib/number";
 
 export const ConnectWalletButton = memo(() => {
   const { toast } = useToast();

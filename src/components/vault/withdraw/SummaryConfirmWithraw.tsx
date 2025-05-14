@@ -1,7 +1,7 @@
-import { RowItem } from "@/components/ui/row-item";
+import { RowItem } from "../../../components/ui/row-item";
 
-import { showFormatNumber } from "@/lib/number";
-import { truncateStringWithSeparator } from "@/utils/helpers";
+import { showFormatNumber } from "../../../lib/number";
+import { truncateStringWithSeparator } from "../../../utils/helpers";
 
 type Props = {
   summary?: any;

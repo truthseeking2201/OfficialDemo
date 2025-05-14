@@ -13,9 +13,9 @@ import {
   BarChart3
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { VaultData } from "@/types/vault";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "../../components/ui/button";
+import { VaultData } from "../../types/vault";
+import { Progress } from "../../components/ui/progress";
 
 interface VaultCardProps {
   vault: VaultData;

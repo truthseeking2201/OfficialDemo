@@ -1,4 +1,4 @@
-import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { useCurrentAccount } from "../stubs/FakeWalletBridge";
 import { random } from "lodash";
 
 interface UseMergeCoinsResult {

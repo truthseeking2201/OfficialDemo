@@ -1,20 +1,21 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { RowItem } from "@/components/ui/row-item";
-import { Badge } from "@/components/ui/badge";
-import { IconErrorToast } from "@/components/ui/icon-error-toast";
-import { IconCheckSuccess } from "@/components/ui/icon-check-success";
-import { Loader } from "@/components/ui/loader";
+import { Button } from "../../../components/ui/button";
+import { RowItem } from "../../../components/ui/row-item";
+import { Badge } from "../../../components/ui/badge";
+import { IconErrorToast } from "../../../components/ui/icon-error-toast";
+import { IconCheckSuccess } from "../../../components/ui/icon-check-success";
+import { Loader } from "../../../components/ui/loader";
 import { Clock4 } from "lucide-react";
 import Countdown, { zeroPad } from "react-countdown";
-import AvgPaceIcon from "@/assets/images/avg-pace.png";
+import AvgPaceIcon from "../../../assets/images/avg-pace.png";
+import { toast } from "../../../components/ui/sonner";
 
-import { showFormatNumber } from "@/lib/number";
-import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
-import { useToast } from "@/hooks/use-toast";
-import DataClaimType from "@/types/data-claim.types.d";
-import { useWithdrawVault } from "@/hooks/useWithdrawVault";
-import { useClaimMutation } from "@/stubs/fakeQueries";
+import { showFormatNumber } from "../../../lib/number";
+import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
+import { useToast } from "../../../hooks/use-toast";
+import DataClaimType from "../../../types/data-claim.types.d";
+import { useWithdrawVault } from "../../../hooks/useWithdrawVault";
+import { useClaimMutation } from "../../../stubs/fakeQueries";
 
 type Props = {
   data?: DataClaimType;
@@ -48,10 +49,16 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
       {
         onSuccess: () => {
           onSuccess();
+          // Show UI toast notification
           toast({
             title: "Claim successful",
             variant: "default",
             duration: 5000,
+          });
+          // Show Sonner toast notification
+          toast("Claim successful", {
+            description: `Your ${showFormatNumber(data.withdrawAmount)} ${data.withdrawSymbol} withdrawal has been claimed.`,
+            data: { variant: "success" }
           });
           setIsLoading(false);
         },

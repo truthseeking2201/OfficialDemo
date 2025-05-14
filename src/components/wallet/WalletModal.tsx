@@ -1,8 +1,8 @@
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
 import { Wallet } from "lucide-react";
-import { useWallet } from "@/hooks/useWallet";
+import { useWallet } from "../../hooks/useWallet";
 
 interface WalletModalProps {
   open: boolean;

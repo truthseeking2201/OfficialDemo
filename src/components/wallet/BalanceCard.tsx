@@ -1,9 +1,9 @@
-import { COIN_TYPES_CONFIG } from "@/config";
-import { useMyAssets } from "@/hooks";
+import { COIN_TYPES_CONFIG } from "../../config";
+import { useMyAssets } from "../../hooks";
 
-import arrowDown from "@/assets/icons/arrow-down.svg";
-import { useUSDCLPRate } from "@/hooks/useDepositVault";
-import { formatAmount } from "@/lib/utils";
+import arrowDown from "../../assets/icons/arrow-down.svg";
+import { useUSDCLPRate } from "../../hooks/useDepositVault";
+import { formatAmount } from "../../lib/utils";
 
 interface BalanceCardProps {
   className?: string;

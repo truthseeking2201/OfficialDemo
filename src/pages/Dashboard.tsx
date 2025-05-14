@@ -1,16 +1,16 @@
-import { PageContainer } from "@/components/layout/PageContainer";
-import { useWallet } from "@/hooks/useWallet";
+import { PageContainer } from "../components/layout/PageContainer";
+import { useWallet } from "../hooks/useWallet";
 import { useRef, useState } from "react";
 
-import LeftContent from "@/components/dashboard/LeftContent";
-import RightContent from "@/components/dashboard/RightContent";
-import "@/styles/design-tokens.css";
-import { UserInvestment } from "@/types/vault";
+import LeftContent from "../components/dashboard/LeftContent";
+import RightContent from "../components/dashboard/RightContent";
+import "../styles/design-tokens.css";
+import { UserInvestment } from "../types/vault";
 
-import { TxTable } from "@/components/dashboard/TxTable";
-import NodoAIVaultsMainCard from "@/components/vault/NodoAIVaultsMainCard";
-import TelegramIcon from "@/assets/icons/telegram.svg";
-import XIcon from "@/assets/icons/x.svg";
+import { TxTable } from "../components/dashboard/TxTable";
+import NodoAIVaultsMainCard from "../components/vault/NodoAIVaultsMainCard";
+import TelegramIcon from "../assets/icons/telegram.svg";
+import XIcon from "../assets/icons/x.svg";
 
 const sampleTransactions = [
   {

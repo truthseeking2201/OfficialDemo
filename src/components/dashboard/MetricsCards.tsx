@@ -10,8 +10,8 @@ import {
   Info,
   Percent
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Card, CardContent } from "../../components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
 
 interface MetricsCardsProps {
   totalDeposited: number;

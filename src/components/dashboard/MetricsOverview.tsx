@@ -1,5 +1,5 @@
-import { UserInvestment } from "@/types/vault";
-import { Card } from "@/components/ui/card";
+import { UserInvestment } from "../../types/vault";
+import { Card } from "../../components/ui/card";
 import {
   Landmark,
   TrendingUp,
@@ -8,8 +8,8 @@ import {
   Percent,
   Info
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
+import { Progress } from "../../components/ui/progress";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 

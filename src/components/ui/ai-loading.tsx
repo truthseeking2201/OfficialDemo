@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Brain, Loader2, Sparkles, Zap, Cpu } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 interface AILoadingProps {
   type?: "neural" | "pulse" | "grid" | "processing" | "glow";

@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { useWallet } from "@/hooks/useWallet";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "../../components/ui/button";
+import { useWallet } from "../../hooks/useWallet";
+import { Card, CardContent } from "../../components/ui/card";
 import { ArrowUpRight, Wallet } from "lucide-react";
-import { ConnectWalletModal } from "@/components/wallet/ConnectWalletModal";
+import { ConnectWalletModal } from "../../components/wallet/ConnectWalletModal";
 
 export function ConnectWalletPrompt() {
   const { isConnectModalOpen, openConnectModal, closeConnectModal } = useWallet();

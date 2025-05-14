@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { vaultService } from "@/services/vaultService";
-import { TransactionHistory } from "@/types/vault";
-import { TransactionDetailDrawer } from "@/components/dashboard/TransactionDetailDrawer";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../components/ui/tabs";
+import { vaultService } from "../../services/vaultService";
+import { TransactionHistory } from "../../types/vault";
+import { TransactionDetailDrawer } from "../../components/dashboard/TransactionDetailDrawer";
 import { Brain, ArrowUpRight, RefreshCw } from "lucide-react";
 
 export function ActivityTabs() {

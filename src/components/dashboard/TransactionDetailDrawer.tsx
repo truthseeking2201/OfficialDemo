@@ -1,9 +1,9 @@
 import React from "react";
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "../../components/ui/drawer";
+import { Button } from "../../components/ui/button";
 import { X, ChevronLeft, ArrowUpRight, ArrowDownRight, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
-import { TransactionHistory } from "@/types/vault";
+import { TransactionHistory } from "../../types/vault";
 
 interface TransactionDetailDrawerProps {
   open: boolean;

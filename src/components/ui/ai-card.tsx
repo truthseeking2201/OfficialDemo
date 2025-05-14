@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Brain, ArrowRight, ChevronUp, ChevronDown, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 interface AICardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;

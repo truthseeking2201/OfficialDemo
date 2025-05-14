@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { VaultData } from "@/types/vault";
+import { VaultData } from "../../types/vault";
 import { EnhancedVaultCard } from "./EnhancedVaultCard";
 
 interface VaultGridProps {

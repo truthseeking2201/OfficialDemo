@@ -1,9 +1,9 @@
-import { UserInvestment } from "@/types/vault";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { UserInvestment } from "../../types/vault";
+import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import { ArrowUpRight, Clock, Wallet } from "lucide-react";
 import { useState } from "react";
-import { DepositDrawer } from "@/components/vault/DepositDrawer";
+import { DepositDrawer } from "../../components/vault/DepositDrawer";
 
 interface PositionsPanelProps {
   positions: UserInvestment[];

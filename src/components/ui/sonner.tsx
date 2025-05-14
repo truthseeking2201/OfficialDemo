@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes"
-import { Toaster as Sonner, toast } from "sonner"
+import { Toaster as Sonner } from "sonner"
 import { CustomToast } from "./CustomToast"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
@@ -24,12 +24,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
             "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
         },
       }}
-      render={({ id, title, description, data }) => (
+      render={(toast) => (
         <CustomToast 
-          id={id} 
-          title={title as string} 
-          description={description as string} 
-          variant={data?.variant} 
+          id={toast.id} 
+          title={toast.title as string} 
+          description={toast.description as string} 
+          variant={toast.data?.variant} 
         />
       )}
       {...props}
@@ -37,4 +37,5 @@ const Toaster = ({ ...props }: ToasterProps) => {
   )
 }
 
-export { Toaster, toast }
+export { Toaster }
+export { toast } from "sonner"

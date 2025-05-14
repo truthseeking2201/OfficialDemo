@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -14,12 +14,12 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+} from "../../components/ui/table";
+import { Badge } from "../../components/ui/badge";
 import { Sparkle, AreaChart, Clock, Activity, Tag, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
-import { NovaAIReasoningDrawer } from "@/components/ai/NovaAIReasoningDrawer";
+import { NovaAIReasoningDrawer } from "../../components/ai/NovaAIReasoningDrawer";
 import { formatDistanceToNow } from "date-fns";
-import { TransactionHistory } from "@/types/vault";
+import { TransactionHistory } from "../../types/vault";
 
 // AI Activity interfaces
 interface AIAction {

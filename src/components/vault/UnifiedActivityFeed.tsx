@@ -9,9 +9,9 @@ import {
   Cpu
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { vaultService } from "@/services/vaultService";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { vaultService } from "../../services/vaultService";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { Badge } from "../../components/ui/badge";
 import { NovaAIReasoningDrawer } from "../ai/NovaAIReasoningDrawer";
 import { TransactionDetailDrawer } from "../dashboard/TransactionDetailDrawer";
 

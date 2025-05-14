@@ -1,6 +1,6 @@
-import { getVaultConfig } from "@/apis/vault";
-import { PROD_VAULT_ID, VAULT_CONFIG } from "@/config/vault-config";
-import { VaultConfig } from "@/types/vault-config.types";
+import { getVaultConfig } from "../apis/vault";
+import { PROD_VAULT_ID, VAULT_CONFIG } from "../config/vault-config";
+import { VaultConfig } from "../types/vault-config.types";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 export const useGetVaultConfig = (vaultId?: string) => {

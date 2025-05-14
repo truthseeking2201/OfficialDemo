@@ -1,13 +1,13 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 import { useMutation } from "@tanstack/react-query";
-import { vaultService } from "@/services/vaultService";
-import { toast } from "@/components/ui/use-toast";
-import { UserInvestment } from "@/types/vault";
+import { vaultService } from "../../services/vaultService";
+import { toast } from "../../components/ui/use-toast";
+import { UserInvestment } from "../../types/vault";
 
 interface WithdrawModalProps {
   open: boolean;

@@ -1,7 +1,7 @@
-import { COIN_TYPES_CONFIG } from "@/config";
-import { RATE_DENOMINATOR, VAULT_CONFIG } from "@/config/vault-config";
-import { UserCoinAsset } from "@/types/coin.types";
-import { useCurrentAccount, Transaction } from "@/stubs/FakeWalletBridge";
+import { COIN_TYPES_CONFIG } from "../config";
+import { RATE_DENOMINATOR, VAULT_CONFIG } from "../config/vault-config";
+import { UserCoinAsset } from "../types/coin.types";
+import { useCurrentAccount, Transaction } from "../stubs/FakeWalletBridge";
 import { useMergeCoins } from "./useMergeCoins";
 import { useGetVaultConfig } from "./useVault";
 import { random } from "lodash";

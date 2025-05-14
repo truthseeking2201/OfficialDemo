@@ -1,4 +1,4 @@
-import LpType from "@/types/lp.type";
+import LpType from "../types/lp.type";
 import { COIN_TYPES_CONFIG } from "./coin-config";
 import { VAULT_CONFIG } from "./vault-config";
 

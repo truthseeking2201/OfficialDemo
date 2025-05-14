@@ -1,9 +1,9 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { PageContainer } from "@/components/layout/PageContainer";
+import { Card } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { PageContainer } from "../../components/layout/PageContainer";
 
 export function VaultDetailError() {
   const navigate = useNavigate();

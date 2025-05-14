@@ -1,12 +1,12 @@
 
 import React from "react";
 import { VaultCard } from "./VaultCard";
-import { VaultData } from "@/types/vault";
+import { VaultData } from "../../types/vault";
 import { 
   Carousel,
   CarouselContent,
   CarouselItem,
-} from "@/components/ui/carousel";
+} from "../../components/ui/carousel";
 
 interface VaultCarouselProps {
   vaults: VaultData[];

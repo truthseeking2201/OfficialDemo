@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import { LoaderCircle } from "lucide-react";
 
 const Loader = ({ className, size }: { className?: string; size?: number }) => {

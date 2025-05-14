@@ -1,5 +1,5 @@
 
-import { VaultData } from "@/types/vault";
+import { VaultData } from "../types/vault";
 
 export const useDepositCalculations = (vault?: VaultData) => {
   const calculateEstimatedReturns = (amount: string = "0", selectedLockup: number = 30) => {

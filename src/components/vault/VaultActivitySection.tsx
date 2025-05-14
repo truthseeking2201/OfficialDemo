@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { UnifiedActivityFeed } from "./UnifiedActivityFeed";
 import { Brain } from "lucide-react";
 

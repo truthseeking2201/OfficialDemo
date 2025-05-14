@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { vaultService } from "@/services/vaultService";
-import { VaultData } from "@/types/vault";
-import { adaptVaultToVaultData } from "@/utils/vaultAdapter";
-import { Vault } from "@/types";
+import { vaultService } from "../services/vaultService";
+import { VaultData } from "../types/vault";
+import { adaptVaultToVaultData } from "../utils/vaultAdapter";
+import { Vault } from "../types";
 
 export function useVaultDetail(vaultId: string) {
   const {

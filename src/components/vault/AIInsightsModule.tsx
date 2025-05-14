@@ -17,7 +17,7 @@ import {
   Clock,
   Info
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 
 interface Insight {
   id: string;

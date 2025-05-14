@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getEnglishText, translateViToEn } from '@/utils/translations';
+import { getEnglishText, translateViToEn } from "../utils/translations";
 
 type Language = 'en' | 'vi';
 

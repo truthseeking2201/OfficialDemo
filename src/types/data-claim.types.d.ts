@@ -1,4 +1,4 @@
-import LpType from "@/types/lp.type";
+import LpType from "../types/lp.type";
 
 export default interface DataClaimType {
   id: string | number;

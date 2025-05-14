@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { VaultData } from "@/types/vault";
-import { toast } from "@/components/ui/use-toast";
+import { VaultData } from "../types/vault";
+import { toast } from "../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useDepositAudio } from "./useDepositAudio";
 import { useDepositCalculations } from "./useDepositCalculations";
 import { useDepositAnimations } from "./useDepositAnimations";
-import { useDepositMutation } from "@/stubs/fakeQueries";
+import { useDepositMutation } from "../stubs/fakeQueries";
 import { random } from "lodash";
 
 interface UseDepositDrawerProps {

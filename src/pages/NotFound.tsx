@@ -1,9 +1,9 @@
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { PageContainer } from "@/components/layout/PageContainer";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { Button } from "../components/ui/button";
+import { PageContainer } from "../components/layout/PageContainer";
+import { MainLayout } from "../components/layout/MainLayout";
 
 export default function NotFound() {
   const navigate = useNavigate();

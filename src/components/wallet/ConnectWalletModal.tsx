@@ -1,15 +1,15 @@
-import phantomWallet from "@/assets/images/phantom-wallet.png";
-import suiWallet from "@/assets/images/sui-wallet.png";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import phantomWallet from "../../assets/images/phantom-wallet.png";
+import suiWallet from "../../assets/images/sui-wallet.png";
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useConnectWallet, useWallets } from "@/stubs/FakeWalletBridge";
+} from "../../components/ui/dialog";
+import { useConnectWallet, useWallets } from "../../stubs/FakeWalletBridge";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import { useState } from "react";
 

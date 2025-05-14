@@ -1,7 +1,7 @@
 
 import React, { memo } from "react";
 import { VaultCard } from "./VaultCard";
-import { VaultData } from "@/types/vault";
+import { VaultData } from "../../types/vault";
 
 interface VaultGridProps {
   vaults: VaultData[];

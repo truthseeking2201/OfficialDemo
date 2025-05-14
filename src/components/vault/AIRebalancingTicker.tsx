@@ -2,8 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { vaultService } from "@/services/vaultService";
-import { Badge } from "@/components/ui/badge";
+import { vaultService } from "../../services/vaultService";
+import { Badge } from "../../components/ui/badge";
 import { Cog } from 'lucide-react';
 
 interface RebalancingEvent {

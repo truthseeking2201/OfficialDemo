@@ -1,10 +1,10 @@
 
 import React from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Progress } from "../../components/ui/progress";
 import { ArrowRight, Wallet } from "lucide-react";
-import { useWallet } from "@/hooks/useWallet";
+import { useWallet } from "../../hooks/useWallet";
 
 interface VaultActionCardProps {
   unlockProgress: number;

@@ -1,13 +1,13 @@
-import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
-import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "../../components/shared/LanguageSwitcher";
+import { Button } from "../../components/ui/button";
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
+} from "../../components/ui/sheet";
+import { ConnectWalletButton } from "../../components/wallet/ConnectWalletButton";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BarChart3,

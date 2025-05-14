@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Brain, TrendingUp, DollarSign, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { vaultService } from "@/services/vaultService";
+import { vaultService } from "../../services/vaultService";
 import { StatChip } from "./StatChip";
 
 export function EnhancedHeroSection() {

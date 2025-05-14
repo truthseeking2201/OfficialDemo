@@ -1,5 +1,5 @@
-import NodoAIVaultsMainCard from "@/components/vault/NodoAIVaultsMainCard";
-import { PageContainer } from "@/components/layout/PageContainer";
+import NodoAIVaultsMainCard from "../components/vault/NodoAIVaultsMainCard";
+import { PageContainer } from "../components/layout/PageContainer";
 
 export default function VaultCatalog() {
   return (

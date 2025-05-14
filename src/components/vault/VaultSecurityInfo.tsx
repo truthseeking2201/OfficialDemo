@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion";
 import { Check, ExternalLink, ShieldAlert } from "lucide-react";
 import { useEffect } from "react";
 

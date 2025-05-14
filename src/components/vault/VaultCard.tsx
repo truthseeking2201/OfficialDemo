@@ -1,17 +1,17 @@
 
 import React, { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import { ArrowRight, Info, Brain } from "lucide-react";
-import { VaultData } from "@/types/vault";
-import { PairIcon } from "@/components/shared/TokenIcons";
+import { VaultData } from "../../types/vault";
+import { PairIcon } from "../../components/shared/TokenIcons";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "../../components/ui/tooltip";
 import { AIIndicator } from "./AIIndicator";
 
 interface VaultCardProps {

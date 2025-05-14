@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { VaultData } from "@/types/vault";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Slider } from "../../components/ui/slider";
+import { VaultData } from "../../types/vault";
 
 interface DepositDrawerDetailsProps {
   vault: VaultData;

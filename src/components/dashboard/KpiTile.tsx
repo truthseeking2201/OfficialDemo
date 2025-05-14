@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Card } from "@/components/ui/card";
+import { Card } from "../../components/ui/card";
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 
 interface KpiTileProps {
