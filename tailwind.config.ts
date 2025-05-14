@@ -23,6 +23,7 @@ export default {
       fontFamily: {
         sans: ["DM Sans", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
+        ibmplex: ['"IBM Plex Mono"', "monospace"],
       },
       colors: {
         // Background and UI colors

@@ -19,6 +19,42 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
   const [isSignatureDialogOpen, setIsSignatureDialogOpen] = useState(false);
   const [countdownEnded, setCountdownEnded] = useState(false);
   
+  // Calculate amount user will receive - moved before conditional return
+  const receiveAmount = pending ? pending.amountNdlp * pending.conversionRate - pending.feeUsd : 0;
+
+  const handleClaim = useCallback(async () => {
+    if (!pending || Date.now() < pending.cooldownEnd || claimMutation.isPending) {
+      return;
+    }
+    
+    // Open signature dialog
+    setIsSignatureDialogOpen(true);
+  }, [pending, claimMutation.isPending]);
+  
+  const handleSignatureComplete = useCallback(async () => {
+    if (!pending) return;
+    
+    setIsSignatureDialogOpen(false);
+    
+    try {
+      await claimMutation.mutateAsync({ id: pending.id });
+      clearPending();
+      toast({
+        title: "Funds claimed successfully",
+        description: "Your funds have been credited to your wallet",
+        variant: "default",
+      });
+      onClaimSuccess();
+    } catch (error) {
+      toast({
+        title: "Claim failed",
+        description: error.message || "An error occurred during claim",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
+  }, [pending, claimMutation, clearPending, onClaimSuccess]);
+  
   useEffect(() => {
     if (!pending) return;
     
@@ -41,64 +77,26 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
     return null;
   }
 
-  // Calculate amount user will receive
-  const receiveAmount = pending.amountNdlp * pending.conversionRate - pending.feeUsd;
-
-  const handleClaim = useCallback(async () => {
-    if (!pending || Date.now() < pending.cooldownEnd || claimMutation.isPending) {
-      return;
-    }
-    
-    // Open signature dialog
-    setIsSignatureDialogOpen(true);
-  }, [pending, claimMutation.isPending]);
-  
-  const handleSignatureComplete = useCallback(async () => {
-    setIsSignatureDialogOpen(false);
-    
-    try {
-      await claimMutation.mutateAsync({ id: pending.id });
-      clearPending();
-      toast({
-        title: "Funds claimed successfully",
-        description: "Your funds have been credited to your wallet",
-        variant: "default",
-      });
-      onClaimSuccess();
-    } catch (error) {
-      toast({
-        title: "Claim failed",
-        description: error.message || "An error occurred during claim",
-        variant: "destructive",
-        duration: 5000,
-      });
-    }
-  }, [pending, claimMutation, clearPending, onClaimSuccess]);
-
   return (
     <div className="space-y-6 lg:space-y-8 text-white">
-      {/* Header row with withdrawal label and NDLP amount */}
-      <div className="flex justify-between items-baseline mt-10">
-        <h3 className="text-neutral-400 text-[18px] font-medium">Withdrawal in progress</h3>
-        <p className="text-[32px] font-extrabold tracking-wider text-white">
-          {pending.amountNdlp.toLocaleString()} NDLP
-        </p>
+      {/* Header row with withdrawal label, NDLP amount, and countdown badge */}
+      <div className="flex items-baseline justify-between mt-10">
+        <span className="text-neutral-400 text-[18px] font-medium">Withdrawal in progress</span>
+        <div className="flex items-center gap-4">
+          <span className="text-[32px] font-extrabold text-white tracking-wider">{pending.amountNdlp.toLocaleString()} NDLP</span>
+          {!countdownEnded && (
+            <div className="inline-flex items-center gap-1 rounded-xl bg-amber-900/60 px-3 py-[3px]">
+              <ClockIcon className="w-4 h-4 text-amber-400" />
+              <span className="text-[14px] tabular-nums">
+                <Countdown target={pending.cooldownEnd} />
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Countdown badge - only shown when countdown hasn't ended */}
-      {!countdownEnded && (
-        <div className="flex justify-end -mt-2">
-          <div className="inline-flex items-center gap-1 rounded-xl bg-amber-900/60 px-3 py-[3px]">
-            <ClockIcon className="w-4 h-4 text-amber-400" />
-            <span className="text-[14px] tabular-nums">
-              <Countdown target={pending.cooldownEnd} />
-            </span>
-          </div>
-        </div>
-      )}
-
       {/* Summary card */}
-      <div className="rounded-2xl bg-neutral-900 p-6 w-full">
+      <div className="rounded-2xl bg-white/5 border border-white/15 p-6 w-full">
         <div className="flex justify-between text-sm mb-3">
           <span className="text-neutral-400">You'll Receive</span>
           <span className="text-right text-white">

@@ -101,7 +101,7 @@ export default function WithdrawVaultSection() {
                 alt="NDLP Token"
                 className="w-6 h-6 fill-gradient-orange"
               />
-              <div className="text-white font-sans font-bold text-[56px] leading-none ml-2">
+              <div className="text-white font-ibmplex font-bold text-[40px] leading-none ml-2">
                 {showFormatNumber(balanceLp)}
               </div>
             </div>
