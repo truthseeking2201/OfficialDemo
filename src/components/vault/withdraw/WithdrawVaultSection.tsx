@@ -67,28 +67,21 @@ export default function WithdrawVaultSection() {
           <p className="text-base text-white/60 text-center mb-5">
             Connect Wallet First to see your Funds
           </p>
-          <div className="relative">
-            <Button
-              variant="primary"
-              size="xl"
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log("Button clicked in withdraw section");
-                if (typeof openConnectWalletDialog === 'function') {
-                  openConnectWalletDialog();
-                } else {
-                  console.error("openConnectWalletDialog is not a function", openConnectWalletDialog);
-                }
-              }}
-              className="w-full font-semibold text-lg"
-            >
-              <span>Connect Wallet</span>
-              <ArrowRight
-                size={16}
-                className="ml-2"
-              />
-            </Button>
-          </div>
+          <Button
+            variant="primary"
+            size="xl"
+            onClick={() => {
+              console.log("Connect wallet clicked in withdraw section");
+              openConnectWalletDialog();
+            }}
+            className="w-full font-semibold text-lg"
+          >
+            <span>Connect Wallet</span>
+            <ArrowRight
+              size={16}
+              className="ml-2"
+            />
+          </Button>
         </div>
       )}
 

@@ -244,25 +244,19 @@ export default function DepositVaultSection() {
         </div>
       </div>
 
-      <div className="relative" onClick={(e) => console.log("Parent div clicked")}>
-        <Button
-          variant="primary"
-          size="xl"
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log("Button clicked in deposit section");
-            if (isConnected) {
-              handleDeposit();
-            } else {
-              handleConnectWallet();
-            }
-          }}
-          className="w-full font-semibold text-lg"
-          disabled={disabledDeposit}
-        >
-          {isConnected ? "Deposit" : "Connect Wallet"}
-        </Button>
-      </div>
+      <Button
+        variant="primary"
+        size="xl"
+        onClick={isConnected ? handleDeposit : () => {
+          console.log("Connect wallet clicked");
+          // Call the wallet modal directly
+          openConnectWalletDialog();
+        }}
+        className="w-full font-semibold text-lg"
+        disabled={disabledDeposit}
+      >
+        {isConnected ? "Deposit" : "Connect Wallet"}
+      </Button>
 
       <DepositModal
         isOpen={isDepositModalOpen}
