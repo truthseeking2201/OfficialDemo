@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { random } from 'lodash';
-import phantomWallet from "@/assets/images/phantom-wallet.png";
-import suiWallet from "@/assets/images/sui-wallet.png";
+import phantomWallet from "../assets/images/phantom-wallet.png";
+import suiWallet from "../assets/images/sui-wallet.png";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import {
   Dialog,
@@ -9,9 +9,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+} from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import { Alert, AlertDescription } from "../components/ui/alert";
 
 // Fake Transaction implementation to replace @mysten/sui/transactions
 export class Transaction {
@@ -88,7 +88,7 @@ interface FakeWalletContextType extends FakeWalletState {
 }
 
 // Create context
-const FakeWalletContext = createContext<FakeWalletContextType | null>(null);
+export const FakeWalletContext = createContext<FakeWalletContextType | null>(null);
 
 // Helpers
 const WALLETS: FakeWallet[] = [

@@ -1,23 +1,23 @@
-import suiWallet from "@/assets/images/sui-wallet.png";
-import { Button } from "@/components/ui/button";
-import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
-import { IconErrorToast } from "@/components/ui/icon-error-toast";
-import { useToast } from "@/hooks/use-toast";
-import DepositModal from "@/components/vault/deposit/DepositModal";
-import { COIN_TYPES_CONFIG } from "@/config/coin-config";
-import { useGetVaultManagement } from "@/hooks";
+import suiWallet from "../../../assets/images/sui-wallet.png";
+import { Button } from "../../../components/ui/button";
+import { FormattedNumberInput } from "../../../components/ui/formatted-number-input";
+import { IconErrorToast } from "../../../components/ui/icon-error-toast";
+import { useToast } from "../../../hooks/use-toast";
+import DepositModal from "../../../components/vault/deposit/DepositModal";
+import { COIN_TYPES_CONFIG } from "../../../config/coin-config";
+import { useGetVaultManagement } from "../../../hooks";
 import {
   useCalculateNDLPReturn,
   useUSDCLPRate,
-} from "@/hooks/useDepositVault";
-import { useMyAssets } from "@/stubs/fakeQueries";
-import { useWallet } from "@/stubs/fakeQueries";
-import { formatNumber } from "@/lib/number";
-import { formatAmount } from "@/lib/utils";
-import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+} from "../../../hooks/useDepositVault";
+import { useMyAssets } from "../../../stubs/fakeQueries";
+import { useWallet } from "../../../stubs/fakeQueries";
+import { formatNumber } from "../../../lib/number";
+import { formatAmount } from "../../../lib/utils";
+import { useCurrentAccount } from "../../../stubs/FakeWalletBridge";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { useDepositMutation } from "@/stubs/fakeQueries";
+import { useDepositMutation } from "../../../stubs/fakeQueries";
 
 type DepositSuccessData = {
   amount: number;
@@ -98,7 +98,12 @@ export default function DepositVaultSection() {
   }, [usdcCoin?.balance, handleValidateDepositAmount]);
 
   const handleConnectWallet = useCallback(() => {
-    openConnectWalletDialog();
+    console.log("Connect wallet button clicked in deposit section");
+    if (typeof openConnectWalletDialog === 'function') {
+      openConnectWalletDialog();
+    } else {
+      console.error("openConnectWalletDialog is not a function", openConnectWalletDialog);
+    }
   }, [openConnectWalletDialog]);
 
   const handleDeposit = useCallback(() => {
@@ -239,15 +244,25 @@ export default function DepositVaultSection() {
         </div>
       </div>
 
-      <Button
-        variant="primary"
-        size="xl"
-        onClick={isConnected ? handleDeposit : handleConnectWallet}
-        className="w-full font-semibold text-lg"
-        disabled={disabledDeposit}
-      >
-        {isConnected ? "Deposit" : "Connect Wallet"}
-      </Button>
+      <div className="relative" onClick={(e) => console.log("Parent div clicked")}>
+        <Button
+          variant="primary"
+          size="xl"
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log("Button clicked in deposit section");
+            if (isConnected) {
+              handleDeposit();
+            } else {
+              handleConnectWallet();
+            }
+          }}
+          className="w-full font-semibold text-lg"
+          disabled={disabledDeposit}
+        >
+          {isConnected ? "Deposit" : "Connect Wallet"}
+        </Button>
+      </div>
 
       <DepositModal
         isOpen={isDepositModalOpen}

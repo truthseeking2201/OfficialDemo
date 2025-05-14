@@ -128,20 +128,31 @@ export const useWallet = () => {
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
   );
   
-  // Use the wallet modal from FakeWalletBridge
-  const { open } = useWalletModal();
+  // Use the wallet context directly for more reliability
+  const context = React.useContext(require('./FakeWalletBridge').FakeWalletContext);
+  
+  // Create a custom open function for debugging
+  const openDialogFunction = React.useCallback(() => {
+    console.log("Opening wallet dialog directly from context");
+    if (context) {
+      context.openConnectWalletDialog();
+    } else {
+      console.error("Wallet context is null");
+    }
+  }, [context]);
   
   return {
     isConnected: !!account?.address,
     address: account?.address || null,
     balance: usdcAsset?.balance || 0,
     isConnectWalletDialogOpen: false,
-    openConnectWalletDialog: open,
+    openConnectWalletDialog: openDialogFunction,
     closeConnectWalletDialog: () => {},
   };
 };
 
 // Import these at the top of the file
+import React from 'react';
 import { useCurrentAccount, useWalletModal } from './FakeWalletBridge';
 
 // Sign transaction hook (fake)
