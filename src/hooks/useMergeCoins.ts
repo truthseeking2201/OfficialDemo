@@ -1,9 +1,5 @@
-import {
-  useCurrentAccount,
-  useSignAndExecuteTransaction,
-  useSuiClient,
-} from "@mysten/dapp-kit";
-import { Transaction } from "@mysten/sui/transactions";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { random } from "lodash";
 
 interface UseMergeCoinsResult {
   mergeCoins: (coinType: string) => Promise<string | undefined>;
@@ -12,10 +8,7 @@ interface UseMergeCoinsResult {
 }
 
 export const useMergeCoins = (): UseMergeCoinsResult => {
-  const { mutateAsync: signAndExecuteTransaction, isPending } =
-    useSignAndExecuteTransaction();
   const account = useCurrentAccount();
-  const suiClient = useSuiClient();
 
   const mergeCoins = async (coinType: string): Promise<string | undefined> => {
     if (!account?.address) {
@@ -23,37 +16,13 @@ export const useMergeCoins = (): UseMergeCoinsResult => {
     }
 
     try {
-      const coins = await suiClient.getCoins({
-        owner: account.address,
-        coinType,
-      });
-
-      // If there's only one coin or no coins, return the coin object ID
-      if (coins.data.length <= 1) {
-        return coins.data[0]?.coinObjectId;
-      }
-
-      const tx = new Transaction();
-      const primaryCoin = tx.object(coins.data[0].coinObjectId);
-      const coinsToMerge = coins.data
-        .slice(1)
-        .map((coin) => tx.object(coin.coinObjectId));
-
-      if (coinsToMerge.length > 0) {
-        tx.mergeCoins(primaryCoin, coinsToMerge);
-      }
-
-      const result = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      // Wait for transaction to be confirmed
-      await suiClient.waitForTransaction({
-        digest: result.digest,
-      });
-
-      // Return the merged coin object ID
-      return coins.data[0].coinObjectId;
+      // Simulate network delay (300-700ms)
+      await new Promise(resolve => setTimeout(resolve, random(300, 700)));
+      
+      // Generate a fake coin object ID based on coin type
+      const coinObjectId = 'fake-coin-' + coinType.split('::').pop()?.toLowerCase();
+      
+      return coinObjectId;
     } catch (error) {
       console.error("Error merging coins:", error);
       throw error;
@@ -62,7 +31,7 @@ export const useMergeCoins = (): UseMergeCoinsResult => {
 
   return {
     mergeCoins,
-    isLoading: isPending,
-    error: null, // You can enhance this by tracking errors if needed
+    isLoading: false,
+    error: null,
   };
 };

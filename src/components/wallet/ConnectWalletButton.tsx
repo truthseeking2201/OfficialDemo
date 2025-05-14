@@ -11,14 +11,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { COIN_TYPES_CONFIG } from "@/config";
-import { useMyAssets, useWallet } from "@/hooks";
+import { useMyAssets } from "@/stubs/fakeQueries";
 import { useToast } from "@/hooks/use-toast";
 import { truncateStringWithSeparator } from "@/utils/helpers";
-import { useCurrentAccount, useDisconnectWallet } from "@mysten/dapp-kit";
+import { useCurrentAccount, useDisconnectWallet, useWalletModal } from "@/stubs/FakeWalletBridge";
 import { motion } from "framer-motion";
 import { Copy, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { memo, useEffect, useState } from "react";
-import { ConnectWalletModal } from "./ConnectWalletModal";
 import { formatNumber } from "@/lib/number";
 
 export const ConnectWalletButton = memo(() => {
@@ -27,12 +26,7 @@ export const ConnectWalletButton = memo(() => {
 
   const [riskAssessmentTime, setRiskAssessmentTime] = useState<string>("");
   const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
-  const {
-    isConnectWalletDialogOpen,
-    openConnectWalletDialog,
-    closeConnectWalletDialog,
-    isConnected,
-  } = useWallet();
+  const { open: openConnectWalletDialog } = useWalletModal();
 
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
@@ -42,6 +36,8 @@ export const ConnectWalletButton = memo(() => {
   const usdcCoin = assets.find(
     (asset) => asset.coin_type === COIN_TYPES_CONFIG.USDC_COIN_TYPE
   );
+
+  const isConnected = !!address;
 
   useEffect(() => {
     // Update risk assessment time
@@ -281,12 +277,6 @@ export const ConnectWalletButton = memo(() => {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-
-      {/* New Connect Wallet Modal */}
-      <ConnectWalletModal
-        open={isConnectWalletDialogOpen}
-        onClose={closeConnectWalletDialog}
-      />
     </>
   );
 });

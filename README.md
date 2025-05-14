@@ -1,8 +1,30 @@
-# Welcome to your NODO AI Vaults project
+# NODO AI Vaults - AI Copy Trading
 
 ## Project info
 
 **URL**: https://NODO AI Vaults.dev/projects/5f9801db-6e7c-4942-b99e-6af02d9f3c32
+
+## Showcase Build
+
+All on-chain logic stubbed for offline demos; UI flow is 1-to-1 with production. The showcase build provides a fully self-contained experience with:
+
+- Connect Wallet flow with multiple wallet options
+- Initial balance of 100,000 USDC and 100,000 NDLP
+- Full deposit/withdraw/claim flows with realistic delays
+- 24-hour withdrawal cooldown with countdown timer
+- Persistent state using localStorage
+
+To run the showcase:
+
+```sh
+# Install dependencies
+npm install
+
+# Start the server
+npm run dev
+```
+
+The showcase build blocks all external network requests for security while providing an authentic user experience identical to the production app.
 
 ## How can I edit this code?
 
@@ -59,6 +81,7 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Sui SDK
 
 ## How can I deploy this project?
 

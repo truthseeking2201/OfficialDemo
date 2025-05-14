@@ -1,13 +1,6 @@
 import { MainLayout } from "@/components/layout/MainLayout";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import {
-  createNetworkConfig,
-  SuiClientProvider,
-  WalletProvider,
-} from "@mysten/dapp-kit";
-import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -22,7 +15,15 @@ const NotFound = lazy(() =>
 );
 
 // Create query client that still loads data but doesn't show loading states
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity
+    }
+  }
+});
 
 // Replace loading state with mock data for demo - no loading screen needed
 const PageFallback = () => null;
@@ -35,48 +36,35 @@ const PageFallback = () => null;
   );
 })();
 
-const { networkConfig } = createNetworkConfig({
-  testnet: { url: getFullnodeUrl("testnet") },
-  mainnet: { url: getFullnodeUrl("mainnet") },
-});
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <SuiClientProvider
-      networks={networkConfig}
-      defaultNetwork={import.meta.env.VITE_SUI_NETWORK || "testnet"}
-    >
-      <WalletProvider autoConnect>
-        <LanguageProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <MainLayout>
-                      <Suspense fallback={<PageFallback />}>
-                        <Dashboard />
-                      </Suspense>
-                    </MainLayout>
-                  }
-                />
-                <Route
-                  path="*"
-                  element={
-                    <Suspense fallback={<PageFallback />}>
-                      <NotFound />
-                    </Suspense>
-                  }
-                />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </LanguageProvider>
-      </WalletProvider>
-    </SuiClientProvider>
+    <LanguageProvider>
+      <TooltipProvider>
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <MainLayout>
+                  <Suspense fallback={<PageFallback />}>
+                    <Dashboard />
+                  </Suspense>
+                </MainLayout>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <NotFound />
+                </Suspense>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 

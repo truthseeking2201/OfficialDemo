@@ -1,159 +1,74 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  useCurrentAccount,
-  useSignAndExecuteTransaction,
-  useSuiClient,
-} from "@mysten/dapp-kit";
-import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
-import { Transaction } from "@mysten/sui/transactions";
-import { useMergeCoins } from "./useMergeCoins";
-import { RATE_DENOMINATOR } from "@/config/vault-config";
-import { getDecimalAmount, getBalanceAmount } from "@/lib/number";
-import { getLatestWithdrawal, executionWithdrawal } from "@/apis/vault";
-import { NDLP } from "@/config/lp-config";
+import { useWithdrawMutation, useClaimMutation } from "@/stubs/fakeQueries";
 import LpType from "@/types/lp.type";
 import DataClaimType from "@/types/data-claim.types.d";
-
-const network = import.meta.env.VITE_SUI_NETWORK;
+import { random } from "lodash";
+import { NDLP } from "@/config/lp-config";
+import { RATE_DENOMINATOR } from "@/config/vault-config";
+import { getDecimalAmount, getBalanceAmount } from "@/lib/number";
 
 export const useWithdrawVault = () => {
-  const { mutateAsync: signAndExecuteTransaction } =
-    useSignAndExecuteTransaction();
-  const account = useCurrentAccount();
-  const suiClient = useSuiClient();
+  const withdrawMutation = useWithdrawMutation();
+  const claimMutation = useClaimMutation();
 
-  const { mergeCoins } = useMergeCoins();
-
-  const getRequestClaim = async (sender_address): Promise<DataClaimType> => {
+  const getRequestClaim = async (senderAddress: string): Promise<DataClaimType> => {
     try {
-      const res = await getLatestWithdrawal(sender_address);
-      console.log("------initDataClaim", res);
-      // TODO format
+      // Check local storage for any active withdrawals
+      const pendingWithdrawals = JSON.parse(localStorage.getItem('pendingWithdrawals') || '[]');
+      const activeWithdrawal = pendingWithdrawals.find(w => w.senderAddress === senderAddress);
+      
+      if (!activeWithdrawal) {
+        return null;
+      }
+
       return {
-        id: 1,
-        timeUnlock: new Date(Date.now() + 25 * 60 * 1000).valueOf(),
+        id: activeWithdrawal.id,
+        timeUnlock: activeWithdrawal.unlockTime,
         status: "NEW",
-        withdrawAmount: 200,
+        withdrawAmount: activeWithdrawal.amount,
         withdrawSymbol: NDLP.lp_symbol,
-        receiveAmount: 199,
+        receiveAmount: activeWithdrawal.amount * 0.995, // 0.5% fee
         receiveSymbol: NDLP.token_symbol,
-        feeAmount: 1,
+        feeAmount: activeWithdrawal.amount * 0.005, // 0.5% fee
         feeSymbol: NDLP.token_symbol,
         configLp: NDLP,
       };
     } catch (error) {
+      console.error("Error getting request claim:", error);
       return null;
     }
   };
 
   const withdraw = async (amountLp: number, fee: number, configLp: LpType) => {
-    try {
-      if (!account?.address) {
-        throw new Error("No account connected");
-      }
-
-      // Merge coins first
-      const mergedCoinId = await mergeCoins(configLp.lp_coin_type);
-      if (!mergedCoinId) {
-        throw new Error("No coins available to deposit");
-      }
-
-      const tx = new Transaction();
-
-      // Split from the merged coin
-      const rawAmount = getDecimalAmount(
-        amountLp,
-        configLp.lp_decimals
-      ).toFixed();
-
-      const [splitCoin] = tx.splitCoins(tx.object(mergedCoinId), [
-        tx.pure.u64(rawAmount),
-      ]);
-
-      const _arguments = [
-        tx.object(configLp.vault_config_id),
-        tx.object(configLp.vault_id),
-        splitCoin,
-        tx.object(configLp.clock),
-      ];
-      const typeArguments = [configLp.token_coin_type, configLp.lp_coin_type];
-
-      console.log("------_arguments", { _arguments, typeArguments });
-
-      tx.moveCall({
-        target: `${configLp.package_id}::vault::withdraw`,
-        arguments: _arguments,
-        typeArguments: typeArguments,
-      });
-
-      const result = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-      const txhash = result?.digest;
-      // const txhash = "AuCXr9nGfAqroysWPP6DMP6pBvhfJU6xNze5Par8reH"; // for test
-
-      // save
-      const rawFee = getDecimalAmount(fee, configLp.token_decimals).toFixed();
-      const payload = {
-        "txhash": txhash,
-        "vault": configLp.vault_id,
-        "coin": configLp.lp_coin_type,
-        "withdraw_amount": rawAmount,
-        "withdraw_fee": rawFee,
-        "sender": account?.address,
-      };
-      console.log("------payload", payload);
-      await executionWithdrawal(payload);
-
-      // console.log("--------result", result);
-      // return result;
-    } catch (error) {
-      console.error("Error in withdraw:", error);
-      throw error;
-    }
+    // Use withdraw mutation
+    return withdrawMutation.mutateAsync({
+      vaultId: configLp.vault_id,
+      amount: amountLp
+    });
   };
 
   const redeem = async (configLp: LpType) => {
-    try {
-      if (!account?.address) {
-        throw new Error("No account connected");
-      }
-      const tx = new Transaction();
-      const _arguments = [
-        tx.object(configLp.vault_config_id),
-        tx.object(configLp.vault_id),
-        tx.object(configLp.clock),
-      ];
-      const typeArguments = [configLp.token_coin_type, configLp.lp_coin_type];
-
-      console.log("------_arguments", { _arguments, typeArguments });
-
-      tx.moveCall({
-        target: `${configLp.package_id}::vault::redeem`,
-        arguments: _arguments,
-        typeArguments: typeArguments,
-      });
-
-      const result = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      console.log("--------result", result);
-      return result;
-    } catch (error) {
-      console.error("Error in redeem:", error);
-      throw error;
+    // Get pending withdrawals from localStorage
+    const pendingWithdrawals = JSON.parse(localStorage.getItem('pendingWithdrawals') || '[]');
+    const activeWithdrawal = pendingWithdrawals.find(w => w.vaultId === configLp.vault_id);
+    
+    if (!activeWithdrawal) {
+      throw new Error("No pending withdrawal found");
     }
+
+    // Use claim mutation
+    return claimMutation.mutateAsync(activeWithdrawal.id);
   };
 
   return { getRequestClaim, withdraw, redeem };
 };
 
+// This hook estimates the withdrawal amount, fees, etc.
 export const useEstWithdrawVault = (amountLp: number, configLp: LpType) => {
   const configVaultDefault = {
-    withdraw: { fee_bps: "0", min: "0", total_fee: "0" },
-    rate: "0",
-    lock_duration_ms: 0,
+    withdraw: { fee_bps: "50", min: "0", total_fee: "0" }, // 0.5% fee
+    rate: "1000000", // 1:1 rate
+    lock_duration_ms: 86400000, // 24 hours in milliseconds
   };
 
   const amountEstDefault = {
@@ -162,38 +77,16 @@ export const useEstWithdrawVault = (amountLp: number, configLp: LpType) => {
     fee: 0,
     rateFee: 0,
   };
-  const count = useRef<string>("0");
+  
   const [configVault, setConfigVault] = useState(configVaultDefault);
-
   const [amountEst, setAmountEst] = useState(amountEstDefault);
-
-  const suiClient = useSuiClient();
-
-  const getConfigVault = useCallback(async () => {
-    try {
-      console.log("-----getConfigVault");
-      const res: any = await suiClient.getObject({
-        id: configLp.vault_id,
-        options: {
-          showContent: true,
-        },
-      });
-      const fields = res?.data?.content?.fields;
-      setConfigVault({
-        withdraw: fields?.withdraw?.fields,
-        rate: fields?.rate || "0",
-        lock_duration_ms: fields?.lock_duration_ms || "0",
-      });
-    } catch (error) {
-      setConfigVault(configVaultDefault);
-    }
-  }, [configLp]);
 
   const getEstWithdraw = useCallback(() => {
     try {
       if (!Number(amountLp) || Number(amountLp) <= 0) {
         return setAmountEst(amountEstDefault);
       }
+      
       const rawAmount = getDecimalAmount(amountLp, configLp.lp_decimals);
       const amount = rawAmount
         .times(configVault.rate)
@@ -218,18 +111,16 @@ export const useEstWithdrawVault = (amountLp: number, configLp: LpType) => {
     } catch (error) {
       setAmountEst(amountEstDefault);
     }
-  }, [configVault, amountLp]);
+  }, [configVault, amountLp, configLp.lp_decimals, configLp.token_decimals]);
 
   useEffect(() => {
-    if (count.current !== configLp.vault_id) {
-      getConfigVault();
-    }
-    count.current = configLp.vault_id;
+    // Always use the default config
+    setConfigVault(configVaultDefault);
   }, [configLp]);
 
   useEffect(() => {
     getEstWithdraw();
-  }, [configVault, amountLp]);
+  }, [configVault, amountLp, getEstWithdraw]);
 
   return {
     configVault,

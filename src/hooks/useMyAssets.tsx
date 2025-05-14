@@ -1,9 +1,9 @@
 import { COIN_TYPES_CONFIG } from "@/config";
 import { UserCoinAsset } from "@/types/coin.types";
-import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
-import { SuiClient } from "@mysten/sui/client";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
+import useFakeStore from "@/stubs/fakeStore";
 
 interface CoinMetadata {
   decimals: number;
@@ -65,85 +65,27 @@ const getCoinObjects = async (
 
 export const useMyAssets = () => {
   const account = useCurrentAccount();
-  const suiClient = useSuiClient();
-
-  const fetchCoinObjects = useCallback(async () => {
-    return Promise.all(
-      ALLOW_COIN_TYPES.map((coinType) =>
-        getCoinObjects(suiClient, coinType, account?.address || "")
-      )
-    );
-  }, [account?.address, suiClient]);
-
-  const {
-    data: coinObjects,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ["coinObjects"],
-    queryFn: fetchCoinObjects,
-    enabled: !!account?.address,
-    staleTime: 1000 * 10 * 6, // 60 seconds
-    refetchInterval: 1000 * 10 * 6, // 60 seconds
-  });
-
-  const coinMetadata = useGetCoinsMetadata();
-
-  const assets: UserCoinAsset[] =
-    coinObjects?.flat().reduce((acc, coin) => {
-      const metadata = coinMetadata[coin.coinType] as CoinMetadata;
-      const decimals = metadata?.decimals || 9;
-      const rawBalance = Number(coin.balance || "0");
-      const balance = rawBalance / Math.pow(10, decimals);
-
-      const existingAsset = acc.find(
-        (asset) => asset.coin_type === coin.coinType
-      );
-      if (existingAsset) {
-        existingAsset.balance += balance;
-        existingAsset.raw_balance += rawBalance;
-      } else {
-        acc.push({
-          coin_object_id: coin.coinObjectId,
-          coin_type: coin.coinType,
-          balance,
-          raw_balance: rawBalance,
-          image_url: COIN_CONFIG[coin.coinType]?.image_url,
-          decimals: decimals,
-          display_name: COIN_CONFIG[coin.coinType]?.display_name,
-          name: metadata?.name,
-          symbol: metadata?.symbol,
-        });
-      }
-      return acc;
-    }, [] as UserCoinAsset[]) || [];
+  const { assets, refreshBalance } = useFakeStore();
 
   return {
-    assets: assets.map((asset) => ({
-      ...asset,
-      balance: roundDownBalance(asset.balance),
-    })),
-    isLoading,
-    refreshBalance: refetch,
+    assets,
+    isLoading: false,
+    refreshBalance,
   };
 };
 
 export const useGetCoinsMetadata = () => {
-  const suiClient = useSuiClient();
-  const coinsMetadata = useQueries({
-    queries: ALLOW_COIN_TYPES.map((coinType) => ({
-      queryKey: ["getCoinMetadata", coinType],
-      queryFn: () => suiClient.getCoinMetadata({ coinType }),
-      staleTime: 1000 * 60 * 60 * 1, // 1 hour
-    })),
-  });
-
-  const coinMetadata = coinsMetadata.reduce((acc, result, index) => {
-    if (result.data) {
-      acc[ALLOW_COIN_TYPES[index]] = result.data;
+  // Return static fake metadata for allowed coin types
+  return {
+    [COIN_TYPES_CONFIG.USDC_COIN_TYPE]: {
+      decimals: 6,
+      name: "USD Coin",
+      symbol: "USDC",
+    },
+    [COIN_TYPES_CONFIG.NDLP_COIN_TYPE]: {
+      decimals: 9,
+      name: "NODO LP Token",
+      symbol: "NDLP",
     }
-    return acc;
-  }, {} as Record<string, CoinMetadata>);
-
-  return coinMetadata;
+  } as Record<string, CoinMetadata>;
 };

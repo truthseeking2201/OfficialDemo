@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useConnectWallet, useWallets } from "@mysten/dapp-kit";
+import { useConnectWallet, useWallets } from "@/stubs/FakeWalletBridge";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import { useState } from "react";
 

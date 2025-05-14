@@ -1,23 +1,15 @@
 import { COIN_TYPES_CONFIG } from "@/config";
 import { RATE_DENOMINATOR, VAULT_CONFIG } from "@/config/vault-config";
 import { UserCoinAsset } from "@/types/coin.types";
-import {
-  useCurrentAccount,
-  useSignAndExecuteTransaction,
-  useSuiClient,
-} from "@mysten/dapp-kit";
-import { Transaction } from "@mysten/sui/transactions";
+import { useCurrentAccount, Transaction } from "@/stubs/FakeWalletBridge";
 import { useMergeCoins } from "./useMergeCoins";
 import { useGetVaultConfig } from "./useVault";
+import { random } from "lodash";
 
 export const useDepositVault = () => {
-  const { mutateAsync: signAndExecuteTransaction } =
-    useSignAndExecuteTransaction();
   const account = useCurrentAccount();
-  const suiClient = useSuiClient();
 
-  const { mergeCoins } = useMergeCoins();
-
+  // Simplified implementation using fake data
   const deposit = async (
     coin: UserCoinAsset,
     amount: number,
@@ -28,69 +20,35 @@ export const useDepositVault = () => {
         throw new Error("No account connected");
       }
 
-      // Merge coins first
-      const mergedCoinId = await mergeCoins(coin.coin_type);
-      if (!mergedCoinId) {
-        throw new Error("No coins available to deposit");
+      if (amount <= 0) {
+        throw new Error("Amount must be greater than 0");
       }
-
-      const tx = new Transaction();
-
-      // Split from the merged coin
-      const [splitCoin] = tx.splitCoins(tx.object(mergedCoinId), [
-        tx.pure.u64(Math.floor(amount * 10 ** coin.decimals)),
-      ]);
-
-      tx.moveCall({
-        target: `${VAULT_CONFIG.PACKAGE_ID}::vault::deposit`,
-        arguments: [
-          tx.object(VAULT_CONFIG.VAULT_CONFIG_ID),
-          tx.object(VAULT_CONFIG.VAULT_ID),
-          splitCoin,
-        ],
-        typeArguments: [
-          COIN_TYPES_CONFIG.USDC_COIN_TYPE,
-          COIN_TYPES_CONFIG.NDLP_COIN_TYPE,
-        ],
-      });
-
-      const result = await signAndExecuteTransaction(
-        {
-          transaction: tx,
-        },
-        {
-          onSuccess: async (data) => {
-            const { digest } = data;
-
-            const txResponse = await suiClient.waitForTransaction({
-              digest,
-              options: {
-                showEvents: true,
-              },
-            });
-
-            const events = txResponse?.events;
-
-            const depositEvent = events.find((event) =>
-              event.type.includes("vault::DepositEvent")
-            );
-            // Pass the event data to your callback
-            onDepositSuccessCallback?.({
-              ...data,
-              depositAmount: (depositEvent?.parsedJson as { amount?: number })
-                ?.amount,
-              depositLpAmount: (depositEvent?.parsedJson as { lp?: number })
-                ?.lp,
-            });
-          },
-          onError: (error) => {
-            console.error("Deposit failed:", error);
-            throw error;
-          },
-        }
-      );
-
-      return result;
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, random(600, 1000)));
+      
+      // Generate a fake transaction digest
+      const digest = '0x' + Array.from({ length: 64 }, () => 
+        '0123456789abcdef'[Math.floor(Math.random() * 16)]
+      ).join('');
+      
+      // Calculate LP amount based on rate (roughly 1:1 with a small fee)
+      const fee = amount * 0.005; // 0.5% fee
+      const netAmount = amount - fee;
+      const lpAmount = netAmount;
+      
+      // Prepare success data
+      const depositData = {
+        digest,
+        depositAmount: amount,
+        depositLpAmount: lpAmount,
+        transactionTime: Date.now(),
+      };
+      
+      // Call the success callback
+      onDepositSuccessCallback?.(depositData);
+      
+      return depositData;
     } catch (error) {
       console.error("Error in deposit:", error);
       throw error;

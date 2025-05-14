@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Loader } from "@/components/ui/loader";
-import { ExternalLink, X } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 import { formatNumber } from "@/lib/number";
 import { formatAmount } from "@/lib/utils";
@@ -47,7 +47,7 @@ const DepositModal = (props: DepositModalProps) => {
   const { amount, apr, ndlp, conversionRate } = confirmData;
 
   const suiScanUrl = `https://suiscan.xyz/${
-    import.meta.env.VITE_SUI_NETWORK
+    import.meta.env.VITE_SUI_NETWORK || 'mainnet'
   }/tx/${depositSuccessData?.digest}`;
 
   const handleDeposit = () => {
@@ -61,12 +61,6 @@ const DepositModal = (props: DepositModalProps) => {
           {depositStep === 1 && (
             <>
               <DialogTitle>Confirm Your Deposit</DialogTitle>
-              <button
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 p-2 text-gray-400 hover:text-gray-600"
-                onClick={onOpenChange}
-              >
-                <X size={20} className="text-white" />
-              </button>
             </>
           )}
         </DialogHeader>
