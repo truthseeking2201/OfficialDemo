@@ -8,6 +8,7 @@ import { showFormatNumber } from "../../../lib/number";
 import { Countdown } from "../../../components/ui/Countdown";
 import { toast } from "../../../components/ui/use-toast";
 import { WalletSignatureDialog } from "../../../components/wallet/WalletSignatureDialog";
+import useFakeStore from "../../../stubs/fakeStore";
 
 interface WithdrawInProgressViewProps {
   onClaimSuccess: () => void;
@@ -97,41 +98,48 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
 
       {/* Summary card */}
       <div className="rounded-2xl bg-white/5 border border-white/15 p-6 w-full">
-        <div className="flex justify-between text-sm mb-3">
-          <span className="text-neutral-400">You'll Receive</span>
-          <span className="text-right text-white">
+        <div className="flex justify-between mb-3">
+          <label className="text-[16px] text-neutral-400">You'll Receive</label>
+          <span className="text-[18px] text-right text-white font-medium">
             {showFormatNumber(receiveAmount)} USDC
           </span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-neutral-400">Withdraw Fee</span>
-          <span className="text-right text-white">
+        <div className="flex justify-between">
+          <label className="text-[16px] text-neutral-400">Withdraw Fee</label>
+          <span className="text-[18px] text-right text-white font-medium">
             0.5%
           </span>
         </div>
       </div>
 
       {/* Warning bar */}
-      <Alert
-        variant="brown"
-        className="rounded-xl bg-amber-900/40 py-3 px-4 flex items-center gap-2 text-amber-200 text-sm"
+      <div className="flex items-center gap-2 rounded-xl bg-amber-900/40 py-3 px-4 text-amber-200 text-sm">
+        <ClockIcon className="w-4 h-4 text-amber-400" />
+        <span>Please wait to claim your previous withdrawal before initiating a new one.</span>
+      </div>
+      
+      {/* tiny helper button – demo only */}
+      <button
+        className="mt-2 text-[12px] text-neutral-500 hover:text-white/80 underline"
+        onClick={() => {
+          clearPending();
+          toast({
+            title: "Demo reset",
+            description: "Withdrawal process skipped for demo purposes",
+            variant: "default",
+          });
+          onClaimSuccess();
+        }}
       >
-        <ClockIcon className="mt-0.5 h-4 w-4" />
-        Please wait to claim your previous withdrawal before initiating a new one.
-      </Alert>
+        Skip waiting
+      </button>
 
       {/* Claim button */}
       <Button
-        className="w-full rounded-xl h-14 text-[18px] font-semibold transition-opacity duration-150"
+        className="w-full h-[52px] rounded-[12px] bg-[#7F7668] text-white text-[18px] font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
         disabled={Date.now() < pending.cooldownEnd || claimMutation.isPending}
         onClick={handleClaim}
         variant="default"
-        style={{
-          backgroundColor: Date.now() < pending.cooldownEnd ? 'rgba(82, 82, 82, 0.6)' : undefined,
-          color: Date.now() < pending.cooldownEnd ? 'rgba(229, 229, 229, 0.6)' : undefined,
-          cursor: Date.now() < pending.cooldownEnd ? 'not-allowed' : 'pointer',
-          opacity: Date.now() < pending.cooldownEnd ? '0.6' : '1'
-        }}
       >
         {claimMutation.isPending ? 'Claiming…' : 'Claim'}
       </Button>
