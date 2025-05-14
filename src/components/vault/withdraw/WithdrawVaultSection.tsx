@@ -2,24 +2,19 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import WithdrawForm from "./WithdrawForm";
-import ClaimToken from "./ClaimToken";
+import { WithdrawTimerCard } from "./WithdrawTimerCard";
 
-import { showFormatNumber, getBalanceAmountForInput } from "@/lib/number";
-import { useCurrentAccount } from "@mysten/dapp-kit";
-import {
-  useEstWithdrawVault,
-  useWithdrawVault,
-} from "@/hooks/useWithdrawVault";
-import { useMyAssets, useWallet } from "@/hooks";
+import { showFormatNumber } from "@/lib/number";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { useEstWithdrawVault, useWithdrawVault } from "@/hooks/useWithdrawVault";
+import { useMyAssets } from "@/stubs/fakeQueries";
+import { useWallet } from "@/stubs/fakeQueries";
 import { NDLP } from "@/config/lp-config";
-import { getBalanceToken } from "@/use_case/withdraw_vault_use_case";
-
-import DataClaimType from "@/types/data-claim.types.d";
+import { usePendingWithdrawal } from "@/stubs/fakeQueries";
 
 export default function WithdrawVaultSection() {
-  const count = useRef<string>("0");
-  const [balanceLp, setBalanceLp] = useState<number>(0);
-  const [dataClaim, setDataClaim] = useState<DataClaimType>();
+  const [balanceLp, setBalanceLp] = useState<number>(100000); // Default balance for offline mode
+  const [pendingWithdrawal, setPendingWithdrawal] = useState(null);
 
   /**
    * HOOKS
@@ -30,55 +25,32 @@ export default function WithdrawVaultSection() {
   const address = currentAccount?.address;
   const { refreshBalance } = useMyAssets();
   const { amountEst } = useEstWithdrawVault(1, NDLP);
-  const { getRequestClaim } = useWithdrawVault();
+  const { data: pendingWithdrawalData } = usePendingWithdrawal(NDLP.vault_id);
 
   /**
    * FUNCTION
    */
-  const initBalance = async () => {
-    try {
-      if (!address) return;
-      const balance_raw = await getBalanceToken({
-        owner: address,
-        coinType: NDLP.lp_coin_type,
-      });
-      const balance = getBalanceAmountForInput(
-        balance_raw,
-        NDLP.lp_decimals,
-        2
-      );
-      setBalanceLp(balance);
-    } catch (error) {
-      console.log("-----error", error);
-      setBalanceLp(0);
+  const initData = useCallback(() => {
+    if (pendingWithdrawalData) {
+      setPendingWithdrawal(pendingWithdrawalData);
+    } else {
+      setPendingWithdrawal(null);
     }
-  };
-
-  const initDataClaim = async () => {
-    try {
-      const res = await getRequestClaim(address);
-      setDataClaim(res);
-    } catch (error) {
-      setDataClaim(null);
-    }
-  };
+  }, [pendingWithdrawalData]);
 
   const onSuccess = useCallback(() => {
-    initDataClaim();
-    initBalance();
+    initData();
     refreshBalance();
-  }, []);
+  }, [initData, refreshBalance]);
 
   /**
    * LIFECYCLES
    */
   useEffect(() => {
-    if (count.current !== address && address) {
-      initBalance();
-      initDataClaim();
+    if (isConnected) {
+      initData();
     }
-    count.current = address;
-  }, [address]);
+  }, [isConnected, initData]);
 
   /**
    * RENDER
@@ -128,11 +100,8 @@ export default function WithdrawVaultSection() {
             </div>
           </div>
 
-          {dataClaim ? (
-            <ClaimToken
-              data={dataClaim}
-              onSuccess={onSuccess}
-            />
+          {pendingWithdrawal ? (
+            <WithdrawTimerCard pendingWithdrawal={pendingWithdrawal} />
           ) : (
             <WithdrawForm
               balanceLp={balanceLp}

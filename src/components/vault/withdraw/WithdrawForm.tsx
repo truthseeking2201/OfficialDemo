@@ -20,13 +20,15 @@ import {
 } from "@/components/ui/dialog";
 
 import { showFormatNumber } from "@/lib/number";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
 import LpType from "@/types/lp.type";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   useEstWithdrawVault,
   useWithdrawVault,
 } from "@/hooks/useWithdrawVault";
+import { useWithdrawMutation } from "@/stubs/fakeQueries";
+import { random } from "lodash";
 
 type Props = {
   balanceLp: number;
@@ -38,7 +40,6 @@ interface IFormInput {
 }
 
 export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
-  const count = useRef<number>(0);
   const summary_default = {
     amount: 0,
     receive: 0,
@@ -47,7 +48,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   };
   const min_amount = 0.1;
   const [summary, setSummary] = useState(summary_default);
-  const [timeCoolDown, setTimeCoolDown] = useState<string>("");
+  const [timeCoolDown, setTimeCoolDown] = useState<string>("24-hour");
   const [form, setForm] = useState<IFormInput>();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [openModalSuccess, setOpenModalSuccess] = useState(false);
@@ -89,6 +90,9 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
     form?.amount || 0,
     lpData
   );
+  
+  // Use the withdrawal mutation from our fake implementation
+  const withdrawMutation = useWithdrawMutation();
 
   /**
    * FUNCTION
@@ -110,34 +114,42 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
 
   const handleMaxAmount = useCallback(() => {
     setValue("amount", balanceLp);
-  }, [balanceLp]);
+  }, [balanceLp, setValue]);
 
   const handleFormChange = useCallback((data: IFormInput) => {
     setForm(data);
   }, []);
 
   const onWithdraw = useCallback(async () => {
+    if (!form) return;
+    
     setIsLoading(true);
-    try {
-      // TODO
-      console.log("-------onWithdraw form", form);
-      const res = await withdraw(form.amount, summary.fee, lpData);
-      console.log("-------onWithdraw", res);
-      setOpenModalSuccess(true);
-      onCloseModalConfirm();
-      onSuccess();
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Withdraw failed",
-        description: error?.message || error,
-        variant: "error",
-        duration: 5000,
-        icon: <IconErrorToast />,
-      });
-    }
-    setIsLoading(false);
-  }, [form, summary]);
+    
+    // Use our fake mutation
+    withdrawMutation.mutate(
+      {
+        vaultId: lpData.vault_id,
+        amount: form.amount
+      },
+      {
+        onSuccess: () => {
+          setOpenModalSuccess(true);
+          onCloseModalConfirm();
+          onSuccess();
+          setIsLoading(false);
+        },
+        onError: (error) => {
+          toast({
+            title: "Withdraw failed",
+            description: error.message || "An error occurred during withdrawal",
+            variant: "destructive",
+            duration: 5000,
+          });
+          setIsLoading(false);
+        }
+      }
+    );
+  }, [form, lpData.vault_id, withdrawMutation, onCloseModalConfirm, onSuccess, toast]);
 
   /**
    * LIFECYCLES
@@ -147,26 +159,13 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
   }, [amountEst]);
 
   useEffect(() => {
-    const duration = Math.floor(configVault.lock_duration_ms / 1000);
-    const hours = Math.floor(duration / 3600);
-    const minutes = Math.floor((duration - hours * 3600) / 60);
-    if (hours > 0) {
-      setTimeCoolDown(`${hours}-hour`);
-    } else if (minutes > 0) {
-      setTimeCoolDown(`${minutes}-minute`);
-    } else {
-      setTimeCoolDown(`${duration}-seconds`);
-    }
-  }, [configVault.lock_duration_ms]);
-
-  useEffect(() => {
     const debouncedCb = debounce((formValue) => {
       handleFormChange(formValue);
     }, 500);
 
     const subscription = watch(debouncedCb);
     return () => subscription.unsubscribe();
-  }, [watch]);
+  }, [watch, handleFormChange]);
 
   /**
    * RENDER
@@ -180,7 +179,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
             Withdraw Amount ({lpData.lp_symbol})
           </div>
           <div className="font-body text-gray-400">
-            Avaialble:{" "}
+            Available:{" "}
             <span className="font-mono text-white">
               {balanceLp} {lpData.lp_symbol}
             </span>
@@ -196,7 +195,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
               max: balanceLp,
               pattern: /^\d*\.?\d{0,2}$/,
             })}
-            className="input-vault w-full font-heading-lg"
+            className="input-vault w-full font-heading-lg text-3xl font-bold"
           />
 
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex rounded-full mx-auto bg-gradient-to-tr from-[#0090FF] via-[#FF6D9C] to-[#FB7E16] p-px hover:opacity-70 transition-all duration-300">
@@ -210,7 +209,7 @@ export default function WithdrawForm({ balanceLp, lpData, onSuccess }: Props) {
           </div>
         </div>
         {errors.amount?.type && (
-          <div className="text-red-error text-sm mt-1 flex items-center">
+          <div className="text-red-500 text-sm mt-1 flex items-center">
             <Info
               size={18}
               className="mr-2"

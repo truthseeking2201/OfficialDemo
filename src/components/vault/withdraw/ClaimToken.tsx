@@ -10,10 +10,11 @@ import Countdown, { zeroPad } from "react-countdown";
 import AvgPaceIcon from "@/assets/images/avg-pace.png";
 
 import { showFormatNumber } from "@/lib/number";
-import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useToast } from "@/components/ui/use-toast";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
+import { useToast } from "@/hooks/use-toast";
 import DataClaimType from "@/types/data-claim.types.d";
 import { useWithdrawVault } from "@/hooks/useWithdrawVault";
+import { useClaimMutation } from "@/stubs/fakeQueries";
 
 type Props = {
   data?: DataClaimType;
@@ -23,6 +24,7 @@ type Props = {
 const ClaimToken = ({ data, onSuccess }: Props) => {
   const [isClaim, setIsClaim] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
   /**
    * HOOKS
    */
@@ -30,38 +32,41 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
   const address = currentAccount?.address;
   const { toast } = useToast();
   const { redeem } = useWithdrawVault();
+  const claimMutation = useClaimMutation();
 
   /**
    * FUNCTION
    */
   const onClaim = useCallback(async () => {
+    if (!data) return;
+    
     setIsLoading(true);
-    try {
-      await redeem(data.configLp);
-      onSuccess();
-      toast({
-        title: "Claim successful",
-        variant: "success",
-        duration: 5000,
-        icon: (
-          <IconCheckSuccess
-            size={14}
-            className="h-6 w-6"
-          />
-        ),
-      });
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Claim failed",
-        description: error?.message || error,
-        variant: "error",
-        duration: 5000,
-        icon: <IconErrorToast />,
-      });
-    }
-    setIsLoading(false);
-  }, []);
+    
+    // Use our fake claim mutation
+    claimMutation.mutate(
+      data.id.toString(),
+      {
+        onSuccess: () => {
+          onSuccess();
+          toast({
+            title: "Claim successful",
+            variant: "default",
+            duration: 5000,
+          });
+          setIsLoading(false);
+        },
+        onError: (error) => {
+          toast({
+            title: "Claim failed",
+            description: error.message || "An error occurred during claim",
+            variant: "destructive",
+            duration: 5000,
+          });
+          setIsLoading(false);
+        }
+      }
+    );
+  }, [data, claimMutation, onSuccess, toast]);
 
   const renderer = ({ hours, minutes, seconds }) => {
     return (
@@ -74,16 +79,23 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
       </div>
     );
   };
+  
   /**
    * LIFECYCLES
    */
   useEffect(() => {
-    setIsClaim(true);
+    if (data) {
+      // Check if the unlock time has passed
+      const now = Date.now();
+      setIsClaim(now >= data.timeUnlock);
+    }
   }, [data]);
 
   /**
    * RENDER
    */
+  if (!data) return null;
+  
   return (
     <div className="">
       <div className="flex items-center justify-between">
@@ -114,7 +126,7 @@ const ClaimToken = ({ data, onSuccess }: Props) => {
       </div>
 
       <div className="mb-5 p-4 border border-white/15 rounded-lg mt-5">
-        <RowItem label="You’ll  Receive">
+        <RowItem label="You'll Receive">
           {`${showFormatNumber(data.receiveAmount)} ${data.receiveSymbol}`}
         </RowItem>
         <RowItem

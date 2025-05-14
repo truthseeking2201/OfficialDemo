@@ -14,7 +14,7 @@ import { BalanceCard } from "@/components/wallet/BalanceCard";
 import { useGetVaultConfig, useGetVaultManagement } from "@/hooks";
 import { getBalanceAmount } from "@/lib/number";
 import { formatAmount } from "@/lib/utils";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
 
 const RightContent = () => {
   const currentAccount = useCurrentAccount();

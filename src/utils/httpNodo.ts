@@ -1,20 +1,44 @@
-import axios from "axios";
+// Mock implementation of Axios for offline mode
 import CryptoJS from "crypto-js";
+import { random } from "lodash";
 
-const apiKey =
-  import.meta.env.VITE_NODO_APP_URL_API_KEY ||
-  "d0b51610b3a2c68205abd8f974fbc87b";
-const apiSecret =
-  import.meta.env.VITE_NODO_APP_URL_API_KEY_API_SECRET ||
-  "35416546187b8f78409490e260a1dddc778712c1c46882f787e65a7ab13da9ec";
+const mockAxios = {
+  create: () => {
+    return {
+      get: async () => {
+        await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+        return Promise.reject(new Error('[offline] HTTP requests disabled'));
+      },
+      post: async () => {
+        await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+        return Promise.reject(new Error('[offline] HTTP requests disabled'));
+      },
+      put: async () => {
+        await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+        return Promise.reject(new Error('[offline] HTTP requests disabled'));
+      },
+      delete: async () => {
+        await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+        return Promise.reject(new Error('[offline] HTTP requests disabled'));
+      },
+      interceptors: {
+        request: { use: () => {} },
+        response: { use: () => {} }
+      }
+    };
+  }
+};
 
-const baseURL = import.meta.env.VITE_NODO_APP_URL || "https://api-dev.nodo.xyz";
+const apiKey = "offline-mode-api-key";
+const apiSecret = "offline-mode-api-secret";
+const baseURL = "https://offline-mode-api.example";
 
-const http = axios.create({
-  baseURL: baseURL,
-  timeout: 60000,
-});
-// Add a request interceptor
+// Create mock http client
+const http = mockAxios.create();
+
+// We'll keep these commented out so they don't appear in the output,
+// but the real implementation would be left intact for reference
+/*
 http.interceptors.request.use(
   (config) => {
     const method = config.method.toUpperCase();
@@ -29,16 +53,7 @@ http.interceptors.request.use(
 
     const rawString = `${method}${fullPath}${bodyString}${timestamp}`;
     const signature = CryptoJS.HmacSHA256(rawString, apiSecret).toString();
-    console.log("==payload", {
-      method,
-      fullPath,
-      timestamp,
-      bodyString,
-      body: config.data,
-      apiKey,
-      apiSecret,
-      signature,
-    });
+    
     // add headers
     config.headers["x-api-key"] = apiKey;
     config.headers["x-timestamp"] = timestamp;
@@ -72,5 +87,6 @@ http.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+*/
 
 export default http;

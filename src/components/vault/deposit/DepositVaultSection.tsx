@@ -2,22 +2,22 @@ import suiWallet from "@/assets/images/sui-wallet.png";
 import { Button } from "@/components/ui/button";
 import { FormattedNumberInput } from "@/components/ui/formatted-number-input";
 import { IconErrorToast } from "@/components/ui/icon-error-toast";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import DepositModal from "@/components/vault/deposit/DepositModal";
 import { COIN_TYPES_CONFIG } from "@/config/coin-config";
 import { useGetVaultManagement } from "@/hooks";
 import {
   useCalculateNDLPReturn,
-  useDepositVault,
   useUSDCLPRate,
 } from "@/hooks/useDepositVault";
-import { useMyAssets } from "@/hooks/useMyAssets";
-import { useWallet } from "@/hooks/useWallet";
+import { useMyAssets } from "@/stubs/fakeQueries";
+import { useWallet } from "@/stubs/fakeQueries";
 import { formatNumber } from "@/lib/number";
 import { formatAmount } from "@/lib/utils";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useCurrentAccount } from "@/stubs/FakeWalletBridge";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
+import { useDepositMutation } from "@/stubs/fakeQueries";
 
 type DepositSuccessData = {
   amount: number;
@@ -37,13 +37,13 @@ export default function DepositVaultSection() {
 
   const { data: vaultManagement, isLoading: isLoadingVaultManagement } =
     useGetVaultManagement();
-  const apr = vaultManagement?.apr;
+  const apr = vaultManagement?.apr || 15; // Default APR for offline mode
   const currentAccount = useCurrentAccount();
   const isConnected = !!currentAccount?.address;
 
   const { openConnectWalletDialog } = useWallet();
   const { assets, refreshBalance } = useMyAssets();
-  const { deposit } = useDepositVault();
+  const depositMutation = useDepositMutation();
   const { toast } = useToast();
 
   const usdcCoin = useMemo(
@@ -103,7 +103,6 @@ export default function DepositVaultSection() {
 
   const handleDeposit = useCallback(() => {
     if (isConnected) {
-      // TODO: Handle deposit
       setIsDepositModalOpen(true);
     } else {
       handleConnectWallet();
@@ -115,19 +114,49 @@ export default function DepositVaultSection() {
   }, []);
 
   const handleSendRequestDeposit = useCallback(async () => {
-    // TODO: Handle deposit request
     try {
       setLoading(true);
-      await deposit(
-        usdcCoin,
-        Number(depositAmount),
-        handleDepositSuccessCallback
+      
+      // Use our fake deposit mutation
+      depositMutation.mutate(
+        {
+          vaultId: "default-vault-id",
+          amount: Number(depositAmount),
+          lockupPeriod: 30
+        },
+        {
+          onSuccess: () => {
+            const data = {
+              amount: Number(depositAmount),
+              apr,
+              ndlp: Number(ndlpAmountWillGet),
+              conversionRate: conversionRate,
+            };
+            
+            setTimeout(() => {
+              setDepositSuccessData(data);
+              refreshBalance();
+              setLoading(false);
+              setDepositStep(2);
+            }, 2000);
+          },
+          onError: (error) => {
+            toast({
+              title: "Deposit failed",
+              description: error.message || "An error occurred during deposit",
+              variant: "destructive",
+              duration: 5000,
+            });
+            setDepositAmount("");
+            setLoading(false);
+          }
+        }
       );
     } catch (error) {
       toast({
         title: "Deposit failed",
         description: error?.message || error,
-        variant: "error",
+        variant: "destructive",
         duration: 5000,
         icon: <IconErrorToast />,
       });
@@ -135,16 +164,7 @@ export default function DepositVaultSection() {
       console.error(error);
       setLoading(false);
     }
-  }, [depositAmount]);
-
-  const handleDepositSuccessCallback = useCallback((data) => {
-    setTimeout(() => {
-      setDepositSuccessData(data);
-      refreshBalance();
-      setLoading(false);
-      setDepositStep(2);
-    }, 2000);
-  }, []);
+  }, [depositAmount, depositMutation, apr, ndlpAmountWillGet, conversionRate, refreshBalance, toast]);
 
   const handleDone = useCallback(() => {
     setIsDepositModalOpen(false);
@@ -179,10 +199,10 @@ export default function DepositVaultSection() {
           onMaxAmount={handleMaxAmount}
           onBlur={handleValidateDepositAmount}
           placeholder="0.00"
-          className="input-vault w-full font-heading-lg"
+          className="input-vault w-full font-heading-lg text-3xl font-bold"
         />
         {error && (
-          <div className="text-red-error text-sm mt-1 flex items-center">
+          <div className="text-red-500 text-sm mt-1 flex items-center">
             <AlertCircle className="w-4 h-4 mr-2" />
             {error}
           </div>

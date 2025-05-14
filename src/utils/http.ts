@@ -1,40 +1,29 @@
-import axios from "axios";
+// Mock implementation of HTTP client for offline mode
+import { random } from "lodash";
 
-export const http = axios.create({
-  baseURL: import.meta.env.VITE_API_DISCOVER,
-  timeout: 60000,
-});
-
-// Add a request interceptor
-http.interceptors.request.use(
-  (config) => {
-    return config;
+// Create a mock HTTP client that rejects all requests
+const mockHttp = {
+  get: async () => {
+    await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+    return Promise.reject(new Error('[offline] HTTP requests disabled'));
   },
-  (error) => Promise.reject(error)
-);
-
-// Add a response interceptor
-http.interceptors.response.use(
-  (response) => {
-    // Return JSON data
-    if (response.data) {
-      return response.data.data != undefined
-        ? response.data.data
-        : response.data;
-    }
-    return response;
+  post: async () => {
+    await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+    return Promise.reject(new Error('[offline] HTTP requests disabled'));
   },
-  (error) => {
-    const err = (error.response && error.response.data) || error;
-    if (error.response && error.response.status === 401) {
-      return Promise.reject(err);
-    }
-
-    if (error.response && error.response.status) {
-      err.status = error.response.status;
-    }
-
-    return Promise.reject(err);
+  put: async () => {
+    await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+    return Promise.reject(new Error('[offline] HTTP requests disabled'));
+  },
+  delete: async () => {
+    await new Promise(resolve => setTimeout(resolve, random(300, 600)));
+    return Promise.reject(new Error('[offline] HTTP requests disabled'));
+  },
+  interceptors: {
+    request: { use: () => {} },
+    response: { use: () => {} }
   }
-);
+};
+
+export const http = mockHttp;
 export default http;

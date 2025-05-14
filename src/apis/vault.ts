@@ -1,24 +1,46 @@
-import http from "@/utils/http";
-import httpNodo from "@/utils/httpNodo";
+import { random } from "lodash";
 
-const URLS = {
-  SAMPLE: "/api/v1/poll-user?limit=10&offset=0&order_by=-start_time",
+// Mock API responses
+export const getSample = async () => {
+  await new Promise(resolve => setTimeout(resolve, random(300, 700)));
+  return [];
 };
 
-const NODO_URL = import.meta.env.VITE_NODO_APP_URL;
-
-export const getSample = () => {
-  return http.get(URLS.SAMPLE);
+export const getLatestWithdrawal = async (sender_address: string) => {
+  await new Promise(resolve => setTimeout(resolve, random(300, 700)));
+  
+  // Load from localStorage if available
+  try {
+    const pendingWithdrawals = JSON.parse(localStorage.getItem('pendingWithdrawals') || '[]');
+    const activeWithdrawal = pendingWithdrawals.find(w => w.senderAddress === sender_address);
+    
+    if (activeWithdrawal) {
+      return {
+        id: activeWithdrawal.id,
+        status: "NEW",
+        unlockTime: activeWithdrawal.unlockTime,
+        amount: activeWithdrawal.amount
+      };
+    }
+  } catch (e) {
+    console.error("Error reading from localStorage", e);
+  }
+  
+  return null;
 };
 
-export const getLatestWithdrawal = (sender_address) => {
-  return httpNodo.get(`/execution/withdrawals/latest/${sender_address}`);
+export const executionWithdrawal = async (payload: any) => {
+  await new Promise(resolve => setTimeout(resolve, random(500, 1000)));
+  return { success: true, id: `withdraw-${Date.now()}` };
 };
 
-export const executionWithdrawal = (payload) => {
-  return httpNodo.post(`/execution/withdrawals`, payload);
-};
-
-export const getVaultConfig = (vault_address) => {
-  return httpNodo.get(`${NODO_URL}/data-management/vaults/${vault_address}`);
+export const getVaultConfig = async (vault_address: string) => {
+  await new Promise(resolve => setTimeout(resolve, random(300, 700)));
+  
+  // Return mock vault configuration
+  return {
+    apr: 15,
+    total_users: 1247,
+    total_liquidity: "50000000000" // 50,000 with proper decimals
+  };
 };
