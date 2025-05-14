@@ -1,12 +1,13 @@
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { ClockIcon } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Alert } from "../../../components/ui/alert";
 import { useClaimWithdrawal } from "../../../hooks/useClaimWithdrawal";
-import { useWithdrawStore, PendingWithdrawal } from "../../../store/withdrawStore";
+import { useWithdrawStore } from "../../../store/withdrawStore";
 import { showFormatNumber } from "../../../lib/number";
 import { Countdown } from "../../../components/ui/Countdown";
 import { toast } from "../../../components/ui/use-toast";
+import { WalletSignatureDialog } from "../../../components/wallet/WalletSignatureDialog";
 
 interface WithdrawInProgressViewProps {
   onClaimSuccess: () => void;
@@ -15,15 +16,45 @@ interface WithdrawInProgressViewProps {
 export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressViewProps) => {
   const { pending, clearPending } = useWithdrawStore();
   const claimMutation = useClaimWithdrawal();
+  const [isSignatureDialogOpen, setIsSignatureDialogOpen] = useState(false);
+  const [countdownEnded, setCountdownEnded] = useState(false);
+  
+  useEffect(() => {
+    if (!pending) return;
+    
+    const checkCountdown = () => {
+      if (Date.now() >= pending.cooldownEnd) {
+        setCountdownEnded(true);
+      }
+    };
+    
+    // Check immediately
+    checkCountdown();
+    
+    // Setup interval to check countdown status
+    const interval = setInterval(checkCountdown, 1000);
+    
+    return () => clearInterval(interval);
+  }, [pending]);
   
   if (!pending) {
     return null;
   }
 
+  // Calculate amount user will receive
+  const receiveAmount = pending.amountNdlp * pending.conversionRate - pending.feeUsd;
+
   const handleClaim = useCallback(async () => {
     if (!pending || Date.now() < pending.cooldownEnd || claimMutation.isPending) {
       return;
     }
+    
+    // Open signature dialog
+    setIsSignatureDialogOpen(true);
+  }, [pending, claimMutation.isPending]);
+  
+  const handleSignatureComplete = useCallback(async () => {
+    setIsSignatureDialogOpen(false);
     
     try {
       await claimMutation.mutateAsync({ id: pending.id });
@@ -44,39 +75,40 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
     }
   }, [pending, claimMutation, clearPending, onClaimSuccess]);
 
-  // Calculate amount user will receive
-  const receiveAmount = pending.amountNdlp * pending.conversionRate - pending.feeUsd;
-
   return (
-    <div className="space-y-6 text-white">
-      {/* Header row */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Withdrawal in progress</h3>
-        <div className="flex items-center gap-2 rounded-full bg-[#3b250a] px-3 py-1">
-          <ClockIcon className="h-4 w-4 text-amber-400" />
-          <Countdown target={pending.cooldownEnd} />
-        </div>
+    <div className="space-y-6 lg:space-y-8 text-white">
+      {/* Header row with withdrawal label and NDLP amount */}
+      <div className="flex justify-between items-baseline mt-10">
+        <h3 className="text-neutral-400 text-[18px] font-medium">Withdrawal in progress</h3>
+        <p className="text-[32px] font-extrabold tracking-wider text-white">
+          {pending.amountNdlp.toLocaleString()} NDLP
+        </p>
       </div>
 
-      {/* Big NDLP amount */}
-      <p className="text-5xl font-semibold tracking-wide">
-        {showFormatNumber(pending.amountNdlp)}&nbsp;
-        <span className="text-gradient-ndlp">NDLP</span>
-      </p>
+      {/* Countdown badge - only shown when countdown hasn't ended */}
+      {!countdownEnded && (
+        <div className="flex justify-end -mt-2">
+          <div className="inline-flex items-center gap-1 rounded-xl bg-amber-900/60 px-3 py-[3px]">
+            <ClockIcon className="w-4 h-4 text-amber-400" />
+            <span className="text-[14px] tabular-nums">
+              <Countdown target={pending.cooldownEnd} />
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Summary card */}
-      <div className="rounded-lg border border-neutral-700 p-5 space-y-2">
-        <div className="flex justify-between text-sm">
-          <span>You'll&nbsp;Receive</span>
-          <span className="font-medium">
-            {showFormatNumber(receiveAmount)}&nbsp;USDC
+      <div className="rounded-2xl bg-neutral-900 p-6 w-full">
+        <div className="flex justify-between text-sm mb-3">
+          <span className="text-neutral-400">You'll Receive</span>
+          <span className="text-right text-white">
+            {showFormatNumber(receiveAmount)} USDC
           </span>
         </div>
         <div className="flex justify-between text-sm">
-          <span>Withdraw&nbsp;Fee</span>
-          <span className="font-medium">
-            {showFormatNumber(pending.feeUsd)}&nbsp;USDC&nbsp;
-            <span className="opacity-60">(0.5%)</span>
+          <span className="text-neutral-400">Withdraw Fee</span>
+          <span className="text-right text-white">
+            0.5%
           </span>
         </div>
       </div>
@@ -84,7 +116,7 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
       {/* Warning bar */}
       <Alert
         variant="brown"
-        className="text-sm leading-5 flex items-start gap-2"
+        className="rounded-xl bg-amber-900/40 py-3 px-4 flex items-center gap-2 text-amber-200 text-sm"
       >
         <ClockIcon className="mt-0.5 h-4 w-4" />
         Please wait to claim your previous withdrawal before initiating a new one.
@@ -92,13 +124,28 @@ export const WithdrawInProgressView = ({ onClaimSuccess }: WithdrawInProgressVie
 
       {/* Claim button */}
       <Button
-        size="lg"
-        className="w-full text-base"
+        className="w-full rounded-xl h-14 text-[18px] font-semibold transition-opacity duration-150"
         disabled={Date.now() < pending.cooldownEnd || claimMutation.isPending}
         onClick={handleClaim}
+        variant="default"
+        style={{
+          backgroundColor: Date.now() < pending.cooldownEnd ? 'rgba(82, 82, 82, 0.6)' : undefined,
+          color: Date.now() < pending.cooldownEnd ? 'rgba(229, 229, 229, 0.6)' : undefined,
+          cursor: Date.now() < pending.cooldownEnd ? 'not-allowed' : 'pointer',
+          opacity: Date.now() < pending.cooldownEnd ? '0.6' : '1'
+        }}
       >
         {claimMutation.isPending ? 'Claiming…' : 'Claim'}
       </Button>
+      
+      {/* Wallet signature dialog */}
+      <WalletSignatureDialog
+        open={isSignatureDialogOpen}
+        onComplete={handleSignatureComplete}
+        transactionType="withdraw"
+        amount={receiveAmount.toString()}
+        vaultName="NODO AI Vault"
+      />
     </div>
   );
 };

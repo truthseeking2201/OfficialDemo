@@ -64,7 +64,7 @@ export default function WithdrawVaultSection() {
    * RENDER
    */
   return (
-    <div className="p-6 bg-black rounded-b-2xl rounded-tr-2xl">
+    <div className="px-6 md:px-10 pt-6 pb-10 bg-black">
       {!isConnected && (
         <div>
           <p className="text-base text-white/60 text-center mb-5">
@@ -90,28 +90,26 @@ export default function WithdrawVaultSection() {
 
       {isConnected && (
         <div>
-          {/* Balance (only show when not in pending state) */}
-          {!pending && (
-            <div className="mb-9">
-              <div className="font-sans text-base text-zinc-400 mb-3">
-                Total Balance
-              </div>
-              <div className="flex items-center">
-                <img
-                  src={NDLP.lp_image}
-                  alt="NODOAIx Token"
-                  className="w-[36px] h-[36px]"
-                />
-                <div className="text-white font-sans font-medium text-[40px] leading-[40px] ml-2">
-                  {showFormatNumber(balanceLp)}
-                </div>
-              </div>
-              <div className="font-sans text-sm text-white/60 mt-3">
-                1 {NDLP.lp_symbol} ≈ {showFormatNumber(amountEst.receive)}{" "}
-                {NDLP.token_symbol}
+          {/* Always show Balance */}
+          <div className="mb-9">
+            <div className="font-sans text-base text-zinc-400 mb-3">
+              Total Balance
+            </div>
+            <div className="flex items-center">
+              <img
+                src="/coins/ndlp.png"
+                alt="NDLP Token"
+                className="w-6 h-6 fill-gradient-orange"
+              />
+              <div className="text-white font-sans font-bold text-[56px] leading-none ml-2">
+                {showFormatNumber(balanceLp)}
               </div>
             </div>
-          )}
+            <div className="font-sans text-xs text-neutral-400 leading-relaxed mt-3">
+              1 {NDLP.lp_symbol} ≈ {showFormatNumber(amountEst.receive)}{" "}
+              {NDLP.token_symbol}
+            </div>
+          </div>
 
           {/* Render the correct view based on state */}
           {pending && pending.vaultId === NDLP.vault_id ? (
