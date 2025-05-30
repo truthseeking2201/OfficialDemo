@@ -94,3 +94,8 @@ Yes it is!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.NODO AI Vaults.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Documentation
+
+- [User Dashboard Design](docs/dashboard_design.md)
+
