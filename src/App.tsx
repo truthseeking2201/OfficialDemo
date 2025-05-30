@@ -8,6 +8,13 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "next-themes";
 import Dashboard from "./pages/Dashboard";
 
+const UserDashboard = lazy(() =>
+  import("./pages/UserDashboard").catch((e) => {
+    console.error("Error loading UserDashboard:", e);
+    return { default: () => <PageFallback /> };
+  })
+);
+
 const NotFound = lazy(() =>
   import("./pages/NotFound").catch((e) => {
     console.error("Error loading NotFound:", e);
@@ -35,6 +42,9 @@ const PageFallback = () => null;
   import("./pages/Dashboard").catch((err) =>
     console.error("Failed to preload Dashboard on init:", err)
   );
+  import("./pages/UserDashboard").catch((err) =>
+    console.error("Failed to preload UserDashboard on init:", err)
+  );
 })();
 
 const App = () => (
@@ -51,6 +61,16 @@ const App = () => (
                   <MainLayout>
                     <Suspense fallback={<PageFallback />}>
                       <Dashboard />
+                    </Suspense>
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/user-dashboard"
+                element={
+                  <MainLayout>
+                    <Suspense fallback={<PageFallback />}>
+                      <UserDashboard />
                     </Suspense>
                   </MainLayout>
                 }

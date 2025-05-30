@@ -55,7 +55,7 @@ export function PerformanceChart({
 
     // If we don't have initial profit values, calculate them
     if (data[0] && !data[0].profit) {
-      let initialValue = data[0].value;
+      const initialValue = data[0].value;
       return data.map(point => ({
         ...point,
         profit: point.value - initialValue

@@ -14,6 +14,7 @@ import {
   Bell,
   Brain,
   Cpu,
+  CircleUserRound,
   ExternalLink,
   Globe,
   Menu,
@@ -39,11 +40,13 @@ export function AppHeader() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const location = useLocation();
 
-  // Preload the Dashboard component on header mount to ensure it's ready for navigation
+  // Preload dashboard pages on header mount to ensure they're ready for navigation
   useEffect(() => {
-    // Preload Dashboard component in the background
     import("@/pages/Dashboard").catch((error) => {
       console.error("Failed to preload Dashboard:", error);
+    });
+    import("@/pages/UserDashboard").catch((error) => {
+      console.error("Failed to preload UserDashboard:", error);
     });
   }, []);
 
@@ -288,6 +291,22 @@ export function AppHeader() {
         <div className="flex items-center gap-3">
           {/* Connect Wallet Button */}
           <ConnectWalletButton />
+          <Link
+            to="/user-dashboard"
+            className={`hidden md:flex items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
+              location.pathname === "/user-dashboard"
+                ? "bg-white/10 text-white"
+                : "text-white/70 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <CircleUserRound
+              size={16}
+              className={
+                location.pathname === "/user-dashboard" ? "text-nova" : ""
+              }
+            />
+            <span className="text-sm">My Dashboard</span>
+          </Link>
 
           {/* Mobile Menu Toggle */}
           <Button
@@ -378,6 +397,35 @@ export function AppHeader() {
                     }
                   />
                   <span className="font-medium">Dashboard</span>
+                </Link>
+                <Link
+                  to="/user-dashboard"
+                  className={`flex items-center gap-2 p-3 rounded-lg ${
+                    location.pathname === "/user-dashboard"
+                      ? "bg-white/10 text-white"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                  }`}
+                  onClick={(e) => {
+                    if (location.pathname === "/user-dashboard") {
+                      e.preventDefault();
+                    } else {
+                      import("@/pages/UserDashboard").catch((err) =>
+                        console.error(
+                          "Failed to preload UserDashboard on mobile:",
+                          err
+                        )
+                      );
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <CircleUserRound
+                    size={16}
+                    className={
+                      location.pathname === "/user-dashboard" ? "text-nova" : ""
+                    }
+                  />
+                  <span className="font-medium">My Dashboard</span>
                 </Link>
               </nav>
 
