@@ -24,6 +24,14 @@ npm install
 npm run dev
 ```
 
+### Linting
+
+Run the linter after installing dependencies to check code quality:
+
+```sh
+npm run lint
+```
+
 The showcase build blocks all external network requests for security while providing an authentic user experience identical to the production app.
 
 ## How can I edit this code?
@@ -94,3 +102,8 @@ Yes it is!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.NODO AI Vaults.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Documentation
+
+- [User Dashboard Design](docs/dashboard_design.md)
+

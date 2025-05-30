@@ -39,11 +39,13 @@ export function AppHeader() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const location = useLocation();
 
-  // Preload the Dashboard component on header mount to ensure it's ready for navigation
+  // Preload dashboard pages on header mount
   useEffect(() => {
-    // Preload Dashboard component in the background
     import("@/pages/Dashboard").catch((error) => {
       console.error("Failed to preload Dashboard:", error);
+    });
+    import("@/pages/UserDashboard").catch((error) => {
+      console.error("Failed to preload UserDashboard:", error);
     });
   }, []);
 
@@ -350,14 +352,14 @@ export function AppHeader() {
                   <span className="font-medium">Vaults</span>
                 </Link>
                 <Link
-                  to="/dashboard"
+                  to="/"
                   className={`flex items-center gap-2 p-3 rounded-lg ${
-                    location.pathname === "/dashboard"
+                    location.pathname === "/"
                       ? "bg-white/10 text-white"
                       : "text-white/70 hover:bg-white/5 hover:text-white"
                   }`}
                   onClick={(e) => {
-                    if (location.pathname === "/dashboard") {
+                    if (location.pathname === "/") {
                       e.preventDefault();
                     } else {
                       // Preload Dashboard component on mobile click
@@ -373,11 +375,38 @@ export function AppHeader() {
                 >
                   <BarChart3
                     size={16}
-                    className={
-                      location.pathname === "/dashboard" ? "text-nova" : ""
-                    }
+                    className={location.pathname === "/" ? "text-nova" : ""}
                   />
                   <span className="font-medium">Dashboard</span>
+                </Link>
+                <Link
+                  to="/user-dashboard"
+                  className={`flex items-center gap-2 p-3 rounded-lg ${
+                    location.pathname === "/user-dashboard"
+                      ? "bg-white/10 text-white"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                  }`}
+                  onClick={(e) => {
+                    if (location.pathname === "/user-dashboard") {
+                      e.preventDefault();
+                    } else {
+                      import("@/pages/UserDashboard").catch((err) =>
+                        console.error(
+                          "Failed to preload UserDashboard on mobile:",
+                          err
+                        )
+                      );
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <Cpu
+                    size={16}
+                    className={
+                      location.pathname === "/user-dashboard" ? "text-nova" : ""
+                    }
+                  />
+                  <span className="font-medium">My Dashboard</span>
                 </Link>
               </nav>
 
