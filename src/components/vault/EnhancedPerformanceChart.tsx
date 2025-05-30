@@ -206,7 +206,7 @@ export function EnhancedPerformanceChart({
     setIsLoading(true);
 
     const generateData = () => {
-      let data: DataPoint[] = [];
+      const data: DataPoint[] = [];
       let pointCount = 0;
       let timeIncrement = 0;
       let dateFormat = '';
@@ -252,11 +252,11 @@ export function EnhancedPerformanceChart({
       let currentValue = baseValue;
       let marketValue = baseValue * 0.92;
       let aiValue = baseValue;
-      let now = new Date();
+      const now = new Date();
 
       for (let i = 0; i < pointCount; i++) {
         // For past data points
-        let timestamp = new Date(now.getTime() - (pointCount - i - 1) * timeIncrement);
+        const timestamp = new Date(now.getTime() - (pointCount - i - 1) * timeIncrement);
 
         // Vault value (slightly random with trend based on vault type)
         const change = (Math.random() * 2 - 0.7) * volatility * baseValue;
@@ -309,7 +309,7 @@ export function EnhancedPerformanceChart({
 
       // Add prediction points
       for (let i = 0; i < 5; i++) {
-        let timestamp = new Date(now.getTime() + i * timeIncrement);
+        const timestamp = new Date(now.getTime() + i * timeIncrement);
 
         // Predicted value (continuing trend with increasing uncertainty)
         const lastValue = data[data.length - 1].aiValue;
