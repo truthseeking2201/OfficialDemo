@@ -1,4 +1,5 @@
 import { useState } from "react";
+// This dashboard follows the 4-layer structure outlined in docs/dashboard_design.md
 import { PageContainer } from "../components/layout/PageContainer";
 import { MetricsOverview } from "../components/dashboard/MetricsOverview";
 import { PositionsPanel } from "../components/dashboard/PositionsPanel";
