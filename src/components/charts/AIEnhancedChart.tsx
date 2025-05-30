@@ -251,7 +251,7 @@ export function AIEnhancedChart({
     if (!data || data.length === 0) return [0, 100];
 
     // Find min and max including predictions if they exist
-    let allValues: number[] = data.map(d => d.value);
+    const allValues: number[] = data.map(d => d.value);
 
     if (showPredictions) {
       data.forEach(d => {
