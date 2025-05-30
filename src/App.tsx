@@ -35,11 +35,15 @@ const queryClient = new QueryClient({
 // Replace loading state with mock data for demo - no loading screen needed
 const PageFallback = () => null;
 
-// Preload Dashboard component immediately when app loads
+// Preload Dashboard and UserDashboard components immediately when app loads
 (() => {
   // This immediate invocation will preload the Dashboard in the background
   import("./pages/Dashboard").catch((err) =>
     console.error("Failed to preload Dashboard on init:", err)
+  );
+  // Preload UserDashboard in the background as well
+  import("./pages/UserDashboard").catch((err) =>
+    console.error("Failed to preload UserDashboard on init:", err)
   );
 })();
 
