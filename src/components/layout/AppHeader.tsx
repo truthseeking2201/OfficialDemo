@@ -39,11 +39,13 @@ export function AppHeader() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const location = useLocation();
 
-  // Preload the Dashboard component on header mount to ensure it's ready for navigation
+  // Preload dashboard pages on mount for snappier navigation
   useEffect(() => {
-    // Preload Dashboard component in the background
     import("@/pages/Dashboard").catch((error) => {
       console.error("Failed to preload Dashboard:", error);
+    });
+    import("@/pages/UserDashboard").catch((error) => {
+      console.error("Failed to preload UserDashboard:", error);
     });
   }, []);
 
@@ -289,6 +291,20 @@ export function AppHeader() {
           {/* Connect Wallet Button */}
           <ConnectWalletButton />
 
+          {/* Desktop Dashboard Link */}
+          <Link
+            to="/user-dashboard"
+            className="hidden md:flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-white/70 hover:bg-white/10 hover:text-white"
+            onMouseEnter={() =>
+              import("@/pages/UserDashboard").catch((err) =>
+                console.error("Failed to preload UserDashboard from header:", err)
+              )
+            }
+          >
+            <BarChart3 size={14} className="text-nova" />
+            <span className="font-medium">My Dashboard</span>
+          </Link>
+
           {/* Mobile Menu Toggle */}
           <Button
             variant="ghost"
@@ -350,20 +366,19 @@ export function AppHeader() {
                   <span className="font-medium">Vaults</span>
                 </Link>
                 <Link
-                  to="/dashboard"
+                  to="/user-dashboard"
                   className={`flex items-center gap-2 p-3 rounded-lg ${
-                    location.pathname === "/dashboard"
+                    location.pathname === "/user-dashboard"
                       ? "bg-white/10 text-white"
                       : "text-white/70 hover:bg-white/5 hover:text-white"
                   }`}
                   onClick={(e) => {
-                    if (location.pathname === "/dashboard") {
+                    if (location.pathname === "/user-dashboard") {
                       e.preventDefault();
                     } else {
-                      // Preload Dashboard component on mobile click
-                      import("@/pages/Dashboard").catch((err) =>
+                      import("@/pages/UserDashboard").catch((err) =>
                         console.error(
-                          "Failed to preload Dashboard on mobile:",
+                          "Failed to preload UserDashboard on mobile:",
                           err
                         )
                       );
@@ -374,10 +389,10 @@ export function AppHeader() {
                   <BarChart3
                     size={16}
                     className={
-                      location.pathname === "/dashboard" ? "text-nova" : ""
+                      location.pathname === "/user-dashboard" ? "text-nova" : ""
                     }
                   />
-                  <span className="font-medium">Dashboard</span>
+                  <span className="font-medium">My Dashboard</span>
                 </Link>
               </nav>
 
