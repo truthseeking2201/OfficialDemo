@@ -72,6 +72,16 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## Development setup
+
+Run the setup script after cloning to install all dependencies, including ESLint packages required for linting.
+
+```sh
+npm run setup
+```
+
+After running the script you can execute `npm run lint` on a fresh environment without missing packages.
+
 ## What technologies are used for this project?
 
 This project is built with:
