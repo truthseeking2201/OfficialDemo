@@ -350,14 +350,14 @@ export function AppHeader() {
                   <span className="font-medium">Vaults</span>
                 </Link>
                 <Link
-                  to="/dashboard"
+                  to="/"
                   className={`flex items-center gap-2 p-3 rounded-lg ${
-                    location.pathname === "/dashboard"
+                    location.pathname === "/"
                       ? "bg-white/10 text-white"
                       : "text-white/70 hover:bg-white/5 hover:text-white"
                   }`}
                   onClick={(e) => {
-                    if (location.pathname === "/dashboard") {
+                    if (location.pathname === "/") {
                       e.preventDefault();
                     } else {
                       // Preload Dashboard component on mobile click
@@ -374,7 +374,7 @@ export function AppHeader() {
                   <BarChart3
                     size={16}
                     className={
-                      location.pathname === "/dashboard" ? "text-nova" : ""
+                      location.pathname === "/" ? "text-nova" : ""
                     }
                   />
                   <span className="font-medium">Dashboard</span>
