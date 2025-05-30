@@ -39,17 +39,6 @@
   --color-nova: #EC6F05;
   --color-nova-light: #FF9320;
   --color-nova-dark: #B45004;
-  --color-nova-deep: #5A2702;
-  --color-orion: #F59E0B;
-  --color-orion-light: #FCD34D;
-  --color-orion-dark: #B45309;
-  --color-emerald: #10B981;
-  --color-emerald-light: #6EE7B7;
-  --color-emerald-dark: #047857;
-  --color-violet: #3E1672;
-  --color-violet-light: #5C2E98;
-  --color-violet-dark: #2A0E50;
-  --color-cyan: #14E9F2;
 
   /* Gradients */
   --cta-gradient: linear-gradient(to right, var(--color-nova-light), var(--color-nova));
